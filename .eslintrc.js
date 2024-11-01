@@ -4,7 +4,7 @@ module.exports = {
     '@react-native',
     'eslint:recommended',
   ],
-  parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+  parserOptions: { ecmaVersion: 'latest'},
   plugins: ["react", "react-native"],
   rules: {
     // most of under rules were deprecated ESLint v8.53.0

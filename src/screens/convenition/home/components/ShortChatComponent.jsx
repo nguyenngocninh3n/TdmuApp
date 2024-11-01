@@ -1,16 +1,22 @@
 import { Text, View } from 'react-native'
 import RowComponent from '../../../../components/RowComponent'
 
-const ShortChatingComponent = ({ data, navigation }) => {
-  console.log(data)
+const ShortChatingComponent = ({ convention, navigation }) => {
+  const { members, data } = convention ?? []
+  const membersMap = new Map()
+  members.forEach(item => {
+    membersMap.set(item.uid, item)
+  })
+
+  const lastChat = data.at(-1)
   return (
-    <RowComponent onPress={() => navigation.navigate('ChatingScreen')}>
-      <Text>{data.userName}</Text>
+    <RowComponent onPress={() => navigation.navigate('ChatingScreen', { conventionID: convention.conventionID })}>
+      <Text>avatar here</Text>
       <View>
-        <Text>User name</Text>
+        <Text>{convention.conventionName}</Text>
         <RowComponent>
-          <Text>{data.data.at(-1).message}</Text>
-          <Text>Time </Text>
+          <Text>{lastChat.content}</Text>
+          <Text>{lastChat.dateModified.toString()} </Text>
         </RowComponent>
       </View>
     </RowComponent>
