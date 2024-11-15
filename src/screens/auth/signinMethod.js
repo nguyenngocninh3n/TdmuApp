@@ -27,7 +27,6 @@ async function signInWithGoogle() {
   let idToken = ''
   await GoogleSignin.signIn().then((data) => {
     idToken = data.data.idToken
-    console.log('google data:, ', data.data.user)
   })
 
   // Create a Google credential with the token
@@ -38,8 +37,7 @@ async function signInWithGoogle() {
     .signInWithCredential(googleCredential)
     .then(async (user) => {
       const userData = { ...user.additionalUserInfo.profile, _id: user.additionalUserInfo.profile.sub }
-      const newUser = await API.createUserApi({ data: userData })
-      console.log('user return in google login: ', newUser)
+      const newUser = await API.loginAPI({ data: userData })
       return newUser
     })
     .catch((error) => console.log('error when sigin with credential: ', error))

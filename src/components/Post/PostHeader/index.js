@@ -1,22 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
 import {
   View,
-  Image,
   Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableHighlight
+  SafeAreaView
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import UserProfile from '../../../assets/images/post1.jpeg'
+import React, { useState } from 'react'
 // import Modal from 'react-native-modal'
-import firestore from '@react-native-firebase/firestore'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
-import auth from '@react-native-firebase/auth'
 import Colors from '../../../utils/Colors'
-
+import RowComponent from '../../RowComponent'
+import AvatarComponent from '../../AvatarComponent'
+import DateTimeComponent from '../../DateTimeComponent'
 const onDeletePost = async () => {}
 
 const ShowOptions = () => {}
@@ -62,93 +59,25 @@ const GetOptions = ({ navigation, options_state }) => {
   )
 }
 
-const GetImage = ({ source }) => {
-  if (source === '' || source === null) {
-    return
-  } else {
-    return <Image source={{ uri: source }} style={styles.userProfile} />
-  }
-}
-
-const getDisplayTime = ({ timestamp }) => {
-  let date_temp = new Date(timestamp)
-  var date_string = ''
-
-  if (Date.now() - timestamp <= 50400000) {
-    let numHours = date_temp.getHours()
-    let numMinutes = date_temp.getMinutes()
-
-    let hours = numHours < 10 ? '0' + numHours.toString() : numHours.toString()
-    let minutes = numMinutes < 10 ? '0' + numMinutes.toString() : numMinutes.toString()
-    date_string = hours + ':' + minutes
-  } else if (Date.now() - timestamp <= 50400000 * 7) {
-    let day = date_temp.getDay() + 1
-    date_string = 'Thứ ' + day
-  } else if (date_temp.getFullYear() === new Date().getFullYear()) {
-    date_string = date_temp.getDate().toString() + '/' + (date_temp.getMonth() + 1).toString()
-  } else {
-    date_string =
-      date_temp.getDate().toString() +
-      '/' +
-      (date_temp.getMonth() + 1).toString() +
-      '/' +
-      date_temp.getFullYear().toString()
-  }
-  return date_string
-}
-
-const formatDate = (timestamp) => {
-  return getDisplayTime({ timestamp: timestamp })
-}
 
 const toProfile = (navigation) => {}
 
 const PostHeader = ({ data, navigation }) => {
   const [options_state, setOptions_state] = useState(false)
-
   const [user, setUser] = useState({})
-  useEffect(() => {
-    firestore()
-      .collection('users')
-      .doc(data.ownerID)
-      .get()
-      .then((documentSnapshot) => {
-        // console.log('User exists: ', documentSnapshot.exists);
-        if (documentSnapshot.exists) {
-          // console.log('PostHeader - User exist: ');
-          setUser(documentSnapshot.data())
-        }
-      })
-  }, [])
 
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
-        <View style={styles.row}>
-          <TouchableOpacity onPress={toProfile}>
-            <GetImage source={user.avatar} />
-          </TouchableOpacity>
+        <RowComponent>
+          <AvatarComponent source={user.avatar} />
           <View style={styles.userSection}>
-            <TouchableOpacity onPress={toProfile}>
-              <Text style={styles.username}>{user.name}</Text>
-            </TouchableOpacity>
-            <View style={styles.row}>
-              <Text style={styles.days}>{formatDate(data.timestamp)}</Text>
-            </View>
+            <Text>owner post name</Text>
+            <DateTimeComponent timestamp={111} />
           </View>
-        </View>
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              setOptions_state(true)
-            }}
-          >
-            <ShowOptions />
-          </TouchableOpacity>
-        </View>
+        </RowComponent>
       </View>
       <Text style={styles.caption}>{data.content}</Text>
-      <GetOptions navigation={navigation} options_state={options_state} />
     </View>
   )
 }

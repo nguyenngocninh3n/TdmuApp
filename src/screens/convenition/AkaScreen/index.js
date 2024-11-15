@@ -1,0 +1,182 @@
+import { View, Text, Button, Modal, Pressable, TextInput, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import SpaceComponent from '../../../components/SpaceComponent'
+import RowComponent from '../../../components/RowComponent'
+import AvatarComponent from '../../../components/AvatarComponent'
+import { API } from '../../../api'
+import { useCustomContext } from '../../../store'
+import { MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import { OpacityButtton } from '../../../components/ButtonComponent'
+
+const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
+  console.log('aka: ', aka)
+  const [inputValue, setInputValue] = useState('')
+
+  const handleInputChange = (value) => setInputValue(value)
+  const handleCloseModal = () => onClose(false)
+  const handelClear = () => {
+    onClear()
+    handleCloseModal()
+  }
+  const handleUpdate = () => {
+    handleCloseModal()
+    onUpdate(inputValue)
+  }
+
+  useEffect(() => {
+    setInputValue(aka)
+  }, [])
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        onClose(!modalVisible)
+      }}
+    >
+      <Pressable style={{ flex:1,}} onPress={handleCloseModal}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Chỉnh sửa biệt danh</Text>
+          <SpaceComponent height={16} />
+          <TextInput
+            style={styles.modalTextInput}
+            placeholder="Thêm biệt danh..."
+            value={inputValue}
+            focusable={true}
+            onChangeText={handleInputChange}
+          />
+          <SpaceComponent height={32} />
+          <RowComponent
+            alignItems
+            style={{ marginVertical: 10, marginHorizontal: 32, justifyContent: 'space-between' }}
+          >
+            <OpacityButtton
+              title={'Hủy'}
+              textStyle={styles.modalBtnText}
+              onPress={handleCloseModal}
+            />
+            <RowComponent>
+              <OpacityButtton title={'Gỡ'} textStyle={styles.modalBtnText} onPress={handelClear} />
+              <SpaceComponent width={24} />
+              <OpacityButtton
+                title={'Lưu'}
+                textStyle={styles.modalBtnText}
+                onPress={handleUpdate}
+              />
+            </RowComponent>
+          </RowComponent>
+          <SpaceComponent height={8} />
+        </View>
+      </Pressable>
+    </Modal>
+  )
+}
+
+const AkaScreen = ({ navigation, route }) => {
+  const { conventionID, members } = route.params
+  const [memberData, setMemberData] = useState(() => {
+    let arr = []
+    for (const item in members) {
+      arr.push(members[item])
+    }
+    return arr
+  })
+  const [modalVisible, setModalVisible] = useState(false)
+  const [chosenMember, setChosenMember] = useState({})
+  const [state, dispatch] = useCustomContext()
+  const handleSetVisible = (data) => setModalVisible(data)
+
+  const handleEditAka = (item) => {
+    setChosenMember(item)
+    setModalVisible(true)
+  }
+  const handleUpdateNickName = (value) => {
+    const data = {
+      senderID: state._id,
+      type: MESSAGE_TYPE.NOTIFY,
+      newState: value,
+      userID: chosenMember._id,
+      MESSAGE_NOTIFY_TYPE: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+      customMessage: `${state.userName} đã đặt biệt danh cho ${chosenMember.userName} là ${value}`
+    }
+    API.sendMessageAPI({
+      conventionID,
+      data: data,
+      senderName: state.userName,
+      senderAvatar: state.avatar
+    })
+  }
+
+  const handleClearNickName = () => {
+    const data = {
+      senderID: state._id,
+      type: MESSAGE_TYPE.NOTIFY,
+      newState: '',
+      userID: chosenMember._id,
+      MESSAGE_NOTIFY_TYPE: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+      customMessage: `${state.userName} đã xóa biệt danh của ${chosenMember.userName}`
+    }
+    API.sendMessageAPI({
+      conventionID,
+      data: data,
+      senderName: state.userName,
+      senderAvatar: state.avatar
+    })
+  }
+
+  return (
+    <View style={{ marginHorizontal: 16 }}>
+      <SpaceComponent height={50} />
+      {memberData.map((item, index) => (
+        <RowComponent
+          onPress={() => handleEditAka(item)}
+          alignItems
+          key={index}
+          style={{ marginBottom: 16 }}
+        >
+          <AvatarComponent size={48} source={API.getFileUrl(item.avatar)} />
+          <SpaceComponent width={16} />
+          <View>
+            <Text style={{ fontWeight: '700', fontSize: 16 }}>{item.userName}</Text>
+            {item.aka && <Text>{item.aka}</Text>}
+          </View>
+        </RowComponent>
+      ))}
+      {modalVisible && (
+        <CustomModal
+          onClose={handleSetVisible}
+          onClear={handleClearNickName}
+          onUpdate={handleUpdateNickName}
+          modalVisible={true}
+          aka={chosenMember.aka}
+        />
+      )}
+    </View>
+  )
+}
+
+export default AkaScreen
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    marginTop: '50%',
+    marginHorizontal: 40
+  },
+  modalTitle: {
+    textAlign: 'center',
+    marginTop: 10,
+    marginLeft: 10,
+    color: '#000',
+    fontWeight: '500'
+  },
+  modalTextInput: { borderBottomColor: '#ccc', borderBottomWidth: 1, paddingBottom: 2 },
+  modalBtnText: {
+    color: 'blue',
+    fontWeight: '400',
+    fontSize: 16
+  }
+})

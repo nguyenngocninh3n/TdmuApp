@@ -2,11 +2,11 @@ import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   chatScreenContainer: {
-    flex:1,
-    flexDirection: 'column',
+    flex: 1,
+    flexDirection: 'column'
   },
   chatFlatlistContainer: {
-    flex:1,
+    flex: 1,
     marginLeft: 8,
     marginRight: 8
   },

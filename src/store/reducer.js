@@ -1,15 +1,21 @@
-import {LOGIN, LOGOUT} from './constants'
-const user = {}
+import { signOutWithGoogle } from '../screens/auth/signinMethod'
+import { LOGIN, LOGOUT, SIGNIN } from './constants'
+const user = null
 const reducer = (state, action) => {
   switch (action.type) {
-  case LOGIN:
-    return { ...action.payload }
-  case LOGOUT:
-    return {}
-  default:
-    throw new Error('Error invalid action')
+    case LOGIN:
+      return { ...action.payload }
+    case LOGOUT: {
+      console.log('into logout')
+      signOutWithGoogle()
+      return {}
+    }
+    case SIGNIN:
+      return { ...action.payload }
+    default:
+      throw new Error('Error invalid action')
   }
 }
 
 export default user
-export {reducer}
+export { reducer }

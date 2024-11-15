@@ -5,7 +5,9 @@ const SpaceComponent = ({ width, height }) => {
     width: width ?? 0,
     height: height ?? 0
   }
-  return <View style={localStyle} />
+  return (
+    <View style={localStyle} />
+  )
 }
 
 export default SpaceComponent

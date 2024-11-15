@@ -1,59 +1,21 @@
-import { View, StyleSheet, Image, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import React from 'react'
 import PostHeader from './PostHeader'
 import PostFooter from './PostFooter'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
+import ImageRenderComponent from '../ImageRenderComponent'
 
-import firestore from '@react-native-firebase/firestore'
-import { FlatList, ScrollView } from 'react-native-gesture-handler'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import Colors from '../../utils/Colors'
-
-const GetImage = ({ source }) => {
-  if (source == '' || source == null) {
-    return
-  } else {
-    return <Image source={{ uri: source }} style={styles.postImg} />
-  }
-}
-
-const Post = ({ navigation }) => {
-  const [PostData, setPostData] = useState([])
-
-  // useEffect(() => {
-  //   firestore()
-  //     .collection('posts')
-  //     .orderBy('timestamp', 'desc')
-  //     .onSnapshot((res) => {
-  //       const posts = []
-  //       if (res != null) {
-  //         res.forEach((documentSnapshot) => {
-  //           posts.push({
-  //             ...documentSnapshot.data(),
-  //             key: documentSnapshot.id
-  //           })
-  //         })
-  //       }
-  //       setPostData(posts)
-  //     })
-  // }, [])
-
+const Post = ({ post }) => {
   return (
-    <SafeAreaView style={styles.postContainer}>
-      <FlatList
-        scrollEnabled={false}
-        data={PostData}
-        horizontal={false}
-        renderItem={({ item }) => (
-          <View key={item.ownerID}>
-            <PostHeader data={item} navigation={navigation} />
-            <GetImage source={item.image} />
-            <PostFooter data={item} navigation={navigation} />
-          </View>
-        )}
-      />
-    </SafeAreaView>
+    <View>
+      <PostHeader data={post} />
+      <ImageRenderComponent source={post.image} />
+      <PostFooter data={post} />
+    </View>
   )
 }
+
+export default Post
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -72,4 +34,3 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Post

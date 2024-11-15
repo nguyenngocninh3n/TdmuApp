@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from './constants'
+import { LOGIN, LOGOUT, SIGNIN } from './constants'
 const onLogin = (payload) => {
   return {
     type: LOGIN,
@@ -6,11 +6,18 @@ const onLogin = (payload) => {
   }
 }
 
-const onLogout = (payload) => {
+const onLogout = () => {
   return {
     type: LOGOUT,
+    payload: null
+  }
+}
+
+const onSignIn = (payload) => {
+  return {
+    type: SIGNIN,
     payload
   }
 }
 
-export const actions = { onLogin, onLogout }
+export const actions = { onLogin, onLogout, onSignIn }

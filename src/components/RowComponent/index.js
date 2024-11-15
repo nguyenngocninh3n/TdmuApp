@@ -1,10 +1,12 @@
 import { TouchableOpacity, View } from 'react-native'
 
-const RowComponent = ({ children, style, onPress }) => {
+const RowComponent = ({ children, style, justify, alignItems, onPress }) => {
   const defaultValue = {
     onPress: () => {},
     styles: {
-      flexDirection: 'row'
+      flexDirection: 'row',
+      alignItems: alignItems && 'center',
+      justifyContent: justify && 'center'
     }
   }
 

@@ -1,6 +1,7 @@
 import { Context } from './Context'
 import { reducer } from './reducer'
-import { action } from './action'
+import { actions } from './action'
+import { useCustomContext,navigate, navigationRef } from './hooks'
 import Provider from './Provider'
-import {useCustomContext} from './hooks'
-export { Context, reducer, action, Provider, useCustomContext }
+
+export { Context, reducer, actions, Provider, useCustomContext, navigate, navigationRef }

@@ -1,62 +1,35 @@
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
-import ShortChatingComponent from './components/ShortChatComponent'
+import { StyleSheet, TextInput, View } from 'react-native'
 import SpaceComponent from '../../../components/SpaceComponent'
-import { useEffect, useState } from 'react'
-import firestore from '@react-native-firebase/firestore'
-import { getAuth } from '@react-native-firebase/auth'
-import { TokenClass } from 'typescript'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import ConventionNavigator from '../../../navigation/convention'
+import RowComponent from '../../../components/RowComponent'
 
-const SearchComponent = () => {
+const SearchComponent = ({ navigation }) => {
+  const handleClickSearch = () => {
+    navigation.navigate('SearchConventionScreen')
+  }
+
   return (
-    <View style={styles.searchContainer}>
-      <TextInput placeholder="type here..." style={styles.searchInput} />
-    </View>
+    <RowComponent alignItems style={styles.searchContainer}>
+      <RowComponent onPress={handleClickSearch} style={styles.searchInput}>
+        <TextInput editable={false} style={styles.textInput} placeholder="type here..." />
+        <MaterialIcons name="search" size={24} />
+      </RowComponent>
+      <SpaceComponent width={16} />
+      <MaterialIcons name="group-add" size={32} color={'blue'} />
+    </RowComponent>
   )
 }
 
 const ConvenitionScreen = ({ navigation }) => {
-  const [conventions, setConventions] = useState([])
-
-  const getOwnerConventions = () => {
-    firestore()
-      .collection('conventions')
-      .where('uids', 'array-contains', '111532028022054678321')
-      .onSnapshot((data) => {
-        let arr = []
-        data.forEach((item) => {
-          arr.push(item.data())
-        })
-        setConventions(arr)
-      })
-  }
-
-  useEffect(() => {
-    getOwnerConventions()
-  }, [])
-
-  const addData = () => {
-    const docID = Math.ceil(Math.random().toFixed(15) * Math.pow(10, 15)).toString()
-    firestore()
-      .collection('conventions')
-      .doc(docID)
-      .set({ ...conventions[0] })
-      .then('add new data successfully')
-      .catch((error) => console.log('error: ', error))
-      .finally(() => console.log('fininsh'))
-  }
-
   return (
-    <View>
-      <Text>This is convenition screen</Text>
-      <SearchComponent />
-      {conventions?.map((item, index) => (
-        <View key={index}>
-          <ShortChatingComponent convention={item} navigation={navigation} />
-          <SpaceComponent height={5} />
-        </View>
-      ))}
-      <Button onPress={() => console.log('gia tri conventions: ', conventions)} title="In log" />
-      <Button onPress={addData} title="add data" />
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      <SpaceComponent height={16} />
+      <View>
+        <SearchComponent navigation={navigation} />
+        <SpaceComponent height={24} />
+      </View>
+      <ConventionNavigator />
     </View>
   )
 }
@@ -66,45 +39,25 @@ export default ConvenitionScreen
 const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
-    backgroundColor: '#faa',
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    marginVertical: 0
   },
 
   searchInput: {
-    paddingVertical: 4,
-    paddingLeft: 8,
+    backgroundColor: '#eee',
+    height: 32,
     color: '#ffe',
-    fontSize: 14
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 25,
+    padding: 0,
+    margin: 0,
+    paddingLeft: 8
+  },
+
+  textInput: {
+    margin: 0,
+    padding: 0
   }
 })
-
-/*
- user: {
-  conventionID: 12345,
-  avatar: 'https://tdmuapp/images/1111123',
-  uids: [user1_ID, user2_ID, user3_ID],
-  dateModidied: timestamp,
-  member: [
-    {
-      uid: 1111,
-      name: 'Nguyễn Một',
-      aka: zai Một,
-      dateModified: timestamp
-    },
-    {
-      uid: 2222,
-      name: 'Nguyễn Hai',
-      aka: gái Hai,
-      dateModified: timestamp
-    }
-  ],
-  data: [
-    {
-      uid: 1111,
-      type: 'text',
-      content: 'Xin chào mình là Một!'
-      dateModified: timestamp
-    }
-  ]
-}
-*/

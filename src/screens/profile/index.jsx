@@ -1,18 +1,21 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
-import { Button, Text, View } from 'react-native'
-import { signOutWithGoogle } from '../auth/signinMethod'
-import useCustomContext from '../../store/hooks'
+import { useEffect } from 'react'
+import { useCustomContext } from '../../store'
+import UserProfile from './User'
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation, route }) => {
+  const userID = route?.params?.userID
   const [state, dispatch] = useCustomContext()
-  return (
-    <View>
-      <Text>This is profile screen</Text>
-      <Button title="log current user" onPress={() => console.log(GoogleSignin.getCurrentUser())} />
-      <Button title="logout" onPress={signOutWithGoogle} />
-      <Button title="log store user: " onPress={() => console.log(state)} />
-    </View>
-  )
+  const isOwnerProfile = !userID || userID === state._id
+  useEffect(() => {
+    if (isOwnerProfile) {
+      navigation.navigate('OwnerProfile')
+    }
+  })
+  if (isOwnerProfile) {
+    return <></>
+  } else {
+    return <UserProfile navigation={navigation} ownerID={state._id} userID={userID} />
+  }
 }
 
 export default ProfileScreen
