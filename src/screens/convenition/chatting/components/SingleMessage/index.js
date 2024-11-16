@@ -6,7 +6,7 @@ import { helper } from '../../../../../utils/helpers'
 import SpaceComponent from '../../../../../components/SpaceComponent'
 import { CHAT_ITEM_TYPE, MESSAGE_TYPE } from '../../../../../utils/Constants'
 
-const SingleMessage = ({ message, chatAvatar, messageTime, time, itemType, messageType }) => {
+const SingleMessage = ({ message, avatar, messageTime, time, itemType, messageType }) => {
   const formatTime = helper.DateTimeHelper.displayTimeDescendingFromDate(messageTime)
   const textStyle = {
     textAlign: 'center'

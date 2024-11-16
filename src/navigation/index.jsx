@@ -29,7 +29,7 @@ const Navigation = () => {
   return (
     <Provider>
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} >
           {!user ? (
             <Stack.Screen name="auth" component={AuthNavigation} />
           ) : (

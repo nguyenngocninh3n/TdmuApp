@@ -7,10 +7,8 @@ import { API } from '../../../api'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import ChatHeader from './components/ChatHeader'
 import ChatInput from './components/ChatInput'
-import SocketClient from '../../../socket'
 import { useCustomContext } from '../../../store'
-import { OpacityButtton } from '../../../components/ButtonComponent'
-const ChatList = lazy(() => import('./components/ChatList'))
+import ChatList from './components/ChatList'
 
 const ChattingScreen = ({ navigation, route }) => {
   let { userID } = route.params
@@ -20,23 +18,24 @@ const ChattingScreen = ({ navigation, route }) => {
   const [members, setMembers] = useState(new Map())
   const [conventionInfo, setConventionInfo] = useState({})
 
+  console.log('chatting screen re-render')
+
   const setDataForConvention = (data) => {
     setConventionID(data._id)
-    setChatData(data.data.reverse())
     setMembers(() => {
       const membersMap = new Map()
       data.members.forEach((item) => {
         membersMap.set(item._id, item)
       })
-      setMembers(membersMap)
+      return membersMap
     })
     const userData = data.members.filter((item) => item._id !== state._id).at(0)
     if (data.avatar) {
-      if (data.name) setConventionInfo({ name: data.name, avatar: data.avatar })
-      else setConventionInfo({ name: userData.aka || userData.userName, avatar: data.avatar })
+      if (data.name) setConventionInfo({type:data.type, name: data.name, avatar: data.avatar })
+      else setConventionInfo({type:data.type, name: userData.aka || userData.userName, avatar: data.avatar })
     } else {
-      if (data.name) setConventionInfo({ name: data.name, avatar: userData.avatar })
-      else setConventionInfo({ name: userData.aka || userData.userName, avatar: userData.avatar })
+      if (data.name) setConventionInfo({type:data.type, name: data.name, avatar: userData.avatar })
+      else setConventionInfo({type:data.type, name: userData.aka || userData.userName, avatar: userData.avatar })
     }
   }
 
@@ -48,7 +47,7 @@ const ChattingScreen = ({ navigation, route }) => {
       }
     } else {
       const userData = await API.getUserByIdAPI({ uid: userID })
-      setConventionInfo({ name: userData.userName, avatar: userData.avatar })
+      setConventionInfo({type: 'private', name: userData.userName, avatar: userData.avatar })
     }
   }
 
@@ -65,7 +64,7 @@ const ChattingScreen = ({ navigation, route }) => {
         senderAvatar: state.avatar,
         senderName: state.userName
       })
-      setDataForConvention(newData)
+      // setDataForConvention(newData)
     } else {
       const fetchData = await API.sendMessageAPI({
         conventionID: conventionID,
@@ -73,38 +72,22 @@ const ChattingScreen = ({ navigation, route }) => {
         senderAvatar: state.avatar,
         senderName: state.userName
       })
-      const { _id, senderID, createdAt, updatedAt } = fetchData
-      const newData = {
-        _id,
-        senderID,
-        message: fetchData.message,
-        type: fetchData.type,
-        createdAt,
-        updatedAt
-      }
-      setChatData((pre) => [newData, ...pre])
     }
   }
 
   useEffect(() => {
     getConventionByID(conventionID)
-    SocketClient.socket.on('convention', (value) => {
-      setChatData((pre) => {
-        const { _id, senderID, message, type, createdAt, updatedAt } = value
-        const newData = { _id, senderID, message, type, createdAt, updatedAt }
-        return [newData, ...pre]
-      })
-    })
   }, [])
-
 
   const handleClickDetail = () => {
     navigation.navigate('DetailScreen', {
       name: conventionInfo.name,
       avatar: conventionInfo.avatar,
+      type: conventionInfo.type,
       conventionID,
       members: Object.fromEntries(members),
-      chatData
+      chatData,
+      ownerID: state._id
     })
   }
   console.log('app re-render')
@@ -121,11 +104,7 @@ const ChattingScreen = ({ navigation, route }) => {
         <ChatHeader name={conventionInfo.name} avatar={API.getFileUrl(conventionInfo?.avatar)} />
         <SimpleLineIcons color={'blue'} name="exclamation" size={24} onPress={handleClickDetail} />
       </RowComponent>
-      <ChatList
-        chatData={chatData}
-        members={members}
-        ownerID={state._id}
-      />
+      <ChatList conventionID={conventionID} ownerID={state._id} />
       <ChatInput onPress={handleSendMessage} />
     </View>
   )

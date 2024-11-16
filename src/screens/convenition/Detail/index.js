@@ -6,10 +6,9 @@ import RowComponent from '../../../components/RowComponent'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { API } from '../../../api'
-import MemberScreen from '../Member'
 
 const DetailScreen = ({ navigation, route }) => {
-  const { conventionID, name, avatar, members, chatData } = route.params
+  const { conventionID, name, avatar, members, chatData, type, ownerID } = route.params
 
   const handleClickFileViewing = () => {
     navigation.navigate('FileViewingScreen', { conventionID })
@@ -24,13 +23,21 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const handleClickMember = () => {
-    const customMembers = Object.values(members).map(value => value)
+    const customMembers = Object.values(members).map((value) => value)
     console.log('customMember: ', customMembers)
     navigation.navigate('MemberScreen', { members: customMembers })
   }
 
   const handleClickSearch = () => {
-    navigation.navigate('SearchConventionScreen', {chatData, conventionID, members: Object.values(members).map(value => value)})
+    navigation.navigate('SearchConventionScreen', {
+      chatData,
+      conventionID,
+      members: Object.values(members).map((value) => value)
+    })
+  }
+
+  const handleClickProfile = () => {
+    navigation.navigate('ProfileScreen', { userID: Object.values(members).filter(item => item._id !== ownerID).at(0)._id })
   }
 
   return (
@@ -42,6 +49,16 @@ const DetailScreen = ({ navigation, route }) => {
         <Text style={{ fontSize: 24 }}>{name}</Text>
       </View>
       <SpaceComponent height={32} />
+
+      {/* PROFILE */}
+      {type && (
+        <RowComponent alignItems onPress={handleClickProfile}>
+          <Ionicons name="person" size={24} />
+          <SpaceComponent width={8} />
+          <Text style={{ fontSize: 18, fontWeight: '500' }}>Trang cá nhân</Text>
+        </RowComponent>
+      )}
+      <SpaceComponent height={20} />
 
       {/* AVATAR */}
       <RowComponent alignItems onPress={handleClickAvtarConvention}>

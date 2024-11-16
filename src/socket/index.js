@@ -2,11 +2,13 @@ import { io } from 'socket.io-client'
 import { MESSAGE_TYPE, NOTIFICATION_TYPE, SERVER_POST } from '../utils/Constants'
 import { API } from '../api'
 import { startLocalNotification } from '../notification'
-var socket = io(SERVER_POST)
+const socket = io(SERVER_POST)
 function runSocketClient(userID, navigation) {
   // socket = io(SERVER_POST, { query: { userID } })
 
   socket.emit('connection', { data: { userID: userID } })
+  socket.on('connect', ()=>console.log('client connect'))
+  socket.on('disconnect', ()=>console.log('client disconnect'))
   onDisconnecting(userID)
   emitConventionJoinRooms(userID)
   emitUserJoinRoom(userID)
@@ -66,6 +68,7 @@ async function emitConventionJoinRoom(conventionID) {
 
 function onConvention(callback) {
   socket.on('convention', function (data) {
+    console.log('convention listenner in client: ', data)
     callback(data)
   })
 }

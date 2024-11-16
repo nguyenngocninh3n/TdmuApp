@@ -1,65 +1,70 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { FlatList, Text, View } from 'react-native'
-import React, { lazy } from 'react'
-import styles from '../../styles'
+import { FlatList, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import SpaceComponent from '../../../../../components/SpaceComponent'
-import { helper } from '../../../../../utils/helpers'
-import { CHAT_ITEM_TYPE, MESSAGE_TYPE } from '../../../../../utils/Constants'
-const SingleMessage = lazy(() => import('../SingleMessage'))
+import ChatItem from './components/ChatItem'
+import { API } from '../../../../../api'
+import SocketClient from '../../../../../socket'
 
-const ChatList = ({ chatData, members, ownerID }) => {
-  const getItemType = (senderID) => {
-    return senderID === ownerID ? CHAT_ITEM_TYPE.OWNER_MESSAGE : CHAT_ITEM_TYPE.USER_MESSAGE
-  }
-  const ChatItem = ({ item, index }) => {
-    const chatAvatar = members?.get(item.senderID)?.avatar
-    const { senderID, message, type } = item
-    const time = item.createdAt
-    const itemType = getItemType(senderID)
-    if (item.type === MESSAGE_TYPE.NOTIFY) {
-      console.log('notify message: ', item.message)
-      return (<Text style={{textAlign:'center',fontWeight: '400', fontSize:13}}>{item.message}</Text>)
-    }
-    if (index === chatData.length - 1) {
-      //first message => having avatar, time
-      return (
-        <SingleMessage messageTime={time} message={message} chatAvatar={chatAvatar} time={time} itemType={itemType} messageType={type} />
-      )
-    }
-    // multi message from anyone => having avatar, not time
-    else if (item.senderID === chatData?.at(index + 1)?.senderID) {
-      return <SingleMessage messageTime={time} itemType={itemType} messageType={type} message={item.message} />
-    } else {
-      // single message or first chat on multing from anyone => having avatar & time
-      const beforeTime = chatData?.at(index + 1).createdAt || Date.now().toLocaleString()
-      const timeSpace = helper.DateTimeHelper.compareTwoDateByDate(time, beforeTime, 'hour')
-      return (
-        <SingleMessage
-          message={message}
-          time={timeSpace >= 1 && timeSpace}
-          messageTime={time}
-          chatAvatar={chatAvatar}
-          itemType={itemType}
-          messageType={type}
-          key={item._id}
-        />
-      )
-    }
-  }
+const ChatList = React.memo(({ conventionID, ownerID }) => {
+  console.log('data in chatlist: ', conventionID, ' ', ownerID)
+  const [chatData, setChatData] = useState([])
+  const [members, setMembers] = useState(new Map())
+  useEffect(() => {
+    API.getConventionByIdAPI(conventionID).then((data) => {
+      setChatData(data.data.reverse() ?? [])
+      setMembers(() => {
+        const arrMap = new Map()
+        data.members.forEach((item) => arrMap.set(item._id, item))
+        console.log('arrMap: ', arrMap)
+        return arrMap
+      })
+    })
+  }, [conventionID])
+
+  useEffect(() => {
+    SocketClient.socket.on('convention', (value) => {
+      console.log('on convention: ', value)
+      setChatData((pre) => {
+        const { _id, senderID, message, type, createdAt, updatedAt } = value
+        const newData = { _id, senderID, message, type, createdAt, updatedAt }
+        return [newData, ...pre]
+      })
+    })
+  }, [])
 
   return (
     <FlatList
-      style={styles.chatFlatlistContainer}
+      style={{ flex: 1, marginLeft: 8, marginRight: 8 }}
       inverted
       initialNumToRender={10}
-      // data={chatData.filter(item => item.type === 'TEXT')}
+      maxToRenderPerBatch={10}
       data={chatData}
+      keyExtractor={(item) => item._id}
       ListFooterComponent={<SpaceComponent height={64} />}
       ListHeaderComponent={<SpaceComponent height={32} />}
       ItemSeparatorComponent={<SpaceComponent height={4} />}
-      renderItem={({ item, index }) => <ChatItem key={'chatlist item' + index} item={item} index={index} />}
+      renderItem={React.useCallback(({ item, index }) => (
+        <ChatItem
+          members={members}
+          beforeItem={chatData?.at(index + 1)}
+          ownerID={ownerID}
+          item={item}
+          key={item._id + item.createdAt}
+        />
+      ))}
+
+      // renderItem={React.useCallback(({ item, index }) => {
+      //   console.log('render item at: ', index)
+      //   return (
+      //     <Text key={item._id} id={item._id}>
+      //       {item.message}
+      //     </Text>
+      //   )
+      // })
+      // }
     />
   )
-}
+})
 
 export default ChatList

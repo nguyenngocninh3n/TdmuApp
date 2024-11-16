@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from 'react-native'
 
-const RowComponent = ({ children, style, justify, alignItems, onPress }) => {
+const RowComponent = ({ children, style, justify, alignItems, onPress, onLongPress }) => {
   const defaultValue = {
     onPress: () => {},
     styles: {
@@ -13,7 +13,7 @@ const RowComponent = ({ children, style, justify, alignItems, onPress }) => {
   const customStyles = [defaultValue.styles, style]
 
   return onPress ? (
-    <TouchableOpacity onPress={onPress} style={customStyles}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={customStyles}>
       {children}
     </TouchableOpacity>
   ) : (

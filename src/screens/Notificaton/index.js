@@ -2,11 +2,9 @@ import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { API } from '../../api'
 import { OpacityButtton } from '../../components/ButtonComponent'
-import PushNotification from 'react-native-push-notification'
 import { PermissionsAndroid } from 'react-native'
 import SocketClient from '../../socket'
 import { useCustomContext } from '../../store'
-import ImageCropPicker from 'react-native-image-crop-picker'
 
 const NotificationScreen = ({ navigation }) => {
   const [users, setUsers] = useState([])
@@ -35,59 +33,11 @@ const NotificationScreen = ({ navigation }) => {
     const result = PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS')
   }, [])
 
-  useEffect(() => {
-    const a = []
-
-    const handleA = async (b) => {
-      console.log('start b: ', b)
-      fetch('https://jsonplaceholder.typicode.com/todos/1')
-        .then((res) => {
-          return res
-        })
-        .then((value) => {
-          console.log('push 1')
-          b.push(1)
-        })
-      fetch('https://jsonplaceholder.typicode.com/todos/1')
-        .then((res) => res)
-        .then((value) => {
-          console.log('push 2')
-          b.push(2)
-        })
-      fetch('https://jsonplaceholder.typicode.com/todos/1')
-        .then((res) => res)
-        .then((value) => {
-          console.log('push 3')
-          b.push(3)
-        })
-
-      console.log('end b: ', b)
-    }
-
-    const handleC = async (c) => {
-      console.log('start c: ', c)
-      await handleA(c)
-      console.log('end c: ', c)
-    }
-
-    handleC(a)
-  }, [])
-
   const handleUserProfile = (id) => {
     console.log('id: ', id)
     navigation.navigate('ProfileScreen', { userID: id })
   }
 
-  const handleOpenLibrary = () => {
-    ImageCropPicker.openPicker({
-      width: 300,
-      height: 400,
-      multiple: true,
-      mediaType: 'any'
-    }).then((image) => {
-      image.forEach((item) => console.log(item))
-    })
-  }
 
   return (
     <View>
