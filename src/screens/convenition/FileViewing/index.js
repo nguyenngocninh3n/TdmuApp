@@ -7,6 +7,7 @@ import Video from 'react-native-video'
 import EnhancedImageViewing from 'react-native-image-viewing'
 import ImagePressable from '../../../components/ImagePressable'
 import VideoComponent from '../../../components/VideoComponent'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const FlatlistImage = ({ data }) => {
   const [imageIndex, setImageIndex] = useState(0)
@@ -82,15 +83,11 @@ const FileViewing = ({ navigation, route }) => {
 
   useEffect(() => {
     if (active === 'image' && !images?.length) {
-      console.log('into image')
       API.getConventionFilesByID(conventionID, 'image').then((data) => {
-        console.log('data in image: ', data)
         setImages(data)
       })
     } else if (active === 'video' && !videos?.length) {
-      console.log('into video')
       API.getConventionFilesByID(conventionID, 'video').then((data) => {
-        console.log('data in video: ', data)
         setVideos(data)
       })
     }
@@ -98,7 +95,8 @@ const FileViewing = ({ navigation, route }) => {
 
   return (
     <View>
-      <SpaceComponent height={34} />
+      <GoBackComponent marginLeft={16} />
+      <SpaceComponent height={16} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
         <OpacityButtton
           style={active === 'image' ? styles.active : styles.inactive}

@@ -38,7 +38,7 @@ const MainNavigation = () => {
           name={item.name}
           component={item.component}
           key={item.name}
-          options={{ tabBarShowLabel: false, tabBarIcon: item.icon }}
+          options={{ tabBarActiveTintColor: '#005AFF', tabBarShowLabel: false, tabBarIcon: item.icon }}
         />
       ))}
     </Tab.Navigator>

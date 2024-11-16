@@ -7,17 +7,17 @@ const TabData = [
   {
     name: 'HomeScreen',
     component: HomeScreen,
-    icon: () => <AntDesign name="home" size={24} />
+    icon: ({ focused, color, size }) => <AntDesign name="home" focused={focused} color={color ?? '#ccc'} size={24} />
   },
   {
     name: 'OwnerProfile',
     component: OwnerProfile,
-    icon: () => <AntDesign name="user" size={24} />
+    icon: ({ focused, color, size }) => <AntDesign name="user" focused={focused} color={color ?? '#ccc'} size={24} />
   },
   {
     name: 'NotificationScreen',
     component: NotificationScreen,
-    icon: () => <AntDesign name="tablet1" size={24} />
+    icon: ({ focused, color, size }) => <AntDesign name="tablet1" focused={focused} color={color ?? '#ccc'} size={24} />
   }
 ]
 

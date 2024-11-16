@@ -6,6 +6,7 @@ import RowComponent from '../../../components/RowComponent'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { API } from '../../../api'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const DetailScreen = ({ navigation, route }) => {
   const { conventionID, name, avatar, members, chatData, type, ownerID } = route.params
@@ -37,12 +38,16 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const handleClickProfile = () => {
-    navigation.navigate('ProfileScreen', { userID: Object.values(members).filter(item => item._id !== ownerID).at(0)._id })
+    navigation.navigate('ProfileScreen', {
+      userID: Object.values(members)
+        .filter((item) => item._id !== ownerID)
+        .at(0)._id
+    })
   }
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <SpaceComponent height={48} />
+      <GoBackComponent />
       <View style={{ alignItems: 'center' }}>
         <AvatarComponent source={API.getFileUrl(avatar)} size={140} />
         <SpaceComponent height={8} />

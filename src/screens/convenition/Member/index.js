@@ -4,6 +4,7 @@ import AvatarComponent from '../../../components/AvatarComponent'
 import SpaceComponent from '../../../components/SpaceComponent'
 import RowComponent from '../../../components/RowComponent'
 import { API } from '../../../api'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const MemberScreen = ({ navigation, route }) => {
   const members = route.params.members
@@ -14,7 +15,9 @@ const MemberScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <SpaceComponent height={50} />
+      <GoBackComponent />
+      <SpaceComponent height={32} />
+      <Text style={{textAlign:'center', fontWeight:'500', fontSize:18, color: 'blue', marginBottom:16}}>Danh sách thành viên</Text>
       {members.map((item, index) => (
         <RowComponent alignItems key={index} style={{ marginBottom: 16 }}>
           <AvatarComponent size={48} source={API.getFileUrl(item.avatar)} />

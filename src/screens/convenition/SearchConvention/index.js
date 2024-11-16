@@ -8,6 +8,8 @@ import { OpacityButtton } from '../../../components/ButtonComponent'
 import AvatarComponent from '../../../components/AvatarComponent'
 import { API } from '../../../api'
 import { helper } from '../../../utils/helpers'
+import GoBackComponent from '../../../components/GoBackComponent'
+import GoBackIcon from '../../../components/GoBackComponent/GoBackIcon'
 
 const SearchItem = ({ memberMap, item, index, onPress }) => {
   return (
@@ -68,6 +70,8 @@ const SearchConventionScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <SpaceComponent height={8} />
       <RowComponent alignItems style={styles.searchInputContainer}>
+        <GoBackIcon color={'blue'} />
+        <SpaceComponent width={8} />
         <TextInput
           placeholder="Nhập nội dung tìm kiếm..."
           value={searchResult}

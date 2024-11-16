@@ -7,6 +7,7 @@ import { API } from '../../../api'
 import { useCustomContext } from '../../../store'
 import { MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import { OpacityButtton } from '../../../components/ButtonComponent'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
   console.log('aka: ', aka)
@@ -128,7 +129,8 @@ const AkaScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <SpaceComponent height={50} />
+      <GoBackComponent />
+      <SpaceComponent height={24} />
       {memberData.map((item, index) => (
         <RowComponent
           onPress={() => handleEditAka(item)}

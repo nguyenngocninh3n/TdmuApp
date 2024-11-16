@@ -8,6 +8,7 @@ import ImageLibrary from '../../../components/ImageLibrary'
 import { API } from '../../../api'
 import { useCustomContext } from '../../../store'
 import { MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const BackgroundConvention = ({ navigation, route }) => {
   const { conventionID } = route.params
@@ -19,14 +20,12 @@ const BackgroundConvention = ({ navigation, route }) => {
     setImageViewState(true)
   }
   const handleChoseImage = (data) => {
-    console.log('chosen image: ', data)
     setUpdated(true)
     setAvatar(data.at(0).uri)
   }
 
   const handleUpdate = async () => {
     const base64 = await RNFS.readFile(avatar, 'base64')
-    console.log('base 64', base64.length)
     const data = {
       senderID: state._id,
       type: MESSAGE_TYPE.NOTIFY,
@@ -44,7 +43,8 @@ const BackgroundConvention = ({ navigation, route }) => {
 
   return (
     <View style={{ position: 'relative', height: '100%' }}>
-      <SpaceComponent height={96} />
+      <GoBackComponent marginLeft={8} />
+      <SpaceComponent height={80} />
       <View style={{ alignItems: 'center' }}>
         <AvatarComponent
           onPress={handlePressAvatar}
