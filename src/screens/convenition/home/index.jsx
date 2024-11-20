@@ -9,14 +9,16 @@ const SearchComponent = ({ navigation }) => {
     navigation.navigate('SearchConventionScreen')
   }
 
+  const handleClickCreateGroup = () => navigation.navigate('CreateGroupScreen')
+
   return (
     <RowComponent alignItems style={styles.searchContainer}>
       <RowComponent onPress={handleClickSearch} style={styles.searchInput}>
-        <TextInput editable={false} style={styles.textInput} placeholder="type here..." />
+        <TextInput editable={false} style={styles.textInput} placeholder="Tìm kiếm..." />
         <MaterialIcons name="search" size={24} />
       </RowComponent>
       <SpaceComponent width={16} />
-      <MaterialIcons name="group-add" size={32} color={'blue'} />
+      <MaterialIcons onPress={handleClickCreateGroup} name="group-add" size={32} />
     </RowComponent>
   )
 }
@@ -26,7 +28,7 @@ const ConvenitionScreen = ({ navigation }) => {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <SpaceComponent height={16} />
       <View>
-        <SearchComponent navigation={navigation} />
+        {/* <SearchComponent navigation={navigation} /> */}
         <SpaceComponent height={24} />
       </View>
       <ConventionNavigator />
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 0,
     margin: 0,
-    paddingLeft: 8
+    paddingHorizontal:8
   },
 
   textInput: {

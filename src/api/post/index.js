@@ -16,12 +16,17 @@ const storePostAPI = async (data) => {
   return response.data
 }
 
+
 const editPostAPI = async (postID, data) => {
   const response = await axios.put(`${SERVER_POST}/post/${postID}/edit`, data)
   return response.data
 }
 
-const deletedPostAPI = async (postID) => {
+const trashPostAPI = async (postID) => {
+  const response = await axios.put(`${SERVER_POST}/post/${postID}/trash`)
+  return response.data
+}
+const deletePostAPI = async (postID) => {
   const response = await axios.delete(`${SERVER_POST}/post/${postAPI}/delete`)
   return response.data
 }
@@ -36,7 +41,8 @@ const postAPI = {
   getUserPostsAPI,
   storePostAPI,
   editPostAPI,
-  deletedPostAPI,
+  trashPostAPI,
+  deletePostAPI,
   sharePostAPI
 }
 

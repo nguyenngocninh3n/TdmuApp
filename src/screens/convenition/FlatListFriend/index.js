@@ -6,6 +6,7 @@ import RowComponent from '../../../components/RowComponent'
 import AvatarComponent from '../../../components/AvatarComponent'
 import { helper } from '../../../utils/helpers'
 import { useCustomContext } from '../../../store'
+import SocketClient from '../../../socket'
 
 const FriendItem = ({ _id, onPress }) => {
   const [data, setData] = useState({})
@@ -14,6 +15,15 @@ const FriendItem = ({ _id, onPress }) => {
       if (value) {
         setData(value)
       }
+    })
+
+    SocketClient.onFriendActive((data) => {
+      setData((pre) => {
+        if(pre._id === data.userID) {
+          return ({ ...pre, active: data.active, updatedAt: data.updatedAt })
+        }
+        return pre
+      })
     })
   }, [])
 
@@ -24,11 +34,11 @@ const FriendItem = ({ _id, onPress }) => {
       <AvatarComponent source={API.getFileUrl(data?.avatar)} />
       <SpaceComponent width={8} />
       <View>
-        <Text style={{ fontWeight: '500', fontSize: 16 }}>{data?.userName}</Text>
+        <Text style={{ fontWeight: '500', fontSize: 17 }}>{data?.userName}</Text>
         <SpaceComponent height={4} />
         <RowComponent alignItems>
-          <SpaceComponent width={16} />
-          <Text style={{ fontSize: 16, fontWeight: '400', color: data?.active ? 'red' : '#aaa' }}>
+          <SpaceComponent width={8} />
+          <Text style={{ fontSize: 15, fontWeight: '400', color: data?.active ? 'red' : '#aaa' }}>
             {data?.active
               ? 'Đang hoạt động'
               : helper.DateTimeHelper.displayActiveTimeFromDate(data?.updatedAt)}{' '}
@@ -46,10 +56,15 @@ const FlatListFriend = ({ navigation }) => {
   useEffect(() => {
     API.getListFriend({ userID: state._id }).then((data) => {
       setFriendData(data.data ?? [])
+      SocketClient.emitConventionJoinRooms(data.data.map((item) => 'friend_' + item._id))
     })
   }, [])
 
-  const handleClickFriendItem = async (userID) => navigation.navigate('ChattingScreen', { userID, conventionID: await API.getConventionID(state._id, userID) })
+  const handleClickFriendItem = async (userID) =>
+    navigation.navigate('ChattingScreen', {
+      userID,
+      conventionID: await API.getConventionID(state._id, userID)
+    })
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, backgroundColor: '#fff' }}>
       <FlatList

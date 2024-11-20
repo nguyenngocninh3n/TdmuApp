@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MESSAGE_TYPE, SERVER_POST } from '../../utils/Constants'
+import { MESSAGE_ACTION, MESSAGE_TYPE, RESPONSE_STATUS, SERVER_POST } from '../../utils/Constants'
 import SocketClient from '../../socket'
 const getConventionID = async (ownerID, userID) => {
   const conventionID = await axios.get(
@@ -22,8 +22,7 @@ const getConventionByIdAPI = async (conventionId) => {
 
 const sendMessageAPI = async ({ conventionID, data, senderName, senderAvatar }) => {
   const response = await axios.post(`${SERVER_POST}/convention/${conventionID}`, data)
-  console.log('response sendMessageAPI: ', response.data)
-  const customData = { ...response.data, senderName, senderAvatar }
+  const customData = { ...response.data, senderName, senderAvatar, notify: response.data.notify || data.notify, action: MESSAGE_ACTION.ADD }
   SocketClient.emitConvention({ conventionID, ...customData })
   return response.data
 }
@@ -45,9 +44,26 @@ const createConventionAPI = async ({ data, senderName, senderAvatar }) => {
   })
   return response.data
 }
+
+const createGroupConvention = async data => {
+  const response = await axios.post(`${SERVER_POST}/convention/group/store`, data )
+  return response.data
+}
+
 const getOwnerConventions = async (ownerID) => {
   const response = await axios.get(`${SERVER_POST}/convention/owner/${ownerID}`)
   return response.data
+}
+
+const updateMessage = async (conventionID, messageID, data) => {
+  const response = await axios.post(
+    `${SERVER_POST}/convention/${conventionID}/message/${messageID}`,
+    { data }
+  )
+  if (response.data === RESPONSE_STATUS.SUCCESS) {
+    const customData = { conventionID, messageID, action: data.type, message:data.message }
+    SocketClient.emitConvention(customData)
+  }
 }
 
 
@@ -57,7 +73,9 @@ const ConventionAPI = {
   getConventionByIdAPI,
   sendMessageAPI,
   createConventionAPI,
-  getOwnerConventions
+  createGroupConvention,
+  getOwnerConventions,
+  updateMessage
 }
 
 export default ConventionAPI

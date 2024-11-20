@@ -2,14 +2,14 @@ import { io } from 'socket.io-client'
 import { MESSAGE_TYPE, NOTIFICATION_TYPE, SERVER_POST } from '../utils/Constants'
 import { API } from '../api'
 import { startLocalNotification } from '../notification'
+import user from '../store/reducer'
 const socket = io(SERVER_POST)
 function runSocketClient(userID, navigation) {
   // socket = io(SERVER_POST, { query: { userID } })
 
   socket.emit('connection', { data: { userID: userID } })
-  socket.on('connect', ()=>console.log('client connect'))
-  socket.on('disconnect', ()=>console.log('client disconnect'))
   onDisconnecting(userID)
+  emitUserJoinRoom('friend_' + userID)
   emitConventionJoinRooms(userID)
   emitUserJoinRoom(userID)
   onConventionStored()
@@ -31,6 +31,7 @@ function runSocketClient(userID, navigation) {
         messageCustom = message
     }
     startLocalNotification({
+      ownerID:userID,
       conventionID: conventionID,
       title: senderName,
       senderAvatar: senderAvatar,
@@ -47,6 +48,12 @@ function runSocketClient(userID, navigation) {
 
 async function get(userID) {
   const data = await API.getUserByIdAPI({ uid: userID })
+}
+
+async function onFriendActive(callBack) {
+  socket.on('friendActive', data => {
+    callBack(data)
+  })
 }
 
 async function onDisconnecting(userID) {
@@ -68,7 +75,6 @@ async function emitConventionJoinRoom(conventionID) {
 
 function onConvention(callback) {
   socket.on('convention', function (data) {
-    console.log('convention listenner in client: ', data)
     callback(data)
   })
 }
@@ -113,7 +119,8 @@ const SocketClient = {
   onConventions,
   emitConvention,
   onConventionStored,
-  emitConventionStored
+  emitConventionStored,
+  onFriendActive
 }
 
 export default SocketClient

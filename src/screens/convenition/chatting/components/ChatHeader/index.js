@@ -5,9 +5,10 @@ import SpaceComponent from '../../../../../components/SpaceComponent'
 import { OpacityButtton } from '../../../../../components/ButtonComponent'
 import Feather from 'react-native-vector-icons/Feather'
 import { navigationRef } from '../../../../../store'
+import { API } from '../../../../../api'
 
 const ChatHeader = ({ name, avatar }) => {
-  const handleGoBack = () => navigationRef.goBack()
+  const handleGoBack = () => navigationRef.navigate('ConventionScreen')
 
   return (
     <RowComponent alignItems>
@@ -16,7 +17,7 @@ const ChatHeader = ({ name, avatar }) => {
         children={<Feather name="arrow-left-circle" size={26} color={'blue'} />}
       />
       <SpaceComponent width={8} />
-      <AvatarComponent style={{ borderWidth: 1, borderColor: '#ccf' }} source={avatar} size={36} />
+      <AvatarComponent style={{ borderWidth: 1, borderColor: '#ccf' }} source={API.getFileUrl(avatar)} size={36} />
       <SpaceComponent width={8} />
       <OpacityButtton
         textStyle={{ fontWeight: '500', fontSize: 16 }}
@@ -27,4 +28,4 @@ const ChatHeader = ({ name, avatar }) => {
   )
 }
 
-export default React.memo(ChatHeader)
+export default ChatHeader

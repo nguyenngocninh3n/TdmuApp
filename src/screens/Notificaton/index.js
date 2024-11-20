@@ -5,6 +5,7 @@ import { OpacityButtton } from '../../components/ButtonComponent'
 import { PermissionsAndroid } from 'react-native'
 import SocketClient from '../../socket'
 import { useCustomContext } from '../../store'
+import { configureBackgroundFetch } from '../../socket/backgroundfetch'
 
 const NotificationScreen = ({ navigation }) => {
   const [users, setUsers] = useState([])
@@ -28,13 +29,10 @@ const NotificationScreen = ({ navigation }) => {
     SocketClient.runSocketClient(state._id, navigation)
     doSomeThing()
     requestPermission()
-
-    // PushNotification.deleteChannel('123')
     const result = PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS')
   }, [])
 
   const handleUserProfile = (id) => {
-    console.log('id: ', id)
     navigation.navigate('ProfileScreen', { userID: id })
   }
 

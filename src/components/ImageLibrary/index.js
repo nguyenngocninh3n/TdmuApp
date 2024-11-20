@@ -27,7 +27,6 @@ const openImage = async ({ callback, limit }) => {
             timestamp: item.timestamp
           })
         }
-        console.log(imageArr)
         callback(imageArr.sort((a, b) => a.timestamp < b.timestamp))
       }
     } else {
@@ -60,7 +59,6 @@ const openVideo = async ({ callback, limit }) => {
             timestamp: item.timestamp
           })
         }
-        console.log(imageArr)
         callback(imageArr.sort((a, b) => a.timestamp < b.timestamp))
       }
     } else {
@@ -86,10 +84,10 @@ const openMixed = async ({ callback, limit }) => {
           imageArr.push({
             name: item.fileName,
             uri: item.uri,
+            customPath:  item.uri.replace('file://', ''),
             type: item.type
           })
         }
-        console.log(imageArr)
         callback(imageArr.sort((a, b) => a.timestamp < b.timestamp))
       }
     } else {

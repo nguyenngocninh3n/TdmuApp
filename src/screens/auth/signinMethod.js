@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { API } from '../../api'
+import SocketClient from '../../socket'
 const configGoogleMethod = async () => {
   GoogleSignin.configure({
     webClientId: '77194624099-c6bfhn2iencledrpov9b8169nfl2f157.apps.googleusercontent.com'
@@ -8,6 +9,7 @@ const configGoogleMethod = async () => {
 }
 
 const signOutWithGoogle = async () => {
+  SocketClient.socket.emit('disconnection')
   await configGoogleMethod()
   GoogleSignin.signOut()
     .then((result) => {
@@ -36,7 +38,7 @@ async function signInWithGoogle() {
   return await auth()
     .signInWithCredential(googleCredential)
     .then(async (user) => {
-      const userData = { ...user.additionalUserInfo.profile, _id: user.additionalUserInfo.profile.sub }
+      const userData = { ...user.additionalUserInfo.profile, _id: user.user.uid }
       const newUser = await API.loginAPI({ data: userData })
       return newUser
     })

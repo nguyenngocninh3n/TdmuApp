@@ -36,7 +36,6 @@ const getYearFromTimeStamp = (timestamp) => new Date(timestamp).getFullYear()
 
 const displayActiveTimeFromDate = (date) => {
   const timestamp = getNowSubDateByDate(date)
-  console.log('timestamp: ', parseTimeStampToCustomType(timestamp, 'hour'))
   if (timestamp < timeCounter.HOUR) {
     return `Hoạt động ${parseTimeStampToCustomType(timestamp, 'minute').toFixed(0)} phút trước`
   } else if (timestamp < timeCounter.DAY) {
@@ -45,7 +44,6 @@ const displayActiveTimeFromDate = (date) => {
     return 'Hoạt động hơn 1 ngày trước'
   }
 }
-
 
 const displayDayMonthFromDate = (date) =>
   getDateFromDate(date) + ', tháng ' + getMonthFromDate(date)
@@ -67,14 +65,20 @@ const displayDayMonthYearFromTimeStamp = (timestamp) => {
 
 const displayTimeDescendingFromDate = (date) => {
   const nowSubcurrentResult = getNowSubDateByDate(date)
+  const hour = getHourFromDate(date)
+  const minute = getMinuteFromDate(date)
+  const customTime = {
+    hour: hour < 10 ? '0' + hour : hour,
+    minute: minute < 10 ? '0' + minute : minute
+  }
   if (nowSubcurrentResult < timeCounter.DAY) {
-    return getHourFromDate(date) + ':' + getMinuteFromDate(date)
+    return customTime.hour + ':' + customTime.minute
   } else if (nowSubcurrentResult < timeCounter.WEEK) {
-    return getDayofWeekFromDate(date)
+    return getDayofWeekFromDate(date) + customTime.hour + ':' + customTime.minute
   } else if (nowSubcurrentResult < timeCounter.YEAR) {
-    return displayDayMonthFromDate(date)
+    return displayDayMonthFromDate(date) + customTime.hour + ':' + customTime.minute
   } else {
-    return displayDayMonthYearFromDate(date)
+    return displayDayMonthYearFromDate(date) + customTime.hour + ':' + customTime.minute
   }
 }
 const displayTimeDescendingFromTimeStamp = (timestamp) => {
@@ -140,14 +144,14 @@ const getNowSubDateByTimeStamp = (timestamp) => {
 
 // result:type = timestamp => type, with type = minute || hour || day
 const parseTimeStampToCustomType = (timestamp, type) => {
+  const customTime = Math.abs(timestamp)
   switch (type) {
     case 'hour':
-       console.log('timestamp in parse: ', timestamp)
-      return timestamp / (60 * 60 * 1000)
+      return customTime / (60 * 60 * 1000)
     case 'minute':
-      return timestamp / (60 * 1000)
+      return customTime / (60 * 1000)
     case 'day':
-      return timestamp / (24 * 60 * 60 * 1000)
+      return customTime / (24 * 60 * 60 * 1000)
     default:
       return 'error'
   }

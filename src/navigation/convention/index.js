@@ -12,7 +12,6 @@ const ConventionNavigator = () => {
     >
       <Tab.Screen
         options={{
-          // unmountOnBlur: true,
           tabBarActiveTintColor: '#005AFF',
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons name="chatbubbles" color={color ?? '#fff'} size={size ?? 24} />

@@ -19,4 +19,42 @@ const runBackgroundFetch = (socket) => {
   )
 }
 
-export { runBackgroundFetch }
+const configureBackgroundFetch = async (ownerID) => {
+  console.log('go to configure background fetch')
+  // Configure the background fetch task
+  await BackgroundFetch.configure(
+    {
+      minimumFetchInterval: 15, // Chạy mỗi 15 phút
+      stopOnTerminate: false, // Tiếp tục chạy khi ứng dụng bị đóng
+      startOnBoot: true // Khởi động lại khi thiết bị khởi động
+    },
+    async (taskId) => {
+      console.log('[BackgroundFetch] Task started:', taskId)
+      console.log('socket active is: ', SocketClient.socket.connected)
+      try {
+        if (!SocketClient.socket.connected) {
+          // Xử lý dữ liệu (ở đây chỉ log ra console)
+          SocketClient.runSocketClient(ownerID)
+
+          // Hoàn thành tác vụ
+          BackgroundFetch.finish(taskId)
+        }
+      } catch (error) {
+        console.error('[BackgroundFetch] Fetch failed:', error)
+        BackgroundFetch.finish(taskId)
+      }
+    },
+    (error) => {
+      console.error('[BackgroundFetch] Failed to configure:', error)
+    }
+  )
+
+  // Đăng ký xử lý khi ứng dụng bị terminate
+  BackgroundFetch.registerHeadlessTask(async (taskId) => {
+    console.log('app killed: ')
+    SocketClient.runSocketClient(ownerID)
+    BackgroundFetch.finish(taskId)
+  })
+}
+
+export { runBackgroundFetch, configureBackgroundFetch }

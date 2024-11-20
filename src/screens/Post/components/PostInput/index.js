@@ -1,24 +1,31 @@
-import { StyleSheet, TextInput } from 'react-native'
-import React, { forwardRef, useState } from 'react'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { forwardRef, useEffect, useState } from 'react'
 
 const PostInput = forwardRef(function (props, ref) {
-  const [value, setValue] = useState(ref.current.value)
+  const [inputValue, setInputValue] = useState(props.value)
+  useEffect(() => {
+    setInputValue(props.value || '')
+    ref.current.value = props.value
+  }, [props.value])
+
   const handleTextChange = (newValue) => {
-    setValue(newValue)
+    console.log('new value: ', newValue)
+    setInputValue(newValue)
     ref.current.value = newValue
   }
   return (
-    <TextInput
-      ref={ref}
-      style={styles.textInput}
-      onChangeText={handleTextChange}
-      focusable={true}
-      textAlignVertical="top"
-      value={value}
-      autoFocus={true}
-      multiline={true}
-      placeholder="Ngày hôm nay của bạn thế nào?"
-    />
+    <View>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={handleTextChange}
+        focusable={true}
+        textAlignVertical="top"
+        value={inputValue}
+        autoFocus={true}
+        multiline={true}
+        placeholder="Ngày hôm nay của bạn thế nào?"
+      />
+    </View>
   )
 })
 

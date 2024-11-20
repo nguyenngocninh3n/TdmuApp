@@ -79,7 +79,6 @@ const UserBar = ({ navigation, ownerID, userID }) => {
 
   useEffect(() => {
     API.getStatusFriend({ ownerID, userID }).then((data) => {
-      console.log('status in user bar: ', data.status)
       setStatusFriend(data.status)
     })
   }, [])

@@ -7,8 +7,10 @@ import SpaceComponent from '../../../components/SpaceComponent'
 import ImageLibrary from '../../../components/ImageLibrary'
 import { API } from '../../../api'
 import { useCustomContext } from '../../../store'
-import { MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import GoBackComponent from '../../../components/GoBackComponent'
+import { Socket } from 'socket.io-client'
+import SocketClient from '../../../socket'
 
 const BackgroundConvention = ({ navigation, route }) => {
   const { conventionID } = route.params
@@ -30,15 +32,17 @@ const BackgroundConvention = ({ navigation, route }) => {
       senderID: state._id,
       type: MESSAGE_TYPE.NOTIFY,
       message: [base64],
-      customMessage: `${state.userName} đã thay đổi ảnh đại diện đoạn chat`,
-      MESSAGE_NOTIFY_TYPE : MESSAGE_NOTIFY_TYPE.CHANGE_AVATAR
+      customMessage: `${state.userName} đã thay đổi ảnh đại diện đoạn chat`
     }
     API.sendMessageAPI({
       conventionID,
       data: data,
       senderName: state.userName,
       senderAvatar: state.avatar
+    }).then(response => {
+      console.log('response: ', response)
     })
+    setUpdated(false)
   }
 
   return (

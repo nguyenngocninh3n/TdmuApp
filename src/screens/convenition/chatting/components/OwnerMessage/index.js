@@ -70,15 +70,15 @@ const OwnerMessage = ({ message, messageType, time, onPress }) => {
             flexDirection: 'row',
             justifyContent: 'flex-end',
             flexWrap: 'wrap',
-            maxWidth: '74%'
+            maxWidth: '74%',
           }}
         >
           {message.split(',').map((item, index) => (
             <VideoComponent
               key={'video' + index}
               source={getImage(item)}
-              width = {`${message.split(',').length < 3 ? 100 / message.split(',').length : 33}%` }
-              height={200}
+              width = {100}
+              height={100}
             />
           ))}
         </View>

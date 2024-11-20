@@ -84,8 +84,8 @@ const UserMessage = ({ message, avatar, time, messageType, onPress }) => {
             <VideoComponent
               key={'video' + index}
               source={getImage(item)}
-              width={`${message.split(',').length < 3 ? 72 / message.split(',').length : 24}%`}
-              height={200}
+              width = {100}
+              height={100}
             />
           ))}
         </View>

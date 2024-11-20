@@ -6,21 +6,9 @@ import GlobalStyle from '../../../assets/css/GlobalStyle'
 import Colors from '../../../utils/Colors'
 import OwnerBar from '../Components/OwnerBar'
 import { useCustomContext } from '../../../store'
-import { API } from '../../../api'
+
 import FlatListPost from '../../../components/FlatListPost'
 import SpaceComponent from '../../../components/SpaceComponent'
-
-const ListPost = ({ userID }) => {
-  const [postsData, setPostsData] = useState({})
-  useEffect(() => {
-    API.getUserPostsAPI(userID).then((data) => {
-      console.log('posts data: ', postsData)
-      setPostsData(data)
-    })
-  }, [])
-
-  return <FlatListPost data={postsData} />
-}
 
 const OwnerProfile = ({ navigation }) => {
   const [state, dispatch] = useCustomContext()
@@ -31,8 +19,8 @@ const OwnerProfile = ({ navigation }) => {
           <OwnerBar />
         </Header>
         <View style={styles.postContainer}>
-        <SpaceComponent height={32} />
-          <ListPost userID={state._id} />
+          <SpaceComponent height={32} />
+          <FlatListPost userID={state._id} ownerID={state._id} />
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -19,9 +19,22 @@ const ShortChatingComponent = ({ convention, navigation, ownerID }) => {
   const lastTime = helper.DateTimeHelper.displayTimeDescendingFromDate(lastChat.createdAt)
   const avatar = convention.avatar ? convention.avatar : privateUser.avatar
   const chatName =
-    convention.type === 'private'
-      ? privateUser.aka || privateUser.userName
-      : convention.name || membersMap.get(lastChat.senderID).avatar
+    convention.type === 'private' ? privateUser.aka || privateUser.userName : convention.name
+  const messageOwner = membersMap.get(lastChat.senderID).userName
+  var lastMessage = ''
+  switch (lastChat.type) {
+    case MESSAGE_TYPE.TEXT:
+      lastMessage = messageOwner + ': ' + lastChat.message; break
+    case MESSAGE_TYPE.NOTIFY:
+      lastMessage = lastChat.message; break
+    case MESSAGE_TYPE.IMAGE:
+    case MESSAGE_TYPE.VIDEO: {
+      lastMessage = messageOwner + ': ' + `đã gửi ${lastChat.message.split(',').length} ${lastChat.type.toLowerCase()}`
+      break
+    }
+    default:
+      lastMessage = lastChat.message
+  }
   return (
     <RowComponent
       onPress={() => navigation.navigate('ChattingScreen', { conventionID: convention._id })}
@@ -29,20 +42,13 @@ const ShortChatingComponent = ({ convention, navigation, ownerID }) => {
       <AvatarComponent source={API.getFileUrl(avatar)} />
       <SpaceComponent width={8} />
       <View>
-        <Text style={{ fontWeight: '500', fontSize: 16 }}>{chatName}</Text>
-        <SpaceComponent height={4} />
-        <RowComponent alignItems>
-          <Text style={{ fontWeight: '400', fontSize: 16 }}>
-            {lastChat.type === MESSAGE_TYPE.TEXT
-              ? lastChat.message
-              : lastChat.senderID === ownerID
-              ? `Bạn: đã gửi ${lastChat.message.split(',').length} ${lastChat.type.toLowerCase()}`
-              : `${membersMap.get(lastChat.senderID).userName}: đã gửi ${
-                  lastChat.message.split(',').length
-                } ${lastChat.type.toLowerCase()}`}
+        <Text style={{ fontWeight: '500', fontSize: 17 }}>{chatName}</Text>
+        <RowComponent >
+          <Text style={{fontWeight: '400', fontSize: 15}}>
+            {lastMessage.trim()}
           </Text>
           <SpaceComponent width={16} />
-          <Text style={{ fontSize: 16, fontWeight: '400' }}>{lastTime} </Text>
+          <Text style={{ fontSize: 15, fontWeight: '400' }}>{lastTime} </Text>
         </RowComponent>
       </View>
     </RowComponent>

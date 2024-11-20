@@ -7,9 +7,7 @@ import Colors from '../../../utils/Colors'
 import { API } from '../../../api'
 const UserProfile = ({ navigation, ownerID, userID }) => {
   const [user, setUser] = useState({})
-  console.log('user id in userprofile: ', userID)
   const getUser = async () => {
-    console.log('userID: ', userID)
     const data = await API.getUserByIdAPI({ uid: userID })
     if (data) {
       setUser(data)

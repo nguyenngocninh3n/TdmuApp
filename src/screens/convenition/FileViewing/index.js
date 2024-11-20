@@ -70,13 +70,11 @@ const FileViewing = ({ navigation, route }) => {
   const [videos, setVideos] = useState([])
   const handleClickImage = () => {
     if (active !== 'image') {
-      console.log('set active image')
       setActive('image')
     }
   }
   const handleClickVideo = () => {
     if (active !== 'video') {
-      console.log('set active video')
       setActive('video')
     }
   }

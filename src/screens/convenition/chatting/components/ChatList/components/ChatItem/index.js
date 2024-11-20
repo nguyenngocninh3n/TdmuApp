@@ -6,8 +6,8 @@ import VideoMessage from '../VideoMessage'
 import ImageMessage from '../ImageMessage'
 import TextMessage from '../TextMessage'
 
-const ChatItem = React.memo(({ item, index, members, ownerID, beforeItem }) => {
-  const boolCheckOwner = item.senderID === ownerID
+const ChatItem = React.memo(({ item, index, members, ownerID, beforeItem, onLongPress }) => {
+  const boolCheckOwner = item.senderID === ownerID ? true : false
   console.log('re-render chatitem: ', beforeItem?.message)
   var messageType = TextMessage
   switch (item.type) {
@@ -22,12 +22,23 @@ const ChatItem = React.memo(({ item, index, members, ownerID, beforeItem }) => {
       break
   }
   const config = {
+    _id: item._id,
+    senderID: item.senderID,
     style: boolCheckOwner ? {} : {},
-    avatar: boolCheckOwner ? members.get(item.senderID)?.avatar : '',
+    avatar: !boolCheckOwner ? members.get(item.senderID)?.avatar : '',
     messageType: messageType,
     owner: boolCheckOwner,
     message: item.message,
-    time: item.createdAt
+    time: item.createdAt,
+    detail: {
+      _id: item._id,
+      senderID: item.senderID,
+      name: members.get(item.senderID)?.userName,
+      avatar: item.avatar,
+      createdAt: item.createdAt,
+      message: item.message,
+      aka: !boolCheckOwner ? members.get(item.senderID)?.aka || members.get(item.senderID)?.userName : ''
+    }
   }
 
   const time = item.createdAt
@@ -40,34 +51,68 @@ const ChatItem = React.memo(({ item, index, members, ownerID, beforeItem }) => {
     //first message => having avatar, time
     return (
       <config.messageType
+        _id={config._id}
+        senderID={config.senderID}
         avatar={config.avatar}
         message={config.message}
         style={config.style}
         owner={config.owner}
         time={config.time}
+        onLongPress={onLongPress}
+        aka={config.detail.aka}
+        detail={config.detail}
       />
     )
-  } else {
-    // single message or first chat on multing from anyone => having avatar & time
+  } else if (item.senderID !== beforeItem.senderID) {
+    //single chat or first in multichat from 1 person
+    return (
+      <config.messageType
+        _id={config._id}
+        senderID={config.senderID}
+        message={config.message}
+        messageTime={config.time}
+        avatar={config.avatar}
+        owner={config.owner}
+        onLongPress={onLongPress}
+        detail={config.detail}
+        aka={config.detail.aka}
+
+        // style={config.style}
+      />
+    )
+  }
+  else
+  {
+    // console.log('single message')
+    // multichat => having avatar & time
     const beforeTime = beforeItem.createdAt
     const timeSpace = helper.DateTimeHelper.compareTwoDateByDate(time, beforeTime, 'hour')
 
     return timeSpace >= 1 ? (
       <config.messageType
+        _id={config._id}
+        senderID={config.senderID}
         message={config.message}
         time={config.time}
         messageTime={config.time}
         avatar={config.avatar}
+        aka={config.detail.aka}
         owner={config.owner}
+        onLongPress={onLongPress}
+        detail={config.detail}
         // style={config.style}
       />
     ) : (
       // multi message from anyone => having avatar, not time
       <config.messageType
+        _id={config._id}
+        senderID={config.senderID}
         message={config.message}
         style={config.style}
         owner={config.owner}
         messageTime={config.time}
+        onLongPress={onLongPress}
+        detail={config.detail}
       />
     )
   }

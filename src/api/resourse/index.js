@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { SERVER_POST } from '../../utils/Constants'
+import { MESSAGE_TYPE, POST_ATTACHMENT, SERVER_POST } from '../../utils/Constants'
 
 const getFile = async (uri) => {
   return (await axios.get(uri)).data
@@ -10,17 +10,23 @@ const getFileUrl = uri => {
 }
 
 const getConventionFilesByID = async (conventionID, type) => {
-  console.log('conventionID: ', conventionID, ' ', type)
   const requestString = `${SERVER_POST}/resource/convention/${conventionID}?fileType=${type}`
-  console.log('requeststr: ', requestString)
   const data = await axios.get(requestString)
-  console.log('data in getconveintiofile by id: ', data.data)
   return data.data
+}
+
+const convertPostItemAPI = (item) => {
+  const customData = {
+    type: item.type === MESSAGE_TYPE.IMAGE ? POST_ATTACHMENT.IMAGE : POST_ATTACHMENT.VIDEO,
+    uri: getFileUrl(item.source)
+  }
+  return customData
 }
 
 const ResourseAPI = {
   getFile,
   getFileUrl,
+  convertPostItemAPI,
   getConventionFilesByID
 }
 

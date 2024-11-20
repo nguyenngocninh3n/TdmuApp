@@ -9,7 +9,7 @@ import { API } from '../../../../api'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PostModal from '../../../../modals/PostModal'
 
-const PostHeader = ({ item, user, ownerID}) => {
+const PostHeader = ({ item, user, ownerID }) => {
   const [modalVisible, setModalVisible] = useState(false)
 
   const handleCloseModal = () => setModalVisible(false)

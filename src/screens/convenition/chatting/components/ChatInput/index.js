@@ -22,10 +22,8 @@ const ChatInput = ({ onPress }) => {
     const newData = []
     for (const item of pathArr) {
       const base64 = await RNFS.readFile(item, 'base64')
-      console.log('base 64', base64.length)
       newData.push(base64)
     }
-    console.log('message length in handle send image chat input: ', message.length)
     onPress(newData, MESSAGE_TYPE.IMAGE)
   }
   const handleSendvideo = async (data) => {
@@ -33,10 +31,8 @@ const ChatInput = ({ onPress }) => {
     const newData = []
     for (const item of pathArr) {
       const base64 = await RNFS.readFile(item, 'base64')
-      console.log('base 64', base64.length)
       newData.push(base64)
     }
-    console.log('message length in handle send video chat input: ', message.length)
     onPress(newData, MESSAGE_TYPE.VIDEO)
   }
 

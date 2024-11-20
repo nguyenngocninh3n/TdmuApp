@@ -1,16 +1,40 @@
 import { FlatList, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PostComponent from '../PostComponent'
+import { API } from '../../api'
+import PostItem from '../PostItem'
 
-const FlatListPost = ({ data, style }) => {
+const FlatListPost = ({ ownerID, userID }) => {
+  const [postsData, setPostsData] = useState({})
+  const [userData, setUserData] = useState({})
+  useEffect(() => {
+    API.getUserPostsAPI(userID).then((data) => {
+      setPostsData(data)
+    })
+
+    API.getUserByIdAPI({ uid: userID }).then((data) => {
+      setUserData(data)
+    })
+  }, [])
+
+  const handleRemovePost = (postID) => {
+    setPostsData(pre => {
+      const postIndex = [].findIndex(item => item._id === postID)
+      const preArr = [].slice(0, postIndex)
+      const nextArr = [].slice(postIndex)
+      return [...preArr, ...nextArr]
+    })
+  }
+
   return (
     <FlatList
       scrollEnabled={false}
-      style={style}
-      data={data.data}
-      ItemSeparatorComponent={<View style={{height:4, marginVertical:16, backgroundColor: '#ccc'}} />}
+      data={postsData.data}
+      ItemSeparatorComponent={
+        <View style={{ height: 4, marginVertical: 16, backgroundColor: '#ccc' }} />
+      }
       renderItem={({ item, index }) => (
-        <PostComponent name={data.userName} avatar={data.userAvatar} item={item} key={index} />
+        <PostItem userData={userData} ownerID={ownerID} item={item} key={index} />
       )}
     />
   )

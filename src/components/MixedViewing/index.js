@@ -5,6 +5,7 @@ import ImagePressable from '../ImagePressable'
 import VideoComponent from '../VideoComponent'
 
 const MixedViewing = ({ attachments, width, height }) => {
+  console.log('mixed viewing: ', attachments)
   const [imageViewState, setImageViewState] = useState(false)
   const [imageViewIndex, setImageViewIndex] = useState(0)
   const handleClickImage = (id) => {

@@ -11,7 +11,6 @@ const AvatarItem = ({ avatar, name }) => {
   )
 }
 const AvatarList = ({ data }) => {
-    console.log('data in avatar list: ', data)
   return (
     <FlatList
       data={data}

@@ -15,6 +15,9 @@ import AkaScreen from '../screens/convenition/AkaScreen'
 import MemberScreen from '../screens/convenition/Member'
 import SearchConventionScreen from '../screens/convenition/SearchConvention'
 import ConvenitionScreen from '../screens/convenition/home'
+import CreateGroup from '../screens/convenition/CreateGroup'
+import ConventionName from '../screens/convenition/ConventionName'
+import EditPost from '../screens/Post/EditPost'
 const Stack = createNativeStackNavigator()
 
 const Navigation = () => {
@@ -29,22 +32,30 @@ const Navigation = () => {
   return (
     <Provider>
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator screenOptions={{ headerShown: false }} >
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           {!user ? (
             <Stack.Screen name="auth" component={AuthNavigation} />
           ) : (
             <>
               <Stack.Screen name="main" component={MainNavigation} />
-              <Stack.Screen name="ChattingScreen" component={ChattingScreen} />
-              <Stack.Screen name="NewPostScreen" component={NewPost} />
+              {/* PROFILE */}
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+
+              {/* POST */}
+              <Stack.Screen name="EditPostScreen" component={EditPost} />
+              <Stack.Screen name="NewPostScreen" component={NewPost} />
+
+              {/* CONVENTION */}
+              <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
+              <Stack.Screen name="ChattingScreen" component={ChattingScreen} />
               <Stack.Screen name="DetailScreen" component={DetailScreen} />
               <Stack.Screen name="FileViewingScreen" component={FileViewing} />
               <Stack.Screen name="MemberScreen" component={MemberScreen} />
               <Stack.Screen name="AkaScreen" component={AkaScreen} />
+              <Stack.Screen name="ConventionNameScreen" component={ConventionName} />
               <Stack.Screen name="SearchConventionScreen" component={SearchConventionScreen} />
               <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
-              <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
+              <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
             </>
           )}
         </Stack.Navigator>

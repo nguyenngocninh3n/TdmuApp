@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import RowComponent from '../../../components/RowComponent'
 import Octicons from 'react-native-vector-icons/Octicons'
 import SpaceComponent from '../../../components/SpaceComponent'
@@ -17,14 +17,18 @@ const SearchItem = ({ memberMap, item, index, onPress }) => {
       <SpaceComponent height={16} />
       <RowComponent alignItems onPress={()=> onPress(item)}>
         <SpaceComponent width={8} />
-        <AvatarComponent size={32} source={API.getFileUrl(memberMap.get(item.senderID))} />
+        <AvatarComponent size={32} source={API.getFileUrl(memberMap.get(item.senderID).avatar)} />
         <SpaceComponent width={8} />
         <View>
-          <Text style={styles.resultMessage}>{item.message + index}</Text>
+          <Text style={{fontWeight: 'bold'}}>{memberMap.get(item.senderID).name}</Text>
           <SpaceComponent height={4} />
+          <RowComponent>
+          <Text style={styles.resultMessage}>{item.message}</Text>
+          <SpaceComponent width={16} />
           <Text style={styles.resultDateTime}>
             {helper.DateTimeHelper.formatDateWithString(item.createdAt)}
           </Text>
+          </RowComponent>
         </View>
       </RowComponent>
       <SpaceComponent height={16} />
@@ -33,19 +37,27 @@ const SearchItem = ({ memberMap, item, index, onPress }) => {
 }
 
 const SearchConventionScreen = ({ navigation, route }) => {
-  const { chatData, members, conventionID } = route.params
-
+  const {  members, conventionID } = route.params
+  const [chatData, setChatData] = useState([])
   const [searchResult, setSearchResult] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const [searchAction, setSearchAction] = useState(false)
   const [memberMap, setMemberMap] = useState(() => {
     const newMap = new Map()
-    members.forEach((item) => newMap.set(item._id, item.avatar))
+    members.forEach((item) => newMap.set(item._id, {name: item.userName, avatar: item.avatar}))
     return newMap
   })
 
+
+  useEffect(()=>{
+    API.getConventionByIdAPI(conventionID).then(data => {
+      if(data) {
+        setChatData(data.data.reverse())
+      }
+    })
+  }, [])
+
   const handleSearch = () => {
-    console.log('search Value: ', searchValue)
     const result = chatData
       .map((item, index) => ({ ...item, index: index }))
       .filter((item, index) => {

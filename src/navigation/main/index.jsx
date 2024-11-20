@@ -6,7 +6,7 @@ import { API } from '../../api'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { Text } from 'react-native'
 import Header from '../../components/Header'
-
+import auth from '@react-native-firebase/auth'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
 const MainNavigation = () => {
@@ -14,7 +14,7 @@ const MainNavigation = () => {
   useEffect(() => {
     ;(async () => {
       if (state == null) {
-        const id = GoogleSignin.getCurrentUser().user.id
+        const id = auth().currentUser.uid
         const user = await API.getUserByIdAPI({ uid: id })
         dispatch(actions.onLogin(user))
       }

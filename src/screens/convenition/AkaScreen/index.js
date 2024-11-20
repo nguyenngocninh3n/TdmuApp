@@ -5,12 +5,11 @@ import RowComponent from '../../../components/RowComponent'
 import AvatarComponent from '../../../components/AvatarComponent'
 import { API } from '../../../api'
 import { useCustomContext } from '../../../store'
-import { MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import { OpacityButtton } from '../../../components/ButtonComponent'
 import GoBackComponent from '../../../components/GoBackComponent'
 
 const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
-  console.log('aka: ', aka)
   const [inputValue, setInputValue] = useState('')
 
   const handleInputChange = (value) => setInputValue(value)
@@ -37,7 +36,7 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
         onClose(!modalVisible)
       }}
     >
-      <Pressable style={{ flex:1,}} onPress={handleCloseModal}>
+      <Pressable style={{ flex: 1 }} onPress={handleCloseModal}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Chỉnh sửa biệt danh</Text>
           <SpaceComponent height={16} />
@@ -76,7 +75,7 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
 }
 
 const AkaScreen = ({ navigation, route }) => {
-  const { conventionID, members } = route.params
+  const { conventionID, members, handleChangeAkaName } = route.params
   const [memberData, setMemberData] = useState(() => {
     let arr = []
     for (const item in members) {
@@ -99,7 +98,12 @@ const AkaScreen = ({ navigation, route }) => {
       type: MESSAGE_TYPE.NOTIFY,
       newState: value,
       userID: chosenMember._id,
-      MESSAGE_NOTIFY_TYPE: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+      notify: {
+        type: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+        action: MESSAGE_NOTIFY_STATUS.UPDATE,
+        changedID: chosenMember._id,
+        value: value
+      },
       customMessage: `${state.userName} đã đặt biệt danh cho ${chosenMember.userName} là ${value}`
     }
     API.sendMessageAPI({
@@ -107,6 +111,17 @@ const AkaScreen = ({ navigation, route }) => {
       data: data,
       senderName: state.userName,
       senderAvatar: state.avatar
+    })
+    setMemberData((pre) => {
+      return [
+        ...pre.map((item) => {
+          if (item._id === chosenMember._id) {
+            return { ...item, aka: value }
+          } else {
+            return item
+          }
+        })
+      ]
     })
   }
 
@@ -116,7 +131,11 @@ const AkaScreen = ({ navigation, route }) => {
       type: MESSAGE_TYPE.NOTIFY,
       newState: '',
       userID: chosenMember._id,
-      MESSAGE_NOTIFY_TYPE: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+      notify: {
+        type: MESSAGE_NOTIFY_TYPE.CHANGE_AKA,
+        action: MESSAGE_NOTIFY_STATUS.CLEAR,
+        changedID: chosenMember._id
+      },
       customMessage: `${state.userName} đã xóa biệt danh của ${chosenMember.userName}`
     }
     API.sendMessageAPI({
@@ -124,6 +143,15 @@ const AkaScreen = ({ navigation, route }) => {
       data: data,
       senderName: state.userName,
       senderAvatar: state.avatar
+    })
+    setMemberData((pre) => {
+      return [
+        ...pre.map((item) => {
+          if (item._id === chosenMember._id) {
+            return { ...item, aka: '' }
+          } else return item
+        })
+      ]
     })
   }
 

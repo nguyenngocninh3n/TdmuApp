@@ -5,7 +5,7 @@ const RowComponent = ({ children, style, justify, alignItems, onPress, onLongPre
     onPress: () => {},
     styles: {
       flexDirection: 'row',
-      alignItems: alignItems && 'center',
+      alignItems: 'center',
       justifyContent: justify && 'center'
     }
   }
