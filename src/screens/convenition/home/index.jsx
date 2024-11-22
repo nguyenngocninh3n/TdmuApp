@@ -28,7 +28,7 @@ const ConvenitionScreen = ({ navigation }) => {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <SpaceComponent height={16} />
       <View>
-        {/* <SearchComponent navigation={navigation} /> */}
+        <SearchComponent navigation={navigation} />
         <SpaceComponent height={24} />
       </View>
       <ConventionNavigator />

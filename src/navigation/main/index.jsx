@@ -27,6 +27,7 @@ const MainNavigation = () => {
         header: () => {
           return <Header />
         },
+        
         headerBackgroundContainerStyle: { backgroundColor: '#fff' },
         headerBackground: '#fff',
         headerStyle: { backgroundColor: '#fff' },

@@ -5,6 +5,7 @@ import Header from '../Components/Header'
 import UserBar from '../Components/UserBar'
 import Colors from '../../../utils/Colors'
 import { API } from '../../../api'
+import FlatListPost from '../../../components/FlatListPost'
 const UserProfile = ({ navigation, ownerID, userID }) => {
   const [user, setUser] = useState({})
   const getUser = async () => {
@@ -23,18 +24,7 @@ const UserProfile = ({ navigation, ownerID, userID }) => {
           <UserBar navigation={navigation} ownerID={ownerID} userID={userID} />
         </Header>
         <View style={styles.postContainer}>
-          {/* <FlatList
-                scrollEnabled={false}
-                data={PostData}
-                horizontal={false}
-                renderItem={({ item }) => (
-                  <View style={{ width: '100%', flex: 1 }} key={item.ownerID}>
-                    <PostHeader data={item} navigation={navigation} user={user} />
-                    <GetImage source={item.image} style={styles.postImg} />
-                    <PostFooter data={item} />
-                  </View>
-                )}
-              /> */}
+        <FlatListPost userID={userID} ownerID={ownerID} />
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -11,7 +11,7 @@ import { helper } from '../../../utils/helpers'
 import GoBackComponent from '../../../components/GoBackComponent'
 import GoBackIcon from '../../../components/GoBackComponent/GoBackIcon'
 
-const SearchItem = ({ memberMap, item, index, onPress }) => {
+const SearchItem = ({ memberMap, item, onPress }) => {
   return (
     <View style={styles.resultItem}>
       <SpaceComponent height={16} />

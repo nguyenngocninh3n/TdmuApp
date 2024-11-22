@@ -7,8 +7,7 @@ const ImagePressable = ({
   source,
   onPress,
   width,
-  height,
-  ...props
+  height
 }) => {
   return (
     <TouchableOpacity
@@ -16,7 +15,6 @@ const ImagePressable = ({
       style={{ width: width ?? 100, height: height ?? 100, marginHorizontal:2, marginVertical: 2, ...containerStyle }}
     >
       <Image
-        {...props}
         source={{ uri: source }}
         style={{ width: '100%', height: '100%', ...style }}
       />

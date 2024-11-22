@@ -6,7 +6,7 @@ import VideoMessage from '../VideoMessage'
 import ImageMessage from '../ImageMessage'
 import TextMessage from '../TextMessage'
 
-const ChatItem = React.memo(({ item, index, members, ownerID, beforeItem, onLongPress }) => {
+const ChatItem = React.memo(({ item, members, ownerID, beforeItem, onLongPress }) => {
   const boolCheckOwner = item.senderID === ownerID ? true : false
   console.log('re-render chatitem: ', beforeItem?.message)
   var messageType = TextMessage

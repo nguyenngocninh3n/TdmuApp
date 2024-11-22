@@ -8,13 +8,10 @@ const timeCounter = {
   YEAR: 1000 * 60 * 60 * 24 * 365
 }
 const getTimeStamp = (date) => Date.parse(date)
-const getDate = (timestamp) => new Date(timestamp)
 
-const getMinuteFromDate = (date) => new Date(date).getMinutes()
-const getMinuteFromTimeStamp = (timestamp) => new Date(timestamp).getMinutes()
-
-const getHourFromDate = (date) => new Date(date).getHours()
-const getHourFromTimeStamp = (timestamp) => new Date(timestamp).getHours()
+const parseTimestampToMinutes = timestamp => (timestamp / timeCounter.MINUTE)
+const parseTimestampToHours = timestamp => (timestamp / timeCounter.HOUR)
+const parseTimestampToDays = timestamp => timestamp / timeCounter.DAY
 
 const getDayofWeekFromDate = (date) => {
   const numOfDay = new Date(date).getDay()
@@ -64,21 +61,22 @@ const displayDayMonthYearFromTimeStamp = (timestamp) => {
 }
 
 const displayTimeDescendingFromDate = (date) => {
-  const nowSubcurrentResult = getNowSubDateByDate(date)
-  const hour = getHourFromDate(date)
-  const minute = getMinuteFromDate(date)
-  const customTime = {
-    hour: hour < 10 ? '0' + hour : hour,
-    minute: minute < 10 ? '0' + minute : minute
+  const now = Date.now()
+  const handleDate = Date.parse(date)
+  const nowSubcurrentResult = now - handleDate
+  const hour = parseTimestampToHours(nowSubcurrentResult)
+  const minute = parseTimestampToMinutes(nowSubcurrentResult)
+  if (nowSubcurrentResult < timeCounter.HOUR) {
+    return Math.ceil(minute) + ' phút'
   }
   if (nowSubcurrentResult < timeCounter.DAY) {
-    return customTime.hour + ':' + customTime.minute
+    return Math.floor(hour) + ' giờ'
   } else if (nowSubcurrentResult < timeCounter.WEEK) {
-    return getDayofWeekFromDate(date) + customTime.hour + ':' + customTime.minute
+    return Math.floor(parseTimestampToDays(nowSubcurrentResult)) + ' ngày'
   } else if (nowSubcurrentResult < timeCounter.YEAR) {
-    return displayDayMonthFromDate(date) + customTime.hour + ':' + customTime.minute
+    return formatDateWithString(date)
   } else {
-    return displayDayMonthYearFromDate(date) + customTime.hour + ':' + customTime.minute
+    return formatDateWithString(date)
   }
 }
 const displayTimeDescendingFromTimeStamp = (timestamp) => {

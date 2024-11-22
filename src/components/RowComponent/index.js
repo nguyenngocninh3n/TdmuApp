@@ -12,7 +12,7 @@ const RowComponent = ({ children, style, justify, alignItems, onPress, onLongPre
 
   const customStyles = [defaultValue.styles, style]
 
-  return onPress ? (
+  return onPress || onLongPress ? (
     <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={customStyles}>
       {children}
     </TouchableOpacity>

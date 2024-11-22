@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import ImageLibrary from '../../../../components/ImageLibrary'
 import MixedViewing from '../../../../components/MixedViewing'
@@ -12,44 +12,57 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import RNFS from 'react-native-fs'
 import { MESSAGE_TYPE, POST_ATTACHMENT } from '../../../../utils/Constants'
 import { navigationRef, useCustomContext } from '../../../../store'
+import DropDownRole from '../DropDownRole'
+import RowComponent from '../../../../components/RowComponent'
 
-const PostHandler = ({ value, files, onSubmit, editable }) => {
-  console.log('receive params in post handler: ', value, ' ', files)
+const PostHandler = ({ postData, files, onSubmit, editable }) => {
+  console.log('post handler re-render: ', postData.scope)
   const [state, dispatch] = useCustomContext()
   const [atttachments, setAttachments] = useState(files)
-  const postInputRef = useRef({ value: value })
-  //   const [updated, setUpdated] = useState([{ content: false }, { attachments: false }])
+  const [scopePost, setScopePost] = useState(postData.scope)
+  const postInputRef = useRef({ value: postData.content })
 
   useEffect(() => {
-    setAttachments(files)
+    if(files !== atttachments) {
+      setAttachments(files)
+    }
   }, [files])
+
+  useEffect(() => {
+      setScopePost(postData.scope)
+  }, [postData])
 
   const handlePost = async () => {
     const customAttachments = []
-    if (atttachments !== files) {
-      for (const item of atttachments) {
-        const data = await RNFS.readFile(item.customPath, 'base64')
-        customAttachments.push({
-          source: data,
-          type: item.type
-        })
+    if (atttachments) {
+      if (atttachments !== files) {
+        for (const item of atttachments) {
+          const data = await RNFS.readFile(item.customPath, 'base64')
+          customAttachments.push({
+            source: data,
+            type: item.type
+          })
+        }
+      } else {
+        customAttachments.push(...atttachments)
       }
-    } else {
-      console.log(atttachments.length)
-      customAttachments.push(...atttachments)
     }
-    console.log('customAtt length: ', customAttachments.length)
     if (editable) {
-      onSubmit(state._id, customAttachments, postInputRef.current.value)
+      console.log('scope post  edit: ', scopePost)
+      onSubmit(state._id, customAttachments, postInputRef.current.value, scopePost)
     } else {
-      onSubmit(state._id, customAttachments, postInputRef.current.value)
+      console.log('scope post not edit: ', scopePost)
+      onSubmit(state._id, customAttachments, postInputRef.current.value, scopePost)
     }
   }
 
-  const handleChosenFiles = (data) => {
+  const handleChosenFiles = useCallback((data) => {
     setAttachments(data)
-    // editable && setUpdated((pre) => [...pre, { atttachments: true }])
-  }
+  }, [])
+
+  const handleChangeScope = useCallback((newValue) => {
+    setScopePost(newValue)
+  }, [])
 
   return (
     <SafeAreaView style={GlobalStyle.container}>
@@ -64,10 +77,15 @@ const PostHandler = ({ value, files, onSubmit, editable }) => {
           textStyle={{ fontSize: 22, marginRight: 20, color: 'blue' }}
         />
       </View>
-      <View style={styles.inputContainer}>
+
+      <RowComponent style={styles.inputContainer}>
         <AvatarComponent source={API.getFileUrl(state.avatar)} />
-        <PostInput ref={postInputRef} value={value} />
-      </View>
+        <RowComponent>
+          <SpaceComponent width={8} />
+          <DropDownRole initValue={scopePost } callback={handleChangeScope} />
+        </RowComponent>
+      </RowComponent>
+      <PostInput ref={postInputRef} value={postData.content} />
       <View style={{ flexDirection: 'row-reverse' }}>
         <SpaceComponent width={16} />
         <ImageLibrary callback={handleChosenFiles} type={POST_ATTACHMENT.MIX} />
@@ -92,8 +110,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#d8D9DB'
   },
   inputContainer: {
-    margin: 20,
-    flexDirection: 'row'
+    margin: 20
   },
   avatar: {
     width: 48,

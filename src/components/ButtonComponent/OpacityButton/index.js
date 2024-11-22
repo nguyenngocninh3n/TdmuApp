@@ -1,7 +1,7 @@
 import { Text, TouchableHighlight, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-const OpacityButtton = ({ title, textSize, submit, width, height, padding, bgColor, margin, onPress, style, textColor, textStyle, children, ...props }) => {
+const OpacityButtton = ({ title, left, right, textSize, submit, width, height, padding, paddingHorizontal, bgColor, margin, onPress, style, textColor, textStyle, children }) => {
   const initValue = {
     onPress: () => {},
     textStyle: {
@@ -9,8 +9,8 @@ const OpacityButtton = ({ title, textSize, submit, width, height, padding, bgCol
       fontWeght: submit && '600',
       fontSize: textSize,
       paddingVertical: 4,
-      paddingHorizontal: 4,
-      textAlign: 'center',
+      paddingHorizontal: paddingHorizontal ?? 4,
+      textAlign: left ? 'left' : right ? 'right' : 'center',
       ...textStyle
     },
     style: {
@@ -19,8 +19,8 @@ const OpacityButtton = ({ title, textSize, submit, width, height, padding, bgCol
       padding: padding ?? 2,
       margin: margin,
       backgroundColor: bgColor,
-      justifyContent: 'center',
-      alignItems: 'center'
+      justifyContent:  'center',
+      alignItems: left ? 'left' : right ? 'right' : 'center'
     }
   }
   const localValue = {
@@ -30,7 +30,7 @@ const OpacityButtton = ({ title, textSize, submit, width, height, padding, bgCol
     children: children || <Text style={initValue.textStyle}>{title}</Text>
   }
   return (
-    <TouchableHighlight underlayColor={'#ddda'} {...props} onPress={localValue.onPress} style={localValue.style}>
+    <TouchableHighlight underlayColor={'#eee'} onPress={localValue.onPress} style={localValue.style}>
       {localValue.children}
     </TouchableHighlight>
   )

@@ -7,11 +7,13 @@ import { RESPONSE_STATUS } from '../../../utils/Constants'
 const NewPost = ({ navigation }) => {
   console.log('newpost re-render')
 
-  const handleSubmit = (ownerID, customAttachments, value) => {
+  const handleSubmit = (ownerID, customAttachments, value, scope) => {
+    console.log('scope: ', scope)
     const newPostData = {
       userID: ownerID,
       attachments: customAttachments,
-      content: value
+      content: value,
+      scope:scope
     }
     API.storePostAPI(newPostData).then((result) => {
       if (result === RESPONSE_STATUS.SUCCESS) {
@@ -23,7 +25,7 @@ const NewPost = ({ navigation }) => {
     })
   }
 
-  return <PostHandler onSubmit={handleSubmit} />
+  return <PostHandler onSubmit={handleSubmit} postData={{}} />
 }
 
 export default NewPost

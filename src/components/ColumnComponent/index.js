@@ -1,20 +1,25 @@
-import { TouchableOpacity, View } from 'react-native'
+import { Pressable, TouchableHighlight, TouchableOpacity, View } from 'react-native'
 
-const ColumnComponent = ({ children, style, onPress }) => {
+const ColumnComponent = ({ children, style, bgColor,padding, margin, onPress, onLongPress }) => {
+
   const defaultValue = {
     onPress: () => {},
     styles: {
       flexDirection: 'column',
-      justifyContent:'space-between'
+      justifyContent:'space-between',
+      backgroundColor: bgColor,
+      padding: padding,
+      margin: margin,
     }
   }
 
+
   const customStyles = [defaultValue.styles, style]
 
-  return onPress ? (
-    <TouchableOpacity onPress={onPress} style={customStyles}>
+  return onPress || onLongPress ? (
+    <TouchableHighlight underlayColor={'#eee'} onPress={onPress} onLongPress={onLongPress} style={customStyles}>
       {children}
-    </TouchableOpacity>
+    </TouchableHighlight>
   ) : (
     <View style={customStyles}>{children}</View>
   )

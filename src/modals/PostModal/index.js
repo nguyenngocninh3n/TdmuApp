@@ -98,7 +98,14 @@ const RemoveOption = ({ changeOption, onClose, postID }) => {
       onClose()
     })
   }
-  return <PopUpModal onSubmit={handleSubmit} modalVisible={modalVisible} onCancle={handleCloseModal} />
+  return (
+    <PopUpModal
+      title={'Chuyển bài viết này vào thùng rác?'}
+      onSubmit={handleSubmit}
+      modalVisible={modalVisible}
+      onCancle={handleCloseModal}
+    />
+  )
 }
 
 const NORMAL = 'MORMAL'
@@ -115,7 +122,7 @@ const PostModal = ({ modalVisible, onClose, ownerID, ownerPostID, postID }) => {
   const handleSelect = (value) => setOption(value)
   const handleEdit = () => navigationRef.navigate('EditPostScreen', { postID })
 
-  console.log('postModal re-render: ', ownerID, ' ', ownerPostID)
+  console.log('postModal re-render: ')
 
   return (
     <Modal
@@ -127,13 +134,25 @@ const PostModal = ({ modalVisible, onClose, ownerID, ownerPostID, postID }) => {
       }}
     >
       <Pressable style={styles.pressableContainer} onPress={handleCloseModal}>
-        <View style={styles.modalContainer}>
-          {option === NORMAL ? (
-            <NormalOption ownerID={ownerID} ownerPostID={ownerPostID} onClose={handleCloseModal} onEdit={handleEdit} selectOption={handleSelect} />
-          ) : (
-            <RemoveOption postID={postID}  onClose={handleCloseModal} changeOption={() => handleSelect(NORMAL)} />
-          )}
-        </View>
+        <Pressable style={styles.pressableBody} onPress={(e) => e.stopPropagation()}>
+          <View style={styles.modalContainer}>
+            {option === NORMAL ? (
+              <NormalOption
+                ownerID={ownerID}
+                ownerPostID={ownerPostID}
+                onClose={handleCloseModal}
+                onEdit={handleEdit}
+                selectOption={handleSelect}
+              />
+            ) : (
+              <RemoveOption
+                postID={postID}
+                onClose={handleCloseModal}
+                changeOption={() => handleSelect(NORMAL)}
+              />
+            )}
+          </View>
+        </Pressable>
       </Pressable>
     </Modal>
   )
@@ -145,7 +164,15 @@ const styles = StyleSheet.create({
   pressableContainer: {
     flex: 1,
     position: 'relative',
-    backgroundColor: '#1116'
+    backgroundColor: '#1113'
+  },
+
+  pressableBody: {
+    backgroundColor:'eee',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0
   },
 
   modalContainer: {
@@ -156,11 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     marginVertical: 8,
     paddingTop: 10,
-    paddingLeft: 8,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingLeft: 8
   },
   modalTitle: {
     textAlign: 'center',

@@ -18,6 +18,7 @@ import ConvenitionScreen from '../screens/convenition/home'
 import CreateGroup from '../screens/convenition/CreateGroup'
 import ConventionName from '../screens/convenition/ConventionName'
 import EditPost from '../screens/Post/EditPost'
+import FriendScreen from '../screens/Friend'
 const Stack = createNativeStackNavigator()
 
 const Navigation = () => {
@@ -40,6 +41,7 @@ const Navigation = () => {
               <Stack.Screen name="main" component={MainNavigation} />
               {/* PROFILE */}
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              <Stack.Screen name="FriendScreen" component={FriendScreen} />
 
               {/* POST */}
               <Stack.Screen name="EditPostScreen" component={EditPost} />

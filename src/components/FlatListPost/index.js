@@ -8,7 +8,7 @@ const FlatListPost = ({ ownerID, userID }) => {
   const [postsData, setPostsData] = useState({})
   const [userData, setUserData] = useState({})
   useEffect(() => {
-    API.getUserPostsAPI(userID).then((data) => {
+    API.getUserPostsAPI(userID, ownerID).then((data) => {
       setPostsData(data)
     })
 
@@ -34,7 +34,7 @@ const FlatListPost = ({ ownerID, userID }) => {
         <View style={{ height: 4, marginVertical: 16, backgroundColor: '#ccc' }} />
       }
       renderItem={({ item, index }) => (
-        <PostItem userData={userData} ownerID={ownerID} item={item} key={index} />
+        <PostItem userData={userData} ownerID={ownerID} item={item} key={item._id} />
       )}
     />
   )

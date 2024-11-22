@@ -9,23 +9,33 @@ import { useCustomContext } from '../../../store'
 
 import FlatListPost from '../../../components/FlatListPost'
 import SpaceComponent from '../../../components/SpaceComponent'
+import { OpacityButtton } from '../../../components/ButtonComponent'
+import ProfileTopTabNavigator from '../../../navigation/profile'
+import ConventionNavigator from '../../../navigation/convention'
 
 const OwnerProfile = ({ navigation }) => {
   const [state, dispatch] = useCustomContext()
-  return (
-    <SafeAreaView style={GlobalStyle.container}>
-      <ScrollView>
-        <Header user={state}>
-          <OwnerBar />
-        </Header>
-        <View style={styles.postContainer}>
-          <SpaceComponent height={32} />
-          <FlatListPost userID={state._id} ownerID={state._id} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  )
-}
+  const handleClickFriend = () => navigation.navigate('FriendScreen', {userID: state._id})
+  // return (
+  //   <SafeAreaView style={GlobalStyle.container}>
+  //     <ScrollView>
+  //       <Header user={state}>
+  //         <OwnerBar />
+  //       </Header>
+  //       <View style={{backgroundColor:'#fff'}}>
+  //           <OpacityButtton left title={'Bạn bè'} onPress={handleClickFriend} />
+  //         </View>
+  //       <View style={styles.postContainer}>
+       
+  //         <SpaceComponent height={32} />
+  //         {/* <FlatListPost userID={state._id} ownerID={state._id} /> */}
+          
+  //       </View>
+  //     </ScrollView>
+  //   </SafeAreaView>
+  // )
+  return (<ProfileTopTabNavigator />)
+  }
 
 export default OwnerProfile
 
@@ -37,7 +47,8 @@ const styles = StyleSheet.create({
   },
 
   postContainer: {
-    backgroundColor: Colors.white
+    backgroundColor: Colors.white,
+    height: 500
   },
   postImg: {
     width: '100%',

@@ -1,4 +1,4 @@
-import { Text, StyleSheet } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 import React from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import SpaceComponent from '../SpaceComponent'
@@ -11,9 +11,11 @@ const NewPostBox = ({ navigation }) => {
 
   return (
     <ColumnComponent style={styles.container} onPress={handleCreateNewPost}>
-      <SpaceComponent height={12} />
-      <Text style={{ fontWeight: 'bold' }}>NewPostBox</Text>
-      <TextInput onFocus={handleCreateNewPost} placeholder="Ngày hôm nay của bạn thế nào..." />
+      <View>
+        <SpaceComponent height={12} />
+        <Text style={{ fontWeight: 'bold' }}>NewPostBox</Text>
+        <TextInput onFocus={handleCreateNewPost} placeholder="Ngày hôm nay của bạn thế nào..." />
+      </View>
     </ColumnComponent>
   )
 }

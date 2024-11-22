@@ -20,16 +20,23 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath "com.google.gms:google-services:4.4.2"
+        // classpath "com.google.gms:google-services:3.2.1"
     }
 
 }
 
     allprojects {
     repositories {
+        google() 
+        mavenCentral()
        maven {
            // react-native-background-fetch
            url("${project(':react-native-background-fetch').projectDir}/libs")
        }
+        // maven {
+        //     url "https://maven.google.com"
+        // }
+        // jcenter()
     }
 }
 

@@ -3,7 +3,7 @@ import SpaceComponent from '../components/SpaceComponent'
 import { OpacityButtton } from '../components/ButtonComponent'
 import RowComponent from '../components/RowComponent'
 
-const PopUpModal = ({ modalVisible, onCancle, onSubmit }) => {
+const PopUpModal = ({ modalVisible, title, subtitle, onCancle, onSubmit }) => {
   return (
     <Modal
       animationType="slide"
@@ -14,13 +14,15 @@ const PopUpModal = ({ modalVisible, onCancle, onSubmit }) => {
       }}
     >
       <View style={styles.pressableContainer}>
-        <View style={{ borderStartColor: '#000' }}>
+        <View style={{ borderWidth:1, borderColor:'#aaa', borderRadius:24}}>
           <View>
-            <Text style={styles.modalTitle}>Chuyển bài viết này vào thùng rác?</Text>
+            <Text style={styles.modalTitle}>{title}</Text>
+            <SpaceComponent height={12} />
+            <Text style={{fontSize:14, textAlign:'center'}}>{subtitle}</Text>
             <SpaceComponent height={24} />
             <RowComponent>
-              <OpacityButtton onPress={onCancle} style={{ flex: 1, }} title={'Hủy'} />
-              <OpacityButtton submit onPress={onSubmit} style={{ flex: 1 }} title={'Xác nhận'} />
+              <OpacityButtton onPress={onCancle} style={{flex:1}} textStyle={styles.modalBtnText} title={'Hủy'} />
+              <OpacityButtton  onPress={onSubmit} style={{flex:1}} textStyle={styles.modalBtnText} title={'Xác nhận'} />
             </RowComponent>
             <SpaceComponent height={16} />
           </View>
@@ -32,7 +34,7 @@ const PopUpModal = ({ modalVisible, onCancle, onSubmit }) => {
 
 const styles = StyleSheet.create({
   pressableContainer: {
-    backgroundColor: '#eee',
+    backgroundColor: '#fff',
     marginTop: '50%',
     marginHorizontal: 40,
     borderRadius:20
@@ -56,9 +58,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     marginLeft: 10,
-    color: '#a2f',
-    fontSize: 16,
+    color: '#661',
+    fontSize: 18,
     fontWeight: '500'
+  },
+  modalBtnText: {
+    color: 'blue',
+    fontWeight: '400',
+    fontSize: 16
   }
 })
 

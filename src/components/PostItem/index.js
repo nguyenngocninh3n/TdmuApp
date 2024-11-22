@@ -10,10 +10,10 @@ const PostItem = ({ item, userData, ownerID, onRemove }) => {
   return (
     <View style={{flex:1, marginHorizontal:8}}>
       <PostHeader onRemove={onRemove} item={item} user={userData} ownerID={ownerID} />
-      <SpaceComponent height={32} />
+      <SpaceComponent height={8} />
       <PostContent content={item.content} attachments={item.attachments} />
-      <SpaceComponent height={32} />
-      <PostFooter postID={item._id} />
+      <SpaceComponent height={16} />
+      <PostFooter postID={item._id} user={userData} ownerID={ownerID} />
     </View>
   )
 }

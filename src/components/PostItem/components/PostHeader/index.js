@@ -22,11 +22,21 @@ const PostHeader = ({ item, user, ownerID }) => {
         <SpaceComponent width={12} />
         <ColumnComponent>
           <Text style={styles.userName}>{user.userName}</Text>
-          <Text>{helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}</Text>
+          <RowComponent>
+            <Text>{helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}</Text>
+            <SpaceComponent width={8} />
+            <Text style={{color:'#a1f'}}>{item.scope.toLowerCase()}</Text>
+          </RowComponent>
         </ColumnComponent>
       </RowComponent>
       <Entypo onPress={handleShowModal} name="dots-three-vertical" size={18} />
-      <PostModal modalVisible={modalVisible} ownerID={ownerID} postID={item._id} ownerPostID={item.userID} onClose={handleCloseModal} />
+      <PostModal
+        modalVisible={modalVisible}
+        ownerID={ownerID}
+        postID={item._id}
+        ownerPostID={item.userID}
+        onClose={handleCloseModal}
+      />
     </RowComponent>
   )
 }
