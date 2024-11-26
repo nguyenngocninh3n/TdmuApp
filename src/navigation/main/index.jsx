@@ -7,9 +7,10 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { Text } from 'react-native'
 import Header from '../../components/Header'
 import auth from '@react-native-firebase/auth'
+import ListGroupScreen from '../../screens/Group/ListGroup'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
-const MainNavigation = () => {
+const MainNavigation = ({navigation}) => {
   const [state, dispatch] = useCustomContext()
   useEffect(() => {
     ;(async () => {
@@ -25,9 +26,9 @@ const MainNavigation = () => {
     <Tab.Navigator
       screenOptions={{
         header: () => {
-          return <Header />
+          return <Header navigation={navigation} />
         },
-        
+
         headerBackgroundContainerStyle: { backgroundColor: '#fff' },
         headerBackground: '#fff',
         headerStyle: { backgroundColor: '#fff' },
@@ -39,9 +40,14 @@ const MainNavigation = () => {
           name={item.name}
           component={item.component}
           key={item.name}
-          options={{ tabBarActiveTintColor: '#005AFF', tabBarShowLabel: false, tabBarIcon: item.icon }}
+          options={{
+            tabBarActiveTintColor: '#005AFF',
+            tabBarShowLabel: false,
+            tabBarIcon: item.icon
+          }}
         />
       ))}
+      <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
     </Tab.Navigator>
   )
 }

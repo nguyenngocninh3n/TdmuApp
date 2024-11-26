@@ -1,29 +1,30 @@
 import { View, Text, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SpaceComponent from '../SpaceComponent'
 import GoBackIcon from '../GoBackComponent/GoBackIcon'
 import RowComponent from '../RowComponent'
 import { OpacityButtton } from '../ButtonComponent'
 import Octicons from 'react-native-vector-icons/Octicons'
 
-const SearchCoponent = ({ onSearch, onCallback, unsearch, iconSize }) => {
+const SearchComponent = ({ unGoback, onSearch, onCallback, padding, margin, title, value, unsearch, iconSize }) => {
   const [searchInput, setSearchInput] = useState('')
 
   const handleTextInputChange = (value) => {
     setSearchInput(value)
-    onCallback(value)
+    onCallback && onCallback(value)
   }
 
   const handleSearch = () => {
     onSearch(searchInput)
   }
+  useEffect(() => {handleTextInputChange(value)}, [])
 
   return (
-    <RowComponent alignItems>
-      <GoBackIcon color={'blue'} size={iconSize} />
+    <RowComponent alignItems style={{padding, margin}}>
+      {!unGoback && <GoBackIcon color={'blue'} size={iconSize} />}
       <SpaceComponent width={8} />
       <TextInput
-        placeholder="Nhập nội dung tìm kiếm..."
+        placeholder={title ?? 'Nhập nội dung tìm kiếm...'}
         value={searchInput}
         onChangeText={handleTextInputChange}
         style={{
@@ -42,4 +43,4 @@ const SearchCoponent = ({ onSearch, onCallback, unsearch, iconSize }) => {
   )
 }
 
-export default SearchCoponent
+export default SearchComponent

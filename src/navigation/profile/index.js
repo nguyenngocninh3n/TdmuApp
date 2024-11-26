@@ -1,19 +1,17 @@
 import React from 'react'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import IntroduceScreen from '../../screens/Profile/IntroduceScreen'
-const ProfileTab = createMaterialTopTabNavigator()
 
-const ProfileTopTabNavigator = () => {
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import FriendScreen from '../../screens/Friend'
+
+const Tab = createMaterialTopTabNavigator()
+
+function ProfileTopTabNavigator({ userID, children }) {
   return (
-    <ProfileTab.Navigator
-    
-    >
-      <ProfileTab.Screen
-      key={'introduceScreen'}
-        name="IntroduceScreen"
-        component={IntroduceScreen}
-      />
-    </ProfileTab.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="IntroduceScreen" component={IntroduceScreen} />
+      <Tab.Screen name="FriendScreen" component={FriendScreen} initialParams={{ userID }} />
+    </Tab.Navigator>
   )
 }
 

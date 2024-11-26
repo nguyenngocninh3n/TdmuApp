@@ -2,18 +2,23 @@ import { ToastAndroid } from 'react-native'
 import React from 'react'
 import { API } from '../../../api'
 import PostHandler from '../components/PostHandler'
-import { RESPONSE_STATUS } from '../../../utils/Constants'
+import { POST_TYPE, RESPONSE_STATUS } from '../../../utils/Constants'
+import { useCustomContext } from '../../../store'
 
-const NewPost = ({ navigation }) => {
-  console.log('newpost re-render')
-
+const NewPost = ({ navigation, route }) => {
+  console.log('newpost re-render: ', route.params)
+  const [state, dispatch] = useCustomContext()
   const handleSubmit = (ownerID, customAttachments, value, scope) => {
     console.log('scope: ', scope)
     const newPostData = {
+      groupID: route.params.groupID ?? null,
       userID: ownerID,
+      userName: state.userName,
+      avatar: state.avatar,
       attachments: customAttachments,
       content: value,
-      scope:scope
+      scope: scope,
+      type: route.params.groupID ? POST_TYPE.GROUP : POST_TYPE.PERSONAL
     }
     API.storePostAPI(newPostData).then((result) => {
       if (result === RESPONSE_STATUS.SUCCESS) {
@@ -25,7 +30,7 @@ const NewPost = ({ navigation }) => {
     })
   }
 
-  return <PostHandler onSubmit={handleSubmit} postData={{}} />
+  return <PostHandler onSubmit={handleSubmit} postData={{}} groupID={route.params.groupID}/>
 }
 
 export default NewPost

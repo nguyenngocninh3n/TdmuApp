@@ -1,41 +1,24 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import { StyleSheet, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
-import GlobalStyle from '../../../assets/css/GlobalStyle'
 import Colors from '../../../utils/Colors'
 import OwnerBar from '../Components/OwnerBar'
+
+import ProfileBody from '../Components/ProfileBody'
 import { useCustomContext } from '../../../store'
 
-import FlatListPost from '../../../components/FlatListPost'
-import SpaceComponent from '../../../components/SpaceComponent'
-import { OpacityButtton } from '../../../components/ButtonComponent'
-import ProfileTopTabNavigator from '../../../navigation/profile'
-import ConventionNavigator from '../../../navigation/convention'
-
-const OwnerProfile = ({ navigation }) => {
+const OwnerProfile = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
-  const handleClickFriend = () => navigation.navigate('FriendScreen', {userID: state._id})
-  // return (
-  //   <SafeAreaView style={GlobalStyle.container}>
-  //     <ScrollView>
-  //       <Header user={state}>
-  //         <OwnerBar />
-  //       </Header>
-  //       <View style={{backgroundColor:'#fff'}}>
-  //           <OpacityButtton left title={'Bạn bè'} onPress={handleClickFriend} />
-  //         </View>
-  //       <View style={styles.postContainer}>
-       
-  //         <SpaceComponent height={32} />
-  //         {/* <FlatListPost userID={state._id} ownerID={state._id} /> */}
-          
-  //       </View>
-  //     </ScrollView>
-  //   </SafeAreaView>
-  // )
-  return (<ProfileTopTabNavigator />)
-  }
+  return (
+    <ScrollView>
+      <Header user={state} ownerID={state._id} navigation={navigation}>
+        <OwnerBar />
+      </Header>
+      <ProfileBody navigation={navigation} ownerID={state._id} userID={state._id} />
+    </ScrollView>
+  )
+}
 
 export default OwnerProfile
 

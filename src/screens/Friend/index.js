@@ -5,8 +5,7 @@ import RowComponent from '../../components/RowComponent'
 import AvatarComponent from '../../components/AvatarComponent'
 import SpaceComponent from '../../components/SpaceComponent'
 import { RESPONSE_STATUS } from '../../utils/Constants'
-import GoBackComponent from '../../components/GoBackComponent'
-import SearchCoponent from '../../components/SearchComponent'
+import SearchComponent from '../../components/SearchComponent'
 
 const FriendItem = ({ item, onPress }) => {
   const handleClickItem = () => onPress(item._id)
@@ -14,7 +13,7 @@ const FriendItem = ({ item, onPress }) => {
     <RowComponent alignItems style={{ marginBottom: 16 }} onPress={handleClickItem}>
       <AvatarComponent size={48} source={API.getFileUrl(item.avatar)} />
       <SpaceComponent width={16} />
-      <RowComponent alignItems >
+      <RowComponent alignItems>
         <Text style={{ fontWeight: '500', fontSize: 17 }}>{item.userName}</Text>
         <SpaceComponent width={8} />
       </RowComponent>
@@ -22,34 +21,41 @@ const FriendItem = ({ item, onPress }) => {
   )
 }
 
-const FriendScreen = ({ navigation, route }) => {
-  const { userID } = route.params
+const FriendScreen = ({userID, ownerID }) => {
+  // console.log('route.params: ', route.params)
+  // const { userID } = route.params
   const [friends, setFriends] = useState({})
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     API.getListFriend({ userID: userID }).then((data) => {
+      console.log('gia tri data là: ', data)
+
       if (data.status === RESPONSE_STATUS.SUCCESS) {
-        console.log('gia tri data là: ', data)
         setFriends(data.data)
       }
     })
-  }, [])
+  }, [userID])
 
   const filteredFriends = searchQuery
     ? friends.filter((friend) => friend.userName.toLowerCase().includes(searchQuery.toLowerCase()))
     : friends
 
   const handleSearchChange = (value) => setSearchQuery(value)
-  const handlePressItem = (userID) => navigation.navigate('ProfileScreen', {userID})
+  const handlePressItem = (value) => navigation.navigate('ProfileScreen', { userID:userID })
 
   return (
-    <View style={{ marginHorizontal: 12 }}>
-      <SearchCoponent onCallback={handleSearchChange} unsearch iconSize={24} />
+    <View style={{ marginHorizontal: 12,  }}>
+      <SearchComponent onCallback={handleSearchChange} unsearch iconSize={24} />
       <SpaceComponent height={16} />
       <FlatList
+        // nestedScrollEnabled={true}
+        scrollEnabled={false}
         data={filteredFriends}
-        renderItem={({ item, index }) => <FriendItem onPress={handlePressItem} item={item} key={item._id} />}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item, index }) => (
+          <FriendItem onPress={handlePressItem} item={item} key={item._id} />
+        )}
       />
     </View>
   )

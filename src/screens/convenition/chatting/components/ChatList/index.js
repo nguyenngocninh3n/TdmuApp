@@ -58,8 +58,8 @@ const ChatList = React.memo(({ conventionID, onLongPress }) => {
       <FlatList
         style={{ flex: 1, marginLeft: 8, marginRight: 8 }}
         inverted
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
         data={chatData}
         keyExtractor={(item) => item._id}
         ListFooterComponent={<SpaceComponent height={64} />}

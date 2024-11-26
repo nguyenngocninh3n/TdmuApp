@@ -20,10 +20,16 @@ const getConventionUserFriend = async (userID) => {
   return user.data
 }
 
+const updateUserBioAPI = async (userID, value) => {
+  const response = await axios.put(`${SERVER_POST}/user/${userID}/bio/update`, {value})
+  return response.data
+}
+
 const AuthenApi = {
   loginAPI,
   getUserByIdAPI,
   getAllUserAPI,
-  getConventionUserFriend
+  getConventionUserFriend,
+  updateUserBioAPI
 }
 export default AuthenApi

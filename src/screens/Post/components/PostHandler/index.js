@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, SafeAreaView, StyleSheet, Text } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import ImageLibrary from '../../../../components/ImageLibrary'
@@ -10,26 +10,28 @@ import GlobalStyle from '../../../../assets/css/GlobalStyle'
 import OpacityButtton from '../../../../components/ButtonComponent/OpacityButton'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import RNFS from 'react-native-fs'
-import { MESSAGE_TYPE, POST_ATTACHMENT } from '../../../../utils/Constants'
+import { MESSAGE_TYPE, POST_ATTACHMENT, SCOPE } from '../../../../utils/Constants'
 import { navigationRef, useCustomContext } from '../../../../store'
 import DropDownRole from '../DropDownRole'
 import RowComponent from '../../../../components/RowComponent'
 
-const PostHandler = ({ postData, files, onSubmit, editable }) => {
-  console.log('post handler re-render: ', postData.scope)
+const PostHandler = ({ postData, files, onSubmit, editable, groupID }) => {
+  console.log('post handler re-render: ', SCOPE.PUBLIC)
   const [state, dispatch] = useCustomContext()
   const [atttachments, setAttachments] = useState(files)
-  const [scopePost, setScopePost] = useState(postData.scope)
+  const [scopePost, setScopePost] = useState(SCOPE.PUBLIC)
   const postInputRef = useRef({ value: postData.content })
 
   useEffect(() => {
-    if(files !== atttachments) {
+    if (files !== atttachments) {
       setAttachments(files)
     }
   }, [files])
 
   useEffect(() => {
+    if (postData.scope) {
       setScopePost(postData.scope)
+    }
   }, [postData])
 
   const handlePost = async () => {
@@ -82,7 +84,11 @@ const PostHandler = ({ postData, files, onSubmit, editable }) => {
         <AvatarComponent source={API.getFileUrl(state.avatar)} />
         <RowComponent>
           <SpaceComponent width={8} />
-          <DropDownRole initValue={scopePost } callback={handleChangeScope} />
+          {!groupID ? (
+            <DropDownRole initValue={scopePost} callback={handleChangeScope} />
+          ) : (
+            <Text style={{fontSize:20}}>{state.userName}</Text>
+          )}
         </RowComponent>
       </RowComponent>
       <PostInput ref={postInputRef} value={postData.content} />

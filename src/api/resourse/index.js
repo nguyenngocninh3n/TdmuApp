@@ -15,6 +15,12 @@ const getConventionFilesByID = async (conventionID, type) => {
   return data.data
 }
 
+const getGroupFilesByID = async (groupID, type) => {
+  const requestString = `${SERVER_POST}/resource/group/${groupID}/${type}`
+  const data = await axios.get(requestString)
+  return data.data
+}
+
 const convertPostItemAPI = (item) => {
   const customData = {
     type: item.type === MESSAGE_TYPE.IMAGE ? POST_ATTACHMENT.IMAGE : POST_ATTACHMENT.VIDEO,
@@ -27,7 +33,8 @@ const ResourseAPI = {
   getFile,
   getFileUrl,
   convertPostItemAPI,
-  getConventionFilesByID
+  getConventionFilesByID,
+  getGroupFilesByID
 }
 
 export default ResourseAPI

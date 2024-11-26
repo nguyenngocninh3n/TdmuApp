@@ -19,6 +19,19 @@ import CreateGroup from '../screens/convenition/CreateGroup'
 import ConventionName from '../screens/convenition/ConventionName'
 import EditPost from '../screens/Post/EditPost'
 import FriendScreen from '../screens/Friend'
+import BioScreen from '../screens/Profile/BioScreen'
+import GroupScreen from '../screens/Group'
+import NewGroupScreen from '../screens/Group/NewGroup'
+import EditGroupScreen from '../screens/Group/EditGroup'
+import GroupUserScreen from '../screens/Group/GroupUser'
+import GroupIntroduceScreen from '../screens/Group/GroupIntroduce'
+import GroupMemberScreen from '../screens/Group/GroupMember'
+import GroupPendingScreen from '../screens/Group/GroupPending'
+import GroupBlockingScreen from '../screens/Group/GroupBlocking'
+import GroupImageScreen from '../screens/Group/GroupImage'
+import SearchScreen from '../screens/Search'
+import SearchResultScreen from '../screens/Search/SearchResult'
+import Header from '../components/Header'
 const Stack = createNativeStackNavigator()
 
 const Navigation = () => {
@@ -42,6 +55,23 @@ const Navigation = () => {
               {/* PROFILE */}
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="FriendScreen" component={FriendScreen} />
+              <Stack.Screen name="BioScreen" component={BioScreen} />
+
+              {/* SEARCH */}
+              <Stack.Screen name="SearchScreen" component={SearchScreen} />
+              <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} />
+
+              {/* GROUP */}
+              <Stack.Screen name="GroupScreen" component={GroupScreen} />
+              <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
+              <Stack.Screen name="EditGroupScreen" component={EditGroupScreen} />
+              <Stack.Screen name="GroupIntroduceScreen" component={GroupIntroduceScreen} />
+              <Stack.Screen name="GroupUserScreen" component={GroupUserScreen} />
+              <Stack.Screen name="GroupMemberScreen" component={GroupMemberScreen} />
+              <Stack.Screen name="GroupPendingScreen" component={GroupPendingScreen} />
+              <Stack.Screen name="GroupBlockingScreen" component={GroupBlockingScreen} />
+              <Stack.Screen name="GroupImageScreen" component={GroupImageScreen} />
+              {/* <Stack.Screen name="GroupVideoScreen" component={} /> */}
 
               {/* POST */}
               <Stack.Screen name="EditPostScreen" component={EditPost} />

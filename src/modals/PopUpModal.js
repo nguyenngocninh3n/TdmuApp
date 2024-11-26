@@ -18,7 +18,7 @@ const PopUpModal = ({ modalVisible, title, subtitle, onCancle, onSubmit }) => {
           <View>
             <Text style={styles.modalTitle}>{title}</Text>
             <SpaceComponent height={12} />
-            <Text style={{fontSize:14, textAlign:'center'}}>{subtitle}</Text>
+            <Text style={{fontSize:14, textAlign:'left', marginHorizontal:24}}>{subtitle}</Text>
             <SpaceComponent height={24} />
             <RowComponent>
               <OpacityButtton onPress={onCancle} style={{flex:1}} textStyle={styles.modalBtnText} title={'Hủy'} />
@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     textAlign: 'center',
-    marginTop: 10,
-    marginLeft: 10,
+    marginTop: 16,
+    marginHorizontal: 16,
     color: '#661',
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '500'
   },
   modalBtnText: {

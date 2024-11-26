@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.10'
+const URL = 'http://192.168.1.11'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -48,6 +48,12 @@ const POST_ATTACHMENT = {
   MIX: 'MIX'
 }
 
+const POST_TYPE = {
+  PERSONAL: 'PERSONAL',
+  SHARE: 'SHARE',
+  GROUP: 'GROUP'
+}
+
 const RESPONSE_STATUS = {
   SUCCESS: 'SUCCESS',
   ERROR: 'ERROR'
@@ -68,7 +74,22 @@ const FRIEND_STATUS = {
 
 const MEMBER_ROLE = {
   ADMIN: 'ADMIN',
+  CENSOR: 'CENSOR',
   MEMBER: 'MEMBER'
+}
+
+const MEMBER_STATUS = {
+  PENDING: 'PENDING',
+  BLOCK: 'BLOCK',
+  ACCEPT: 'ACCEPT'
+}
+
+
+const SCOPE = {
+  PUBLIC: 'PUBLIC',
+  FRIEND: 'FRIEND',
+  PRIVATE: 'PRIVATE',
+  OWNER: 'OWNER'
 }
 export {
   SERVER_POST,
@@ -79,8 +100,11 @@ export {
   MESSAGE_TYPE,
   MESSAGE_ACTION,
   POST_ACTION,
+  POST_TYPE,
   CHAT_ITEM_TYPE,
   FRIEND_STATUS,
   RESPONSE_STATUS,
-  MEMBER_ROLE
+  MEMBER_ROLE,
+  MEMBER_STATUS,
+  SCOPE
 }

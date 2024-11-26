@@ -4,7 +4,7 @@ import React from 'react'
 const AvatarComponent = ({ source, style, onPress, size }) => {
   const localValue = {
     style: { borderColor: '#fff', borderWidth: 1, width: size || 48, height: size || 48, borderRadius: 75 },
-    onPress: () => {}
+    onPress: onPress
   }
 
   const customStyle = { ...localValue.style, ...style }

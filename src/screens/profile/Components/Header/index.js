@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 
 import { useCustomContext } from '../../../../store'
@@ -7,6 +7,8 @@ import ColumnComponent from '../../../../components/ColumnComponent'
 import RowComponent from '../../../../components/RowComponent'
 import GlobalStyle from '../../../../assets/css/GlobalStyle'
 import { API } from '../../../../api'
+import SpaceComponent from '../../../../components/SpaceComponent'
+import { OpacityButtton } from '../../../../components/ButtonComponent'
 
 const BoxInfor = ({ title, value }) => {
   return (
@@ -16,23 +18,32 @@ const BoxInfor = ({ title, value }) => {
     </ColumnComponent>
   )
 }
-const Header = ({ navigation, children, user }) => {
+const Header = ({ navigation, children, user, ownerID }) => {
   const [oldScreen, setOldScreen] = useState('')
+  const isOwner = user._id === ownerID
+  console.log('isOwner: ', isOwner)
+  const handleUpdateBio = () => {
+    navigation.navigate('BioScreen', {user})
+  }
   return (
     <View>
       {/* AVATAR AND NAME */}
       <View style={styles.container}>
         <AvatarComponent source={API.getFileUrl(user.avatar)} style={styles.userImg} />
         <Text style={styles.userName}>{user.userName}</Text>
+        <OpacityButtton
+          title={isOwner ? user.bio || 'Thêm tiểu sử...' : user.bio || ''}
+          onPress={isOwner ? handleUpdateBio : null}
+        />
       </View>
       {/* BAR */}
       {children}
-      {/* FOLLOWER AND FOLLOWING */}
+      {/* FOLLOWER AND FOLLOWING
       <RowComponent style={styles.userInfoWrapper}>
         <BoxInfor title="Posts" value={10} />
         <BoxInfor title="Follower" value={12} />
         <BoxInfor title="Following" value={15} />
-      </RowComponent>
+      </RowComponent> */}
     </View>
   )
 }
@@ -46,12 +57,12 @@ const styles = StyleSheet.create({
   },
   userImg: {
     marginTop: 48,
-    height: 150,
-    width: 150
+    height: 120,
+    width: 120
   },
   userName: {
-    fontSize: 24,
-    fontWeight: '500',
+    fontSize: 22,
+    fontWeight: '400',
     color: '#0f5fff',
     marginTop: 10,
     marginBottom: 10

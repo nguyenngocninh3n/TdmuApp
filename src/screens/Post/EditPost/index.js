@@ -2,12 +2,15 @@ import { ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import PostHandler from '../components/PostHandler'
 import { API } from '../../../api'
-import { POST_ACTION, POST_ATTACHMENT, RESPONSE_STATUS } from '../../../utils/Constants'
+import { POST_ACTION, POST_ATTACHMENT, POST_TYPE, RESPONSE_STATUS } from '../../../utils/Constants'
+import { useCustomContext } from '../../../store'
 
 const EditPost = ({ navigation, route }) => {
-  const { postID } = route.params
+  const { postID, groupID } = route.params
   const [postData, setPostData] = useState({})
   const [files, setFiles] = useState([])
+  const [state, dispatch] = useCustomContext()
+  console.log('group id: ', groupID)
   useEffect(() => {
     API.getPostAPI(postID).then((data) => {
       if (data !== postData) {
@@ -72,7 +75,7 @@ const EditPost = ({ navigation, route }) => {
 
   console.log('edit post re-render: ', postID, ' ', postData?.scope)
 
-  return <PostHandler onSubmit={handleSubmit} postData={postData} files={files} />
+  return <PostHandler onSubmit={handleSubmit} postData={postData} files={files} groupID={groupID} />
 }
 
 export default EditPost

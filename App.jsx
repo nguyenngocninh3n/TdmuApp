@@ -61,62 +61,7 @@ PushNotification.configure({
 })
 
 const App = () => {
-  // useEffect(() => {
-  //   const onAppStateChange = async (nextAppState) => {
-  //     if (nextAppState === 'active') {
-  //       console.log('App is now in the foreground')
-  //     }
-  //   }
-
-  //   const initializeBackgroundFetch = async () => {
-  //     const onFetch = async (taskId) => {
-  //       console.log('Background fetch event received:', taskId)
-
-  //       // Thực hiện công việc của bạn ở đây (Ví dụ: gọi API, đồng bộ dữ liệu...)
-  //       try {
-  //         const result = await fetchDataFromAPI()
-  //         console.log(result)
-  //       } catch (error) {
-  //         console.error('Error fetching data', error)
-  //       }
-
-  //       // Gọi finish để hoàn thành tác vụ
-  //       BackgroundFetch.finish(taskId)
-  //     }
-
-  //     const onTimeout = async (taskId) => {
-  //       console.log('Background fetch task timed-out:', taskId)
-  //       BackgroundFetch.finish(taskId)
-  //     }
-
-  //     BackgroundFetch.configure(
-  //       {
-  //         minimumFetchInterval: 15, // Tần suất gọi task (trong phút)
-  //         stopOnTerminate: false, // Dù ứng dụng bị tắt, service vẫn chạy
-  //         startOnBoot: true, // Khởi động lại service sau khi khởi động lại máy
-  //         enableHeadless: true // Chạy khi ứng dụng không có giao diện
-  //       },
-  //       onFetch,
-  //       onTimeout
-  //     )
-
-  //     // Lắng nghe sự kiện thay đổi trạng thái ứng dụng
-  //     AppState.addEventListener('change', onAppStateChange)
-  //   }
-
-  //   initializeBackgroundFetch()
-
-  //   return () => {
-  //     // Dọn dẹp khi component bị unmount
-  //     AppState.removeEventListener('change', onAppStateChange)
-  //   }
-  // }, [])
-
-  const fetchDataFromAPI = async () => {
-    // Gọi API hoặc thực hiện các tác vụ khác ở đây
-    return 'Data fetched from API in background'
-  }
-
+  
   return (
     <GestureHandlerRootView>
       <Navigation />

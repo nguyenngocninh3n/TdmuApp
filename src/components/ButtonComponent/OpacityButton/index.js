@@ -1,11 +1,33 @@
 import { Text, TouchableHighlight, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-const OpacityButtton = ({ title, left, right, textSize, submit, width, height, padding, paddingHorizontal, bgColor, margin, onPress, style, textColor, textStyle, children }) => {
+const OpacityButtton = ({
+  disable,
+  title,
+  borderWidth,
+  borderRadius,
+  borderColor,
+  underlay,
+  left,
+  right,
+  textSize,
+  submit,
+  width,
+  height,
+  padding,
+  paddingHorizontal,
+  bgColor,
+  margin,
+  onPress,
+  style,
+  textColor,
+  textStyle,
+  children
+}) => {
   const initValue = {
     onPress: () => {},
     textStyle: {
-      color: submit && 'red' || textColor || '#000',
+      color: (submit && 'red') || textColor || '#000',
       fontWeght: submit && '600',
       fontSize: textSize,
       paddingVertical: 4,
@@ -14,13 +36,16 @@ const OpacityButtton = ({ title, left, right, textSize, submit, width, height, p
       ...textStyle
     },
     style: {
-      width:width,
+      width: width,
       height: height,
       padding: padding ?? 2,
       margin: margin,
       backgroundColor: bgColor,
-      justifyContent:  'center',
-      alignItems: left ? 'left' : right ? 'right' : 'center'
+      justifyContent: 'center',
+      alignItems: left ? 'left' : right ? 'right' : 'center',
+      borderColor: borderColor,
+      borderRadius: borderRadius,
+      borderWidth: borderWidth
     }
   }
   const localValue = {
@@ -30,7 +55,12 @@ const OpacityButtton = ({ title, left, right, textSize, submit, width, height, p
     children: children || <Text style={initValue.textStyle}>{title}</Text>
   }
   return (
-    <TouchableHighlight underlayColor={'#eee'} onPress={localValue.onPress} style={localValue.style}>
+    <TouchableHighlight
+      disabled={disable}
+      underlayColor={underlay ?? '#eee'}
+      onPress={localValue.onPress}
+      style={localValue.style}
+    >
       {localValue.children}
     </TouchableHighlight>
   )

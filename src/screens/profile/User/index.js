@@ -6,6 +6,7 @@ import UserBar from '../Components/UserBar'
 import Colors from '../../../utils/Colors'
 import { API } from '../../../api'
 import FlatListPost from '../../../components/FlatListPost'
+import ProfileBody from '../Components/ProfileBody'
 const UserProfile = ({ navigation, ownerID, userID }) => {
   const [user, setUser] = useState({})
   const getUser = async () => {
@@ -16,16 +17,15 @@ const UserProfile = ({ navigation, ownerID, userID }) => {
   }
   useEffect(() => {
     getUser()
-  }, [ userID])
+  }, [userID])
+
   return (
     <SafeAreaView style={GlobalStyle.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Header user={user}>
+      <ScrollView>
+        <Header user={user} ownerID={ownerID} navigation={navigation}>
           <UserBar navigation={navigation} ownerID={ownerID} userID={userID} />
         </Header>
-        <View style={styles.postContainer}>
-        <FlatListPost userID={userID} ownerID={ownerID} />
-        </View>
+        <ProfileBody navigation={navigation} ownerID={ownerID} userID={userID} />
       </ScrollView>
     </SafeAreaView>
   )
