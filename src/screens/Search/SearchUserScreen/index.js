@@ -1,30 +1,44 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { API } from '../../../api'
-import { useCustomContext } from '../../../store'
+import { navigationRef, useCustomContext } from '../../../store'
 import { RESPONSE_STATUS } from '../../../utils/Constants'
 import UserRowComponent from '../../../components/UserRowComponent'
+import { useFocusEffect } from '@react-navigation/native'
+import groupStype from '../../Group/groupStyle'
+import SpaceComponent from '../../../components/SpaceComponent'
 
 const SearchUserScreen = ({ navigation, route }) => {
   const { search } = route.params
   const [state, dispatch] = useCustomContext()
   const [userData, setUserData] = useState([])
 
-  useEffect(() => {
-    API.searchUserAPI(state._id, search).then((response) => {
-      if (response.status === RESPONSE_STATUS.SUCCESS) {
-        response.data && setUserData(response.data)
-      }
-    })
-  }, [search])
+  console.log('search user screen re-render: ', search)
+
+  useFocusEffect(
+    useCallback(() => {
+      API.searchUserAPI(state._id, search).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          response.data && setUserData(response.data)
+        }
+      })
+      return () => setUserData([])
+    }, [])
+  )
+
+  const handlePressItem = (item) => navigation.navigate('ProfileScreen', { userID: item._id })
 
   return (
-    <View>
-      <Text>SearchUserScreen</Text>
+    <View style={groupStype.container}>
       <FlatList
         data={userData}
+        ItemSeparatorComponent={<SpaceComponent height={16} />}
         renderItem={({ item, index }) => (
-          <UserRowComponent avatar={API.getFileUrl(item.avatar)} name={item.userName} />
+          <UserRowComponent
+            onPress={() => handlePressItem(item)}
+            avatar={API.getFileUrl(item.avatar)}
+            name={item.userName}
+          />
         )}
       />
     </View>

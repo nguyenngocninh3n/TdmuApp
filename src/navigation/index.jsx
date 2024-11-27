@@ -29,9 +29,7 @@ import GroupMemberScreen from '../screens/Group/GroupMember'
 import GroupPendingScreen from '../screens/Group/GroupPending'
 import GroupBlockingScreen from '../screens/Group/GroupBlocking'
 import GroupImageScreen from '../screens/Group/GroupImage'
-import SearchScreen from '../screens/Search'
 import SearchResultScreen from '../screens/Search/SearchResult'
-import Header from '../components/Header'
 const Stack = createNativeStackNavigator()
 
 const Navigation = () => {
@@ -58,8 +56,8 @@ const Navigation = () => {
               <Stack.Screen name="BioScreen" component={BioScreen} />
 
               {/* SEARCH */}
-              <Stack.Screen name="SearchScreen" component={SearchScreen} />
-              <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} />
+              <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
+              {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}
 
               {/* GROUP */}
               <Stack.Screen name="GroupScreen" component={GroupScreen} />

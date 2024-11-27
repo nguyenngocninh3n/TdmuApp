@@ -1,19 +1,12 @@
-import { View, Text, FlatList } from 'react-native'
+import { View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import SearchComponent from '../../../components/SearchComponent'
 import GoBackComponent from '../../../components/GoBackComponent'
 import { API } from '../../../api'
-import { MEMBER_ROLE, RESPONSE_STATUS } from '../../../utils/Constants'
-import SpaceComponent from '../../../components/SpaceComponent'
+import { RESPONSE_STATUS } from '../../../utils/Constants'
 import groupStype from '../groupStyle'
-import UserRowComponent from '../../../components/UserRowComponent'
-import RowComponent from '../../../components/RowComponent'
+
 import FlatlistMembers from './component/FlatlistMembers'
-import { useCustomContext } from '../../../store'
 
-const CustomItem = ({ item, onOption }) => {
-
-}
 
 const GroupMemberScreen = ({ navigation, route }) => {
   console.log('group member screen re-render')

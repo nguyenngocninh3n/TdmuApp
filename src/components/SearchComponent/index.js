@@ -6,7 +6,7 @@ import RowComponent from '../RowComponent'
 import { OpacityButtton } from '../ButtonComponent'
 import Octicons from 'react-native-vector-icons/Octicons'
 
-const SearchComponent = ({ unGoback, onSearch, onCallback, padding, margin, title, value, unsearch, iconSize }) => {
+const SearchComponent = ({ unGoback, onSearch, onCallback, onGoBack, padding, margin, title, value, unsearch, iconSize }) => {
   const [searchInput, setSearchInput] = useState('')
 
   const handleTextInputChange = (value) => {
@@ -21,7 +21,7 @@ const SearchComponent = ({ unGoback, onSearch, onCallback, padding, margin, titl
 
   return (
     <RowComponent alignItems style={{padding, margin}}>
-      {!unGoback && <GoBackIcon color={'blue'} size={iconSize} />}
+      {!unGoback && <GoBackIcon color={'blue'} size={iconSize} onNavigate={onGoBack} />}
       <SpaceComponent width={8} />
       <TextInput
         placeholder={title ?? 'Nhập nội dung tìm kiếm...'}
