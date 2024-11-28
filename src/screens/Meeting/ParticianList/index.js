@@ -2,12 +2,12 @@ import { FlatList, Text, View } from 'react-native'
 import ParticipantView from '../ParticianView'
 
 
-export default function ParticipantList({ participants }) {
+export default function ParticipantList({ participants, ownerInfo, join }) {
   return participants.length > 0 ? (
     <FlatList
       data={participants}
       renderItem={({ item }) => {
-        return <ParticipantView participantId={item} />
+        return <ParticipantView participantId={item} ownerInfo={ownerInfo} join={join} />
       }}
     />
   ) : (

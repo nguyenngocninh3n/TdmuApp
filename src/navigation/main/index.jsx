@@ -10,7 +10,7 @@ import auth from '@react-native-firebase/auth'
 import ListGroupScreen from '../../screens/Group/ListGroup'
 import CallScreen from '../../screens/Call'
 import VideoCallWrapperProvider from '../../screens/Call/VideoCallWrapperProvider'
-import MeetingProviderScreen from '../../screens/Call copy/MeetingProvider'
+import MeetingProviderScreen from '../../screens/Meeting/MeetingProvider'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
 const MainNavigation = ({navigation}) => {

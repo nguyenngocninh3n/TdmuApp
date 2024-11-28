@@ -24,6 +24,8 @@ const NotificationScreen = ({ navigation }) => {
     await PermissionsAndroid.request('android.permission.ACCESS_COARSE_LOCATION')
     await PermissionsAndroid.request('android.permission.ACCESS_BACKGROUND_LOCATION')
     await PermissionsAndroid.request('android.permission.ACCESS_WIFI_STATE')
+    await PermissionsAndroid.request('android.permission.CAMERA')
+    await PermissionsAndroid.request('android.permission.ACTIVITY_RECOGNITION')
   }
   useEffect(() => {
     SocketClient.runSocketClient(state._id, navigation)

@@ -115,13 +115,10 @@ export default function VideoCallWrapperProvider({ children }) {
       <MeetingProvider
         config={{
          //Status of Mircophone Device as selected by the user (On/Off).
-         micEnabled: micOn,
+         micEnabled: true,
          //Status of Webcam Device as selected by the user (On/Off).
-         webcamEnabled: webcamOn,
+         webcamEnabled: true,
          //customVideoStream has to be the Video Stream of the user's selected Webcam device as created in Step-5.
-         customCameraVideoTrack: customVideoStream,
-         //customAudioStream has to be the Audio Stream of the user's selected Microphone device as created in Step-5.
-         customMicrophoneAudioTrack: customAudioStream
         }}
         token={token}
       >

@@ -6,8 +6,8 @@ import { getMeetingId, createMeeting, getToken } from '../videocall'
 import JoinScreen from '../JoinScreen'
 
 const handleGetToken = async () => {
-    const value = getToken()
-    console.log('token: ', value)
+  const value = getToken()
+  console.log('token: ', value)
   return value
 }
 const handleGetMeetingId = async (tokenParam) => {
@@ -16,21 +16,25 @@ const handleGetMeetingId = async (tokenParam) => {
   return id
 }
 
-const handleCreateMeetingId = async (tokenParam) => {
-  console.log('handle create meeting id: ',tokenParam)
-    const id = await createMeeting({tokenParam})
+const handleCreateMeetingId = async (tokenParam, targetID) => {
+  console.log('handle create meeting id: ', tokenParam)
+  const id = await createMeeting({ tokenParam, targetID })
   console.log('id: ', id)
   return id
 }
 
-const MeetingProviderScreen = () => {
+const MeetingProviderScreen = ({ navigation, route }) => {
   const [meetingId, setMeetingId] = useState()
   const [token, setToken] = useState()
 
-  const fetchMeetingIdAndToken = async (id) => {
+  // const targetInfo = route.params?.targetInfo ?? {}
+  // const ownerInfo = route.params?.ownerInfo ?? {}
+  const {targetID, targetInfo, ownerInfo} = route.params
+
+  const fetchMeetingIdAndToken = async () => {
     //Fetch the token and meetingId and update it in the state
     const newToken = await handleGetToken()
-    const newMeetingId = await handleCreateMeetingId(newToken)
+    const newMeetingId = await handleCreateMeetingId(newToken, targetID)
     console.log('token and id: ', newToken, ' ', newMeetingId)
     setToken(newToken)
     setMeetingId(newMeetingId)
@@ -48,9 +52,15 @@ const MeetingProviderScreen = () => {
 
   const checkMediaPermission = async () => {
     //These methods return a Promise that resolve to a Map<string, boolean> object.
-    const checkAudioPermission = await checkPermission('audio') //For getting audio permission
-    const checkVideoPermission = await checkPermission('video') //For getting video permission
-    const checkAudioVideoPermission = await checkPermission('audio_video') //For getting both audio and video permissions
+    const checkAudioPermission = await checkPermission('audio').then((value) =>
+      console.log('check audio: ', value)
+    ) //For getting audio permission
+    const checkVideoPermission = await checkPermission('video').then((value) =>
+      console.log('check video: ', value)
+    ) //For getting video permission
+    const checkAudioVideoPermission = await checkPermission('audio_video').then((value) =>
+      console.log('check audio - video: ', value)
+    ) //For getting both audio and video permissions
     const checkBTPermission = await checkBlueToothPermission()
   }
 
@@ -71,7 +81,9 @@ const MeetingProviderScreen = () => {
   useEffect(() => {
     //Load the token and generate a meeting id and pass it to the Meeting Provider
     checkMediaPermission().then((data) => {
-      requestAudioVideoPermission()
+      requestAudioVideoPermission().then(() => {
+        fetchMeetingIdAndToken()
+      })
     })
   }, [])
 
@@ -83,17 +95,18 @@ const MeetingProviderScreen = () => {
         meetingId: meetingId,
         name: 'NAME HERE',
         micEnabled: true,
-        webcamEnabled: true
+        webcamEnabled: false,
+        participantId:ownerInfo._id
       }}
       // Pass the generated token
       token={token}
       joinWithoutInteraction={true}
     >
-      <MeetingView />
+      <MeetingView targetInfo={targetInfo} ownerInfo={ownerInfo} />
     </MeetingProvider>
   ) : (
-    <JoinScreen getMeetingId={fetchMeetingIdAndToken} />
-
+    // <JoinScreen getMeetingId={fetchMeetingIdAndToken} />
+    <></>
   )
 }
 

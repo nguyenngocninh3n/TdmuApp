@@ -11,7 +11,15 @@ import { useCustomContext } from '../../../store'
 import ChatList from './components/ChatList'
 import ChatItemModal from './components/ChatItemModal'
 import SocketClient from '../../../socket'
-import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
+import {
+  MESSAGE_NOTIFY_STATUS,
+  MESSAGE_NOTIFY_TYPE,
+  MESSAGE_TYPE,
+  POST_TYPE
+} from '../../../utils/Constants'
+import SpaceComponent from '../../../components/SpaceComponent'
 
 const ChattingScreen = ({ navigation, route }) => {
   let { userID } = route.params
@@ -111,7 +119,7 @@ const ChattingScreen = ({ navigation, route }) => {
     SocketClient.socket.on('convention', (response) => {
       console.info('into in chatting screen: ', response)
       if (response.type === MESSAGE_TYPE.NOTIFY) {
-      console.info('into notify')
+        console.info('into notify')
 
         const notify = response.notify
         if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AKA && conventionInfo.type === 'private') {
@@ -125,11 +133,10 @@ const ChattingScreen = ({ navigation, route }) => {
               setConventionInfo((pre) => ({ ...pre, name: members.get(notify.changedID).userName }))
             }
           }
-        } else if(notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_CONVENTION_NAME) {
+        } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_CONVENTION_NAME) {
           console.log('change convention name: ', notify.value)
-          setConventionInfo(pre => ({...pre, name: notify.value}))
-        }
-        else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AVATAR) {
+          setConventionInfo((pre) => ({ ...pre, name: notify.value }))
+        } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AVATAR) {
           setConventionInfo((pre) => ({ ...pre, avatar: notify.value }))
         }
       }
@@ -158,6 +165,21 @@ const ChattingScreen = ({ navigation, route }) => {
     setModalVisible((pre) => !pre)
   }, [])
 
+  const handleCall = () => {
+    navigation.navigate('MeetingScreen', {
+      targetID: conventionID,
+      targetInfo: conventionInfo,
+      ownerInfo: state
+    })
+  }
+  const handleVideoCall = () => {
+    navigation.navigate('MeetingScreen', {
+      targetID: conventionID,
+      targetInfo: conventionInfo,
+      ownerInfo: state
+    })
+  }
+
   return (
     <View style={styles.chatScreenContainer}>
       <RowComponent
@@ -168,7 +190,18 @@ const ChattingScreen = ({ navigation, route }) => {
         ]}
       >
         <ChatHeader name={conventionInfo.name} avatar={conventionInfo.avatar} />
-        <SimpleLineIcons color={'blue'} name="exclamation" size={24} onPress={handleClickDetail} />
+        <RowComponent>
+          <Ionicons onPress={handleCall} name="call-outline" size={24} />
+          <SpaceComponent width={24} />
+          <Ionicons onPress={handleVideoCall} name="videocam-outline" size={24} />
+          <SpaceComponent width={24} />
+          <SimpleLineIcons
+            color={'blue'}
+            name="exclamation"
+            size={24}
+            onPress={handleClickDetail}
+          />
+        </RowComponent>
       </RowComponent>
       <ChatList conventionID={conventionID} ownerID={state._id} onLongPress={handleOnShow} />
       <ChatItemModal
