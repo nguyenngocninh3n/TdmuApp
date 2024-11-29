@@ -1,11 +1,11 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, useLinkTo } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AuthNavigation from './auth'
 import MainNavigation from './main'
 import auth from '@react-native-firebase/auth'
 import { useEffect, useState } from 'react'
 import ChattingScreen from '../screens/convenition/chatting'
-import { navigationRef, Provider } from '../store'
+import { actions, navigate, navigationRef, Provider, useCustomContext } from '../store'
 import NewPost from '../screens/Post/NewPost'
 import ProfileScreen from '../screens/Profile'
 import DetailScreen from '../screens/convenition/Detail'
@@ -32,65 +32,144 @@ import GroupImageScreen from '../screens/Group/GroupImage'
 import SearchResultScreen from '../screens/Search/SearchResult'
 const Stack = createNativeStackNavigator()
 
+import notifee, { EventType } from '@notifee/react-native'
+import { createNavigationContainerRef } from '@react-navigation/native'
+import messaging from '@react-native-firebase/messaging'
+import { handleStartNotify } from '../notification/notifee'
+import { Linking } from 'react-native'
+import { API } from '../api'
+import { OPEN_SCREEN, TYPE_SCREEN } from '../utils/Constants'
+import OwnerProfile from '../screens/Profile/Owner'
+import UserProfile from '../screens/Profile/User'
+
+async function requestUserPermission() {
+  await messaging().requestPermission()
+}
+
+messaging().onMessage(async (remoteMessage) => {
+  handleStartNotify(remoteMessage) //***** */
+})
+
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  handleStartNotify(remoteMessage)
+})
+
+notifee.onForegroundEvent(({ type, detail }) => {
+  if (type === EventType.PRESS) {
+    console.log('type received: ', detail.notification.data)
+
+    if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
+      navigate('ProfileScreen')
+    } else {
+      navigate('HomeScreen')
+    }
+  }
+})
+
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  if (type === EventType.PRESS) {
+    console.log('type received: ', detail.notification.data)
+    if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
+      Linking.openURL(OPEN_SCREEN.profile(detail.notification.data.senderID))
+    }
+    else {
+      Linking.openURL(OPEN_SCREEN.home())
+    }
+  }
+})
+
+const linking = {
+  prefixes: ['customview://'], // Tiền tố URL cho ứng dụng của bạn
+  config: {
+    // Định nghĩa các màn hình và đường dẫn của chúng
+    screens: {
+      auth: 'auth', // Đường dẫn cho màn hình xác thực
+      main: {
+        screens: {
+          HomeScreen: 'home'
+        }
+      },
+
+      // PROFILE
+      ProfileScreen: 'profile/:userID', // Màn hình Profile với tham số userId
+
+      // GROUP
+      GroupScreen: 'group/:groupID',
+
+      // CONVENTION
+      ConventionScreen: 'convention/:conventionID'
+    }
+  }
+}
+
 const Navigation = () => {
   const [user, setUser] = useState()
   const onListenAuthStateChanged = (state) => setUser(state)
-
+  requestUserPermission()
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onListenAuthStateChanged)
     return subscriber
   }, [])
 
+  const [state, dispatch] = useCustomContext()
+
+  useEffect(() => {
+    const id = auth().currentUser.uid
+    API.getUserByIdAPI({ uid: id }).then((data) => {
+      dispatch(actions.onLogin(data))
+    })
+  }, [])
+
   return (
-    <Provider>
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {!user ? (
-            <Stack.Screen name="auth" component={AuthNavigation} />
-          ) : (
-            <>
-              <Stack.Screen name="main" component={MainNavigation} />
-              {/* PROFILE */}
-              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-              <Stack.Screen name="FriendScreen" component={FriendScreen} />
-              <Stack.Screen name="BioScreen" component={BioScreen} />
+    <NavigationContainer linking={linking} ref={navigationRef}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!user ? (
+          <Stack.Screen name="auth" component={AuthNavigation} />
+        ) : (
+          <>
+            <Stack.Screen name="main" component={MainNavigation} />
+            {/* PROFILE */}
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="OwnerProfileScreen" component={OwnerProfile} />
+            <Stack.Screen name="UserProfileScreen" component={UserProfile} />
+            <Stack.Screen name="FriendScreen" component={FriendScreen} />
+            <Stack.Screen name="BioScreen" component={BioScreen} />
 
-              {/* SEARCH */}
-              <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
-              {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}
+            {/* SEARCH */}
+            <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
+            {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}
 
-              {/* GROUP */}
-              <Stack.Screen name="GroupScreen" component={GroupScreen} />
-              <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
-              <Stack.Screen name="EditGroupScreen" component={EditGroupScreen} />
-              <Stack.Screen name="GroupIntroduceScreen" component={GroupIntroduceScreen} />
-              <Stack.Screen name="GroupUserScreen" component={GroupUserScreen} />
-              <Stack.Screen name="GroupMemberScreen" component={GroupMemberScreen} />
-              <Stack.Screen name="GroupPendingScreen" component={GroupPendingScreen} />
-              <Stack.Screen name="GroupBlockingScreen" component={GroupBlockingScreen} />
-              <Stack.Screen name="GroupImageScreen" component={GroupImageScreen} />
-              {/* <Stack.Screen name="GroupVideoScreen" component={} /> */}
+            {/* GROUP */}
+            <Stack.Screen name="GroupScreen" component={GroupScreen} />
+            <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
+            <Stack.Screen name="EditGroupScreen" component={EditGroupScreen} />
+            <Stack.Screen name="GroupIntroduceScreen" component={GroupIntroduceScreen} />
+            <Stack.Screen name="GroupUserScreen" component={GroupUserScreen} />
+            <Stack.Screen name="GroupMemberScreen" component={GroupMemberScreen} />
+            <Stack.Screen name="GroupPendingScreen" component={GroupPendingScreen} />
+            <Stack.Screen name="GroupBlockingScreen" component={GroupBlockingScreen} />
+            <Stack.Screen name="GroupImageScreen" component={GroupImageScreen} />
+            {/* <Stack.Screen name="GroupVideoScreen" component={} /> */}
 
-              {/* POST */}
-              <Stack.Screen name="EditPostScreen" component={EditPost} />
-              <Stack.Screen name="NewPostScreen" component={NewPost} />
+            {/* POST */}
+            <Stack.Screen name="EditPostScreen" component={EditPost} />
+            <Stack.Screen name="NewPostScreen" component={NewPost} />
 
-              {/* CONVENTION */}
-              <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
-              <Stack.Screen name="ChattingScreen" component={ChattingScreen} />
-              <Stack.Screen name="DetailScreen" component={DetailScreen} />
-              <Stack.Screen name="FileViewingScreen" component={FileViewing} />
-              <Stack.Screen name="MemberScreen" component={MemberScreen} />
-              <Stack.Screen name="AkaScreen" component={AkaScreen} />
-              <Stack.Screen name="ConventionNameScreen" component={ConventionName} />
-              <Stack.Screen name="SearchConventionScreen" component={SearchConventionScreen} />
-              <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
-              <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+            {/* CONVENTION */}
+            <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
+            <Stack.Screen name="ChattingScreen" component={ChattingScreen} />
+            <Stack.Screen name="DetailScreen" component={DetailScreen} />
+            <Stack.Screen name="FileViewingScreen" component={FileViewing} />
+            <Stack.Screen name="MemberScreen" component={MemberScreen} />
+            <Stack.Screen name="AkaScreen" component={AkaScreen} />
+            <Stack.Screen name="ConventionNameScreen" component={ConventionName} />
+            <Stack.Screen name="SearchConventionScreen" component={SearchConventionScreen} />
+            <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
+            <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 

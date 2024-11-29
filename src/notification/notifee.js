@@ -1,13 +1,16 @@
-import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
+import notifee, {
+  AndroidImportance,
+  AndroidLaunchActivityFlag,
+  EventType
+} from '@notifee/react-native'
 // import messaging from '@react-native-firebase/messaging'
 import { API } from '../api'
 
-
-async function createNotificationChannel({ channelID }) {
-  const isExist = await notifee.getChannel(channelID)
+async function createNotificationChannel() {
+  const isExist = await notifee.getChannel('default')
   if (!isExist) {
     await notifee.createChannel({
-      id: channelID,
+      id: 'default',
       name: 'Default Channel',
       // groupId: groupID,
 
@@ -16,52 +19,29 @@ async function createNotificationChannel({ channelID }) {
   }
 }
 
-async function displayNotification({
-  messageFCM,
-  channelID,
-  senderID,
-  senderAvatar,
-  title,
-  body,
-  channelType
-}) {
+async function displayNotification({ data }) {
   await notifee.displayNotification({
-    title: messageFCM.notification?.title ?? title,
-    body: messageFCM.notification?.body ?? body,
-    id:channelID,
+    title: data.title,
+    body: data.body,
+    id: data.channelID,
     android: {
-      channelId: channelID,
+      channelId: 'default',
       importance: AndroidImportance.HIGH,
       //   groupSumary: true,
       //   groupID: groupID,
       pressActions: {
-        id: 1
+        id: 1,
+        lauchActivity: 'default'
       },
-      largeIcon: API.getFileUrl(senderAvatar)
+      largeIcon: API.getFileUrl(data.senderAvatar)
     },
-    data: {
-      title,
-      body,
-      senderID,
-      channelType
-    }
+    data: data
   })
 }
 
 async function handleStartNotify(remoteMessage) {
-
-  const { channelID, senderID, senderName, senderAvatar, title, body, channelType } =
-    remoteMessage.data
-  await createNotificationChannel({ channelID })
-  await displayNotification({
-    messageFCM: remoteMessage,
-    channelID,
-    senderID,
-    senderAvatar,
-    title,
-    body,
-    channelType
-  })
+  await createNotificationChannel()
+  await displayNotification({ data: remoteMessage.data })
 }
 
 export {

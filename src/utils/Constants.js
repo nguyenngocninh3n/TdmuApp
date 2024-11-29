@@ -84,6 +84,21 @@ const MEMBER_STATUS = {
   ACCEPT: 'ACCEPT'
 }
 
+const preURL = 'customview://'
+
+const TYPE_SCREEN = {
+  PROFILE: 'PROFILE',
+  POST: 'POST',
+  CONVENTION: 'CONVENTION',
+  CALL: 'CALL'
+}
+
+const OPEN_SCREEN = {
+  profile: (userID) => `${preURL}profile/${userID}`,
+  convention: (conventionID) => `${preURL}convention/${conventionID}`,
+  home: () => `${preURL}home`
+}
+
 
 const SCOPE = {
   PUBLIC: 'PUBLIC',
@@ -106,5 +121,7 @@ export {
   RESPONSE_STATUS,
   MEMBER_ROLE,
   MEMBER_STATUS,
-  SCOPE
+  SCOPE,
+  OPEN_SCREEN,
+  TYPE_SCREEN
 }
