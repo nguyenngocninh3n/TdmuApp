@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.6'
+const URL = 'http://192.168.1.7'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 

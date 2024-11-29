@@ -2,6 +2,17 @@ import auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { API } from '../../api'
 import SocketClient from '../../socket'
+
+import messaging from '@react-native-firebase/messaging'
+
+async function getFCMToken() {
+  const token = await messaging().getToken()
+  console.log('FCM Token:', token)
+  // Lưu token lên server của bạn nếu cần
+  return token
+}
+
+
 const configGoogleMethod = async () => {
   GoogleSignin.configure({
     webClientId: '77194624099-c6bfhn2iencledrpov9b8169nfl2f157.apps.googleusercontent.com'
@@ -38,7 +49,8 @@ async function signInWithGoogle() {
   return await auth()
     .signInWithCredential(googleCredential)
     .then(async (user) => {
-      const userData = { ...user.additionalUserInfo.profile, _id: user.user.uid }
+      const messagingToken = await getFCMToken()
+      const userData = { ...user.additionalUserInfo.profile, _id: user.user.uid, messagingToken }
       const newUser = await API.loginAPI({ data: userData })
       return newUser
     })
