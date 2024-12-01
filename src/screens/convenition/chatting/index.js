@@ -168,15 +168,13 @@ const ChattingScreen = ({ navigation, route }) => {
   const handleCall = () => {
     navigation.navigate('MeetingScreen', {
       targetID: conventionID,
-      targetInfo: conventionInfo,
-      ownerInfo: state
+      ownerID: state._id
     })
   }
   const handleVideoCall = () => {
     navigation.navigate('MeetingScreen', {
       targetID: conventionID,
-      targetInfo: conventionInfo,
-      ownerInfo: state
+      ownerID: state._id
     })
   }
 

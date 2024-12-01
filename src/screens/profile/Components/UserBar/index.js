@@ -4,7 +4,8 @@ import RowComponent from '../../../../components/RowComponent'
 import { StyleSheet } from 'react-native'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import { API } from '../../../../api'
-import { FRIEND_STATUS } from '../../../../utils/Constants'
+import { FRIEND_STATUS, RESPONSE_STATUS } from '../../../../utils/Constants'
+import PopUpModal from '../../../../modals/PopUpModal'
 
 const CustomButton = ({ title, onPress }) => {
   return (
@@ -24,7 +25,7 @@ const handleCLick = {
       userID,
       status: FRIEND_STATUS.PENDING
     })
-    console.log('respone add friend in userbar: ', response)
+    return response
   },
 
   acceptFriend: async ({ ownerID, userID }) => {
@@ -33,7 +34,7 @@ const handleCLick = {
       userID: userID,
       status: FRIEND_STATUS.ACCEPTING
     })
-    console.log('respone accept friend in userbar: ', response)
+    return response
   },
 
   refuseFriend: async ({ ownerID, userID }) => {
@@ -42,36 +43,112 @@ const handleCLick = {
       userID,
       status: FRIEND_STATUS.REFUSING
     })
-    console.log('respone refuse friend in userbar: ', response)
+    return response
+  },
+
+  cancelRequest: async ({ ownerID, userID }) => {
+    const response = await API.updateStatusFriend({
+      ownerID,
+      userID,
+      status: FRIEND_STATUS.CANCELING
+    })
+    return response
+  },
+
+  cancelFriend: async ({ ownerID, userID }) => {
+    const response = await API.updateStatusFriend({
+      ownerID,
+      userID,
+      status: FRIEND_STATUS.CANCELING
+    })
+    return response
   }
 }
 
-const FriendStatusButton = ({ status, ownerID, userID }) => {
+const FriendStatusButton = ({ status, ownerID, userID, onSelect, onAfter }) => {
+  const showCancelRequestModal = () => {
+    onSelect('Hủy yêu cầu', 'Bạn có chắc chắn muốn hủy yêu cầu kết bạn!', () => {
+      handleCLick.cancelRequest({ ownerID, userID }).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          onAfter(response.data?.status ?? FRIEND_STATUS.NONE)
+        }
+      })
+    })
+  }
+
+  const showCanceFriendlModal = () => {
+    onSelect('Hủy kết bạn', 'Bạn có chắc chắn muốn hủy kết bạn!', () => {
+      handleCLick.cancelFriend({ ownerID, userID }).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          onAfter(response.data?.status ?? FRIEND_STATUS.NONE)
+        }
+      })
+    })
+  }
+
+  const handleAdd = () => {
+    handleCLick.addFriend({ ownerID, userID }).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        onAfter(response.data?.status ?? FRIEND_STATUS.NONE)
+      }
+    })
+  }
+
+  const handleRefuse = () => {
+    handleCLick.refuseFriend({ ownerID, userID }).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        onAfter(response.data?.status ?? FRIEND_STATUS.NONE)
+      }
+    })
+  }
+
+  const handleAccept = () => {
+    handleCLick.acceptFriend({ ownerID, userID }).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        onAfter(response.data?.status ?? FRIEND_STATUS.NONE)
+      }
+    })
+  }
+
   switch (status) {
     case FRIEND_STATUS.NONE:
-      return (
-        <CustomButton
-          title={'Thêm bạn bè'}
-          onPress={() => handleCLick.addFriend({ ownerID, userID })}
-        />
-      )
+      return <CustomButton title={'Thêm bạn bè'} onPress={handleAdd} />
     case FRIEND_STATUS.PENDING:
-      return <CustomButton title={'Đã gửi lời mời kết bạn'} />
+      return <CustomButton title={'Đã gửi yêu cầu'} onPress={showCancelRequestModal} />
     case FRIEND_STATUS.ACCEPTING:
       return (
-        <CustomButton
-          title={'Đồng ý kết bạn'}
-          onPress={() => handleCLick.acceptFriend({ ownerID, userID })}
-        />
+        <RowComponent>
+          <CustomButton title={'Từ chối'} onPress={handleRefuse} />
+          <CustomButton title={'Chấp nhận'} onPress={handleAccept} />
+        </RowComponent>
       )
     case FRIEND_STATUS.FRIEND:
-      return <CustomButton title={'Bạn bè'} />
+      return <CustomButton title={'Bạn bè'} onPress={showCanceFriendlModal} />
     default:
-      return <CustomButton title={'Thêm bạn bè'} />
+      return <CustomButton title={'Thêm bạn bè'} onPress={handleAdd} />
   }
 }
 const UserBar = ({ navigation, ownerID, userID }) => {
   const [statusFriend, setStatusFriend] = useState()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalData, setModalData] = useState({ title: '', subTitle: '', onsubmit: () => {} })
+
+  const closeModal = () => setModalVisible(false)
+
+  const handleSetModalData = (title, subTitle, onsubmit) => {
+    setModalVisible(true)
+    setModalData({ title, subTitle, onsubmit })
+  }
+
+  const handleSubmitModal = () => {
+    modalData.onsubmit()
+    closeModal()
+  }
+
+  const handleSetStatusFriend = (status) => {
+    setStatusFriend(status)
+  }
+
   const handleChat = async () => {
     const conventionID = await API.getConventionID(ownerID, userID)
     navigation.navigate('ChattingScreen', { conventionID, userID })
@@ -85,13 +162,26 @@ const UserBar = ({ navigation, ownerID, userID }) => {
 
   return (
     <RowComponent style={styles.userBtnWrapper}>
-      <FriendStatusButton status={statusFriend} ownerID={ownerID} userID={userID} />
+      <FriendStatusButton
+        status={statusFriend}
+        ownerID={ownerID}
+        userID={userID}
+        onSelect={handleSetModalData}
+        onAfter={handleSetStatusFriend}
+      />
       <SpaceComponent width={20} />
       <OpacityButtton
         onPress={handleChat}
         title="Nhắn tin"
         style={{ backgroundColor: '#af2', padding: 10 }}
         textStyle={styles.userBtnTxt}
+      />
+      <PopUpModal
+        modalVisible={modalVisible}
+        onCancle={closeModal}
+        title={modalData.title}
+        subtitle={modalData.subTitle}
+        onSubmit={handleSubmitModal}
       />
     </RowComponent>
   )

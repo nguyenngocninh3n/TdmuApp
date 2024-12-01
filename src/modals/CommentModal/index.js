@@ -17,11 +17,13 @@ import SpaceComponent from '../../components/SpaceComponent'
 import EditableModal from '../EditableModal'
 import PopUpModal from '../PopUpModal'
 import { RESPONSE_STATUS } from '../../utils/Constants'
+import { useCustomContext } from '../../store'
+import { stat } from 'react-native-fs'
 
 const CommentModal = React.memo(({ modalVisible, onClose, userInfo, postID }) => {
   const [commentData, setCommmentData] = useState([])
   console.log('comment modal re-render')
-
+  const [state, dispatch] = useCustomContext()
   const [editableModal, setEditableModal] = useState(false)
   const [deletableModal, setDeletableModal] = useState(false)
   const [editableItem, setEditableItem] = useState()
@@ -70,9 +72,9 @@ const CommentModal = React.memo(({ modalVisible, onClose, userInfo, postID }) =>
     const customData = {
       postID: postID,
       parentID: replyItem?._id ? replyItem._id : null,
-      userID: userInfo.userID,
-      userName: userInfo.userName,
-      avatar: userInfo.avatar,
+      userID: state._id,
+      userName: state.userName,
+      avatar: state.avatar,
       content: value
     }
     API.storeCommentAPI(customData)
@@ -134,7 +136,7 @@ const CommentModal = React.memo(({ modalVisible, onClose, userInfo, postID }) =>
   }
 
   const handleReactComment = (commentID) => {
-    API.reactCommentAPI(commentID, userInfo.userID).then((response) => {
+    API.reactCommentAPI(commentID, state._id).then((response) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
         setCommmentData((pre) => {
           const updatableIndex = pre.findIndex((item) => item._id === commentID)
@@ -142,14 +144,14 @@ const CommentModal = React.memo(({ modalVisible, onClose, userInfo, postID }) =>
             const customArr = [...pre]
             customArr[updatableIndex] = {
               ...customArr[updatableIndex],
-              reactions: [...customArr[updatableIndex].reactions, userInfo.userID]
+              reactions: [...customArr[updatableIndex].reactions, state._id]
             }
             return customArr
           } else {
             const customArr = [...pre]
             customArr[updatableIndex] = {
               ...customArr[updatableIndex],
-              reactions: customArr[updatableIndex].reactions.filter((item) => item !== userInfo.userID)
+              reactions: customArr[updatableIndex].reactions.filter((item) => item !== state._id)
             }
             return customArr
           }
@@ -199,7 +201,7 @@ const CommentModal = React.memo(({ modalVisible, onClose, userInfo, postID }) =>
                 ({ item }) => (
                   <CommentItem
                     item={item}
-                    ownerID={userInfo.userID}
+                    ownerID={state._id}
                     key={item._id}
                     onEdit={handleShowEditableModal}
                     onDelete={handleShowDeletableModal}

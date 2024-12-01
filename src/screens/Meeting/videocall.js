@@ -1,18 +1,15 @@
 export const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIwMzAyNjY1Ny01Y2RmLTRkZDUtYThmMi04MmI2MmQwYzE3ZWUiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMjcyOTAwNiwiZXhwIjoxNzMzMzMzODA2fQ.j9WuWXZw6uQZ_vuFr0CsvO0X2rDo4NR1KiMQt_BKG5Y'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIwMzAyNjY1Ny01Y2RmLTRkZDUtYThmMi04MmI2MmQwYzE3ZWUiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMzAyNDgxNywiZXhwIjoxNzM1NjE2ODE3fQ.vvNCz1rNFPJ3znAHITtAjFMT7Bd_Apw_DBcETPnnnqQ'
 // API call to create meeting
-export const createMeeting = async ({ tokenParam, targetID }) => {
-  console.log('received : ', tokenParam)
-  const customRoomId = targetID + "-bbb-ccc"
+export const createMeeting = async () => {
   const res = await fetch(`https://api.videosdk.live/v2/rooms`, {
     method: 'POST',
     headers: {
-      authorization: `${tokenParam}`,
+      authorization: token,
       'Content-Type': 'application/json'
     }
-
   })
-  const {roomId} = await res.json()
+  const { roomId } = await res.json()
   console.log('response: ', roomId)
 
   return roomId
@@ -20,7 +17,7 @@ export const createMeeting = async ({ tokenParam, targetID }) => {
 
 export const getToken = () => token
 
-export const getMeetingId = async (tokenParam, targetID) => {
+export const getMeetingId = async () => {
   try {
     //Use VideoSDK rooms API endpoint to create a meetingId
     const VIDEOSDK_API_ENDPOINT = `https://api.videosdk.live/v2/rooms`
@@ -29,14 +26,8 @@ export const getMeetingId = async (tokenParam, targetID) => {
       headers: {
         'Content-Type': 'application/json',
         // Pass the token in the headers
-        Authorization: tokenParam
-      },
-      body: JSON.stringify({
-        customRoomId: `${targetID}-bbb-ccc`,
-        webhook: 'see example',
-        autoCloseConfig: 'see example',
-        autoStartConfig: 'see example'
-      })
+        Authorization: token
+      }
     }
     const meetingId = await fetch(VIDEOSDK_API_ENDPOINT, options)
       .then(async (result) => {

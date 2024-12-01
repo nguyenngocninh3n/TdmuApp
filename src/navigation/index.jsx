@@ -1,11 +1,11 @@
-import { NavigationContainer, useLinkTo } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AuthNavigation from './auth'
 import MainNavigation from './main'
 import auth from '@react-native-firebase/auth'
 import { useEffect, useState } from 'react'
 import ChattingScreen from '../screens/convenition/chatting'
-import { actions, navigate, navigationRef, Provider, useCustomContext } from '../store'
+import { actions, navigate, navigationRef, useCustomContext } from '../store'
 import NewPost from '../screens/Post/NewPost'
 import ProfileScreen from '../screens/Profile'
 import DetailScreen from '../screens/convenition/Detail'
@@ -33,7 +33,6 @@ import SearchResultScreen from '../screens/Search/SearchResult'
 const Stack = createNativeStackNavigator()
 
 import notifee, { EventType } from '@notifee/react-native'
-import { createNavigationContainerRef } from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
 import { handleStartNotify } from '../notification/notifee'
 import { Linking } from 'react-native'
@@ -41,6 +40,7 @@ import { API } from '../api'
 import { OPEN_SCREEN, TYPE_SCREEN } from '../utils/Constants'
 import OwnerProfile from '../screens/Profile/Owner'
 import UserProfile from '../screens/Profile/User'
+import MeetingProviderScreen from '../screens/Meeting/MeetingProvider'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -60,6 +60,15 @@ notifee.onForegroundEvent(({ type, detail }) => {
 
     if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
       navigate('ProfileScreen')
+    } else if (detail.notification.data?.type === TYPE_SCREEN.FRIEND) {
+      navigate('ProfileScreen', { userID: detail.notification.data?.senderID })
+    } else if (detail.notification.data?.type === TYPE_SCREEN.CALL) {
+      navigate('MeetingScreen', {
+        ownerID: detail.notification.data?.ownerID,
+        targetID: detail.notification.data?.targetID,
+        meetingId: detail.notification.data?.meetingId,
+        reply: true
+      })
     } else {
       navigate('HomeScreen')
     }
@@ -71,8 +80,15 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
     console.log('type received: ', detail.notification.data)
     if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
       Linking.openURL(OPEN_SCREEN.profile(detail.notification.data.senderID))
-    }
-    else {
+    } else if (detail.notification.data?.type === TYPE_SCREEN.FRIEND) {
+      Linking.openURL(OPEN_SCREEN.profile(detail.notification.data.senderID))
+    } else if (detail.notification.data?.type === TYPE_SCREEN.CALL) {
+      const targetID = detail.notification.data?.targetID
+      const ownerID = detail.notification.data?.ownerID
+      const meetingId = detail.notification.data?.meetingId
+      const customURL = `customview://call/${ownerID}/${targetID}/${meetingId}/true`
+      Linking.openURL(OPEN_SCREEN.profile(customURL))
+    } else {
       Linking.openURL(OPEN_SCREEN.home())
     }
   }
@@ -97,7 +113,8 @@ const linking = {
       GroupScreen: 'group/:groupID',
 
       // CONVENTION
-      ConventionScreen: 'convention/:conventionID'
+      ConventionScreen: 'convention/:conventionID',
+      MeetingScreen: 'call/:ownerID/:targetID/:meetingID/:reply'
     }
   }
 }
@@ -114,10 +131,12 @@ const Navigation = () => {
   const [state, dispatch] = useCustomContext()
 
   useEffect(() => {
+   if(auth().currentUser) {
     const id = auth().currentUser.uid
     API.getUserByIdAPI({ uid: id }).then((data) => {
       dispatch(actions.onLogin(data))
     })
+   }
   }, [])
 
   return (
@@ -166,6 +185,8 @@ const Navigation = () => {
             <Stack.Screen name="SearchConventionScreen" component={SearchConventionScreen} />
             <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
             <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
+            <Stack.Screen name="MeetingScreen" component={MeetingProviderScreen} />
+
           </>
         )}
       </Stack.Navigator>

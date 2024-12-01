@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from "react-native"
 
 const Button = ({ onPress, buttonText, backgroundColor }) => {
   return (
@@ -46,13 +46,6 @@ export default function ControlsContainer({ join, leave, toggleWebcam, toggleMic
         }}
         buttonText={'Toggle Mic'}
         backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          leave()
-        }}
-        buttonText={'Leave'}
-        backgroundColor={'#FF0000'}
       />
     </View>
   )

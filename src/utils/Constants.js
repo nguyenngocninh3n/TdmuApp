@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.7'
+const URL = 'http://192.168.1.13'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -69,6 +69,7 @@ const FRIEND_STATUS = {
   PENDING: 'PENDING',
   ACCEPTING: 'ACCEPTING',
   REFUSING: 'REFUSING',
+  CANCELING: 'CANCELING',
   FRIEND: 'FRIEND'
 }
 
@@ -88,6 +89,7 @@ const preURL = 'customview://'
 
 const TYPE_SCREEN = {
   PROFILE: 'PROFILE',
+  FRIEND: 'FRIEND',
   POST: 'POST',
   CONVENTION: 'CONVENTION',
   CALL: 'CALL'
@@ -106,6 +108,12 @@ const SCOPE = {
   PRIVATE: 'PRIVATE',
   OWNER: 'OWNER'
 }
+
+const CONVENTION_TYPE = {
+  PRIVATE: 'private',
+  GROUP: 'group'
+}
+
 export {
   SERVER_POST,
   POST_ATTACHMENT,
@@ -123,5 +131,6 @@ export {
   MEMBER_STATUS,
   SCOPE,
   OPEN_SCREEN,
-  TYPE_SCREEN
+  TYPE_SCREEN,
+  CONVENTION_TYPE
 }

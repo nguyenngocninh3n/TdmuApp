@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import TabData from '../../data/TabData'
 import Header from '../../components/Header'
 import ListGroupScreen from '../../screens/Group/ListGroup'
-import VideoCallWrapperProvider from '../../screens/Call/VideoCallWrapperProvider'
 import MeetingProviderScreen from '../../screens/Meeting/MeetingProvider'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
@@ -35,7 +34,6 @@ const MainNavigation = ({ navigation }) => {
       ))}
       <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
       <Tab.Screen name="MeetingScreen" component={MeetingProviderScreen} />
-      <Tab.Screen name="CallScreen" component={VideoCallWrapperProvider} />
     </Tab.Navigator>
   )
 }

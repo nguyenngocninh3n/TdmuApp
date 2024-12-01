@@ -1,6 +1,5 @@
 import { FlatList, Text, View } from 'react-native'
-import ParticipantView from '../ParticianView'
-
+import ParticipantView from '../ParticipanView'
 
 export default function ParticipantList({ participants }) {
   return participants.length > 0 ? (

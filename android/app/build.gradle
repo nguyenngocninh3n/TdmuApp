@@ -113,12 +113,14 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-push-notification')
     implementation 'com.facebook.react:react-native:+'
-    implementation project(':rnwebrtc')
+    // implementation project(':rnwebrtc')
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }
+    implementation project(':rnfgservice')
+    implementation project(':rnwebrtc')
 }
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
