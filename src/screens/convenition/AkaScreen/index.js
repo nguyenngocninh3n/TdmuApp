@@ -157,7 +157,7 @@ const AkaScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <GoBackComponent />
+      <GoBackComponent title={'Biệt danh'} />
       <SpaceComponent height={24} />
       {memberData.map((item, index) => (
         <RowComponent
@@ -170,7 +170,7 @@ const AkaScreen = ({ navigation, route }) => {
           <SpaceComponent width={16} />
           <View>
             <Text style={{ fontWeight: '700', fontSize: 16 }}>{item.userName}</Text>
-            {item.aka && <Text>{item.aka}</Text>}
+            <Text>{item.aka || 'Thêm biệt danh...'}</Text>
           </View>
         </RowComponent>
       ))}

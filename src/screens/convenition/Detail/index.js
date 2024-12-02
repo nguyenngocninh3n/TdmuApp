@@ -5,6 +5,7 @@ import SpaceComponent from '../../../components/SpaceComponent'
 import RowComponent from '../../../components/RowComponent'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { API } from '../../../api'
 import GoBackComponent from '../../../components/GoBackComponent'
 import { OpacityButtton } from '../../../components/ButtonComponent'
@@ -13,7 +14,7 @@ import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../
 const DetailScreen = ({ navigation, route }) => {
   const { conventionID, name, avatar, members, chatData, type, ownerID, conventionName } =
     route.params
-  console.log('members: ', )
+  console.log('members: ', members)
   const [modalVisible, setModalVisible] = useState(false)
   const [chatName, setChatName] = useState(conventionName)
   const onCloseModal = () => setModalVisible(false)
@@ -77,6 +78,19 @@ const DetailScreen = ({ navigation, route }) => {
     })
   }
 
+  const handleCall = () => {
+    navigation.navigate('MeetingScreen', {
+      targetID: conventionID,
+      ownerID: ownerID
+    })
+  }
+  const handleVideoCall = () => {
+    navigation.navigate('MeetingScreen', {
+      targetID: conventionID,
+      ownerID: ownerID
+    })
+  }
+
   return (
     <View style={{ marginHorizontal: 16 }}>
       <GoBackComponent />
@@ -85,6 +99,24 @@ const DetailScreen = ({ navigation, route }) => {
         <SpaceComponent height={8} />
         <Text style={{ fontSize: 24 }}>{name}</Text>
       </View>
+      <SpaceComponent height={16} />
+      <RowComponent style={{ justifyContent: 'space-around' }}>
+        <View style={{ alignItems: 'center' }}>
+          <Ionicons onPress={handleCall} name="call-outline" size={24} />
+          <SpaceComponent width={24} />
+          <Text>Gọi thoại</Text>
+        </View>
+        <View style={{ alignItems: 'center' }}>
+          <Ionicons onPress={handleVideoCall} name="videocam-outline" size={24} />
+          <SpaceComponent width={24} />
+          <Text>Gọi video</Text>
+        </View>
+        <View style={{ alignItems: 'center' }}>
+          <AntDesign name="adduser" size={32} />
+          <SpaceComponent width={24} />
+          <Text>Thêm</Text>
+        </View>
+      </RowComponent>
       <SpaceComponent height={32} />
 
       {/* PROFILE */}
@@ -233,11 +265,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     marginTop: 10,
     marginLeft: 10,
-    fontSize:17,
+    fontSize: 17,
     color: '#000',
     fontWeight: '500'
   },
-  modalTextInput: { borderBottomColor: '#ccc', flex: 1, borderBottomWidth: 1, paddingBottom:2},
+  modalTextInput: { borderBottomColor: '#ccc', flex: 1, borderBottomWidth: 1, paddingBottom: 2 },
   modalBtnText: {
     color: 'blue',
     fontWeight: '400',

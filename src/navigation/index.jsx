@@ -87,7 +87,7 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
       const ownerID = detail.notification.data?.ownerID
       const meetingId = detail.notification.data?.meetingId
       const customURL = `customview://call/${ownerID}/${targetID}/${meetingId}/true`
-      Linking.openURL(OPEN_SCREEN.profile(customURL))
+      Linking.openURL(customURL)
     } else {
       Linking.openURL(OPEN_SCREEN.home())
     }
@@ -131,12 +131,26 @@ const Navigation = () => {
   const [state, dispatch] = useCustomContext()
 
   useEffect(() => {
-   if(auth().currentUser) {
-    const id = auth().currentUser.uid
-    API.getUserByIdAPI({ uid: id }).then((data) => {
-      dispatch(actions.onLogin(data))
-    })
-   }
+    if (auth().currentUser) {
+      const id = auth().currentUser.uid
+      API.getUserByIdAPI({ uid: id }).then((data) => {
+        dispatch(actions.onLogin(data))
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    const getInitialURL = async () => {
+      const initialURL = await Linking.getInitialURL()
+      console.log('initialURL status: ', initialURL)
+      Linking.addEventListener('url', event => {
+        console.log('receive url: ', event.url)
+        Linking.openURL(url)
+      })
+     
+    }
+
+    getInitialURL()
   }, [])
 
   return (
@@ -186,7 +200,6 @@ const Navigation = () => {
             <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
             <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
             <Stack.Screen name="MeetingScreen" component={MeetingProviderScreen} />
-
           </>
         )}
       </Stack.Navigator>

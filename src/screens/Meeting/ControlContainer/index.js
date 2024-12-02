@@ -1,4 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native"
+import { navigationRef } from "../../../store"
+import { useMeeting } from "@videosdk.live/react-native-sdk"
 
 const Button = ({ onPress, buttonText, backgroundColor }) => {
   return (
@@ -18,6 +20,7 @@ const Button = ({ onPress, buttonText, backgroundColor }) => {
 }
 
 export default function ControlsContainer({ join, leave, toggleWebcam, toggleMic }) {
+  const {localMicOn, localWebcamOn} = useMeeting()
   return (
     <View
       style={{
@@ -26,25 +29,27 @@ export default function ControlsContainer({ join, leave, toggleWebcam, toggleMic
         justifyContent: 'space-between'
       }}
     >
-      <Button
-        onPress={() => {
-          join()
-        }}
-        buttonText={'Join'}
-        backgroundColor={'#1178F8'}
-      />
+      
       <Button
         onPress={() => {
           toggleWebcam()
         }}
-        buttonText={'Toggle Webcam'}
+        buttonText={localWebcamOn ? 'Tắt camera' : 'Bật camera'}
         backgroundColor={'#1178F8'}
       />
       <Button
         onPress={() => {
           toggleMic()
         }}
-        buttonText={'Toggle Mic'}
+        buttonText={localMicOn ? 'Tắt mic' : 'Mở mic'}
+        backgroundColor={'#1178F8'}
+      />
+      <Button
+        onPress={() => {
+          leave()
+          navigationRef.goBack()
+        }}
+        buttonText={'Kết thúc'}
         backgroundColor={'#1178F8'}
       />
     </View>

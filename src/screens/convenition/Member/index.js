@@ -16,7 +16,7 @@ const MemberScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <GoBackComponent />
+      <GoBackComponent title={'Thành viên'} />
       <SpaceComponent height={32} />
       <Text style={{textAlign:'center', fontWeight:'500', fontSize:18, color: 'blue', marginBottom:16}}>Danh sách thành viên</Text>
       {members.map((item, index) => (

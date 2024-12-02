@@ -7,6 +7,8 @@ import SocketClient from '../../socket'
 import { useCustomContext } from '../../store'
 import { configureBackgroundFetch } from '../../socket/backgroundfetch'
 
+
+
 const NotificationScreen = ({ navigation }) => {
   const [users, setUsers] = useState([])
   const [state, dispatch] = useCustomContext()
@@ -20,12 +22,12 @@ const NotificationScreen = ({ navigation }) => {
   const requestPermission = async () => {
     await PermissionsAndroid.request('android.permission.USE_EXACT_ALARM')
     await PermissionsAndroid.request('android.permission.BIND_JOB_SERVICE')
-    await PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION')
-    await PermissionsAndroid.request('android.permission.ACCESS_COARSE_LOCATION')
-    await PermissionsAndroid.request('android.permission.ACCESS_BACKGROUND_LOCATION')
     await PermissionsAndroid.request('android.permission.ACCESS_WIFI_STATE')
     await PermissionsAndroid.request('android.permission.CAMERA')
     await PermissionsAndroid.request('android.permission.ACTIVITY_RECOGNITION')
+    await PermissionsAndroid.request('android.permission.RECORD_AUDIO')
+
+
   }
   useEffect(() => {
     SocketClient.runSocketClient(state._id, navigation)

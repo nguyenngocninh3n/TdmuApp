@@ -3774,12 +3774,14 @@ __metadata:
     react: 18.2.0
     react-native: 0.75.3
     react-native-background-fetch: ^4.2.5
+    react-native-device-info: ^14.0.1
     react-native-element-dropdown: ^2.12.2
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.20.2
     react-native-image-crop-picker: ^0.41.5
     react-native-image-picker: ^7.1.2
     react-native-image-viewing: ^0.2.2
+    react-native-keep-awake: ^4.0.0
     react-native-pager-view: ^6.5.1
     react-native-push-notification: ^8.1.1
     react-native-reanimated: ^3.16.1
@@ -9012,6 +9014,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-device-info@npm:^14.0.1":
+  version: 14.0.1
+  resolution: "react-native-device-info@npm:14.0.1"
+  peerDependencies:
+    react-native: "*"
+  checksum: d381cc0d21da1d86fe8f9bfdd36ffd1c37a78cefbf89d3716b72a58ee4ebdfa44af47f51aeda5e613c15bd54d78ff0e43048a369eda86f391356351f0ed78462
+  languageName: node
+  linkType: hard
+
 "react-native-element-dropdown@npm:^2.12.2":
   version: 2.12.2
   resolution: "react-native-element-dropdown@npm:2.12.2"
@@ -9081,6 +9092,13 @@ __metadata:
     react: ">=16.11.0"
     react-native: ">=0.61.3"
   checksum: 17f16958ebc00787453d68ca0a695ee5fd9c59865fc525e192de6f200f4b91caa3af3da5a9908e28c94370ea28382074328f917c5398a27b112dd986985f77a0
+  languageName: node
+  linkType: hard
+
+"react-native-keep-awake@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "react-native-keep-awake@npm:4.0.0"
+  checksum: b041c5c7c27e2ed7d97aafbea7e05b2676dd1ae712df6de4bb6076946d4ae76e65aa2e666748bfacc8959667ae9704787466d17d348cf79bb0b8c1b327c6a110
   languageName: node
   linkType: hard
 

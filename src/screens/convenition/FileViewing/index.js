@@ -93,7 +93,7 @@ const FileViewing = ({ navigation, route }) => {
 
   return (
     <View>
-      <GoBackComponent marginLeft={16} />
+      <GoBackComponent marginLeft={16} title={'Ảnh và video'} />
       <SpaceComponent height={16} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
         <OpacityButtton

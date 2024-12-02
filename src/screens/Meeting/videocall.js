@@ -1,6 +1,9 @@
-export const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIwMzAyNjY1Ny01Y2RmLTRkZDUtYThmMi04MmI2MmQwYzE3ZWUiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMzAyNDgxNywiZXhwIjoxNzM1NjE2ODE3fQ.vvNCz1rNFPJ3znAHITtAjFMT7Bd_Apw_DBcETPnnnqQ'
-// API call to create meeting
+// export const token =
+//   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIwMzAyNjY1Ny01Y2RmLTRkZDUtYThmMi04MmI2MmQwYzE3ZWUiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMzAyNDgxNywiZXhwIjoxNzM1NjE2ODE3fQ.vvNCz1rNFPJ3znAHITtAjFMT7Bd_Apw_DBcETPnnnqQ'
+// // API call to create meeting
+
+export const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiJjNTI4YWU5OS0xMDdjLTQ2ZGMtYmViOC1mMzUwNmJmYjQzMDEiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMzA1ODIzMSwiZXhwIjoxNzM1NjUwMjMxfQ.KaVqVV1tvS7D443xWuQQaG_wD7f-1f7BoswAltUntfc'
+
 export const createMeeting = async () => {
   const res = await fetch(`https://api.videosdk.live/v2/rooms`, {
     method: 'POST',

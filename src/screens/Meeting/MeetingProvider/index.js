@@ -1,232 +1,73 @@
-import React, { useState } from 'react'
-import { SafeAreaView, TouchableOpacity, Text, TextInput, View, FlatList } from 'react-native'
-import {
-  MeetingProvider,
-  useMeeting,
-  useParticipant,
-  MediaStream,
-  RTCView
-} from '@videosdk.live/react-native-sdk'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView } from 'react-native'
+import { MeetingProvider } from '@videosdk.live/react-native-sdk'
 import { createMeeting, token } from '../videocall'
+import MeetingView from '../MeetingView'
+import { API } from '../../../api'
+import { CONVENTION_TYPE } from '../../../utils/Constants'
 
-function JoinScreen(props) {
-  const [meetingVal, setMeetingVal] = useState('')
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: '#F6F6FF',
-        justifyContent: 'center',
-        paddingHorizontal: 6 * 10
-      }}
-    >
-      <TouchableOpacity
-        onPress={() => {
-          props.getMeetingId()
-        }}
-        style={{ backgroundColor: '#1178F8', padding: 12, borderRadius: 6 }}
-      >
-        <Text style={{ color: 'white', alignSelf: 'center', fontSize: 18 }}>Create Meeting</Text>
-      </TouchableOpacity>
+export default function MeetingProviderScreen({ navigation, route }) {
+  const [meetingId, setMeetingId] = useState(route.params?.meetingId)
+  const [ownerInfo, setOwnerInfo] = useState()
+  const [targetInfo, setTargetInfo] = useState()
 
-      <Text
-        style={{
-          alignSelf: 'center',
-          fontSize: 22,
-          marginVertical: 16,
-          fontStyle: 'italic',
-          color: 'grey'
-        }}
-      >
-        ---------- OR ----------
-      </Text>
-      <TextInput
-        value={meetingVal}
-        onChangeText={setMeetingVal}
-        placeholder={'XXXX-XXXX-XXXX'}
-        style={{
-          padding: 12,
-          borderWidth: 1,
-          borderRadius: 6,
-          fontStyle: 'italic'
-        }}
-      />
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#1178F8',
-          padding: 12,
-          marginTop: 14,
-          borderRadius: 6
-        }}
-        onPress={() => {
-          console.log('dmeo user ')
-          props.getMeetingId(meetingVal)
-        }}
-      >
-        <Text style={{ color: 'white', alignSelf: 'center', fontSize: 18 }}>Join Meeting</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
-  )
-}
+  const { ownerID, targetID } = route.params
+  const reply = route.params?.reply
+   console.log('owner ID va target ID: ', ownerID, ' ', targetID)
 
-const Button = ({ onPress, buttonText, backgroundColor }) => {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        backgroundColor: backgroundColor,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 12,
-        borderRadius: 4
-      }}
-    >
-      <Text style={{ color: 'white', fontSize: 12 }}>{buttonText}</Text>
-    </TouchableOpacity>
-  )
-}
+  useEffect(() => {
+    API.getUserByIdAPI({uid:ownerID}).then((data) => {
+      console.log('get owner info: ', data)
+      setOwnerInfo(data)
+    })
+    API.getConventionByIdAPI(targetID).then((data) => {
+      // console.log('get target info: ', data)
 
-function ControlsContainer({ join, leave, toggleWebcam, toggleMic }) {
-  return (
-    <View
-      style={{
-        padding: 24,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}
-    >
-      <Button
-        onPress={() => {
-          join()
-        }}
-        buttonText={'Join'}
-        backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          toggleWebcam()
-        }}
-        buttonText={'Toggle Webcam'}
-        backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          toggleMic()
-        }}
-        buttonText={'Toggle Mic'}
-        backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          leave()
-        }}
-        buttonText={'Leave'}
-        backgroundColor={'#FF0000'}
-      />
-    </View>
-  )
-}
-function ParticipantView({ participantId }) {
-  const { webcamStream, webcamOn } = useParticipant(participantId)
-  return webcamOn && webcamStream ? (
-    <RTCView
-      streamURL={new MediaStream([webcamStream.track]).toURL()}
-      objectFit={'cover'}
-      style={{
-        height: 300,
-        marginVertical: 8,
-        marginHorizontal: 8
-      }}
-    />
-  ) : (
-    <View
-      style={{
-        backgroundColor: 'grey',
-        height: 300,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 8,
-        marginHorizontal: 8
-      }}
-    >
-      <Text style={{ fontSize: 16 }}>NO MEDIA</Text>
-    </View>
-  )
-}
-
-function ParticipantList({ participants }) {
-  return participants.length > 0 ? (
-    <FlatList
-      data={participants}
-      renderItem={({ item }) => {
-        return <ParticipantView participantId={item} />
-      }}
-    />
-  ) : (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#F6F6FF',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <Text style={{ fontSize: 20 }}>Press Join button to enter meeting.</Text>
-    </View>
-  )
-}
-
-function MeetingView() {
-  // Get `participants` from useMeeting Hook
-  const { join, leave, toggleWebcam, toggleMic, participants, meetingId } = useMeeting({})
-  const participantsArrId = [...participants.keys()]
-
-  return (
-    <View style={{ flex: 1 }}>
-      {meetingId ? (
-        <Text style={{ fontSize: 18, padding: 12 }}>Meeting Id :{meetingId}</Text>
-      ) : null}
-      <ParticipantList participants={participantsArrId} />
-      <ControlsContainer
-        join={join}
-        leave={leave}
-        toggleWebcam={toggleWebcam}
-        toggleMic={toggleMic}
-      />
-    </View>
-  )
-}
-
-export default function App() {
-  const [meetingId, setMeetingId] = useState(null)
+      if (data.type === CONVENTION_TYPE.PRIVATE) {
+        const target = data.members.filter((item) => item._id !== ownerID)[0]
+        setTargetInfo({ name: target.aka ?? target.userName, avatar: target.avatar, members: data.members })
+      } else {
+        setTargetInfo({ name: data.name, avatar: data.avatar, members: data.members })
+      }
+    })
+  }, [])
 
   const getMeetingId = async (id) => {
     if (!token) {
       console.log('PLEASE PROVIDE TOKEN IN api.js FROM app.videosdk.live')
     }
-    const meetingId = id == null ? await createMeeting({ token }) : id
-    setMeetingId(meetingId)
+    const newMeeting = await createMeeting()
+    console.log('get meetingId: ', newMeeting)
+    setMeetingId(newMeeting)
   }
 
-  return meetingId ? (
+  useEffect(() => {
+    !reply && getMeetingId()
+  }, [])
+
+  return meetingId && ownerInfo && targetInfo ? (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F6F6FF' }}>
       <MeetingProvider
         config={{
-          meetingId,
-          micEnabled: false,
+          meetingId: meetingId,
+          micEnabled: true,
           webcamEnabled: true,
-          name: 'Test User'
+          name: ownerInfo.userName,
+          autoConsume: true
         }}
         token={token}
+        joinWithoutUserInteraction={true}
       >
-        <MeetingView />
+        <MeetingView
+          targetID={targetID}
+          targetInfo={targetInfo}
+          ownerID={ownerID}
+          ownerInfo={ownerInfo}
+          reply={reply}
+        />
       </MeetingProvider>
     </SafeAreaView>
   ) : (
-    <JoinScreen
-      getMeetingId={() => {
-        getMeetingId()
-      }}
-    />
+    <></>
   )
 }
