@@ -41,6 +41,7 @@ import { OPEN_SCREEN, TYPE_SCREEN } from '../utils/Constants'
 import OwnerProfile from '../screens/Profile/Owner'
 import UserProfile from '../screens/Profile/User'
 import MeetingProviderScreen from '../screens/Meeting/MeetingProvider'
+import AddMemberScreen from '../screens/convenition/AddMember'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -143,11 +144,10 @@ const Navigation = () => {
     const getInitialURL = async () => {
       const initialURL = await Linking.getInitialURL()
       console.log('initialURL status: ', initialURL)
-      Linking.addEventListener('url', event => {
+      Linking.addEventListener('url', (event) => {
         console.log('receive url: ', event.url)
         Linking.openURL(url)
       })
-     
     }
 
     getInitialURL()
@@ -200,6 +200,7 @@ const Navigation = () => {
             <Stack.Screen name="BackgroundConventionScreen" component={BackgroundConvention} />
             <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
             <Stack.Screen name="MeetingScreen" component={MeetingProviderScreen} />
+            <Stack.Screen name="AddMemberScreen" component={AddMemberScreen} />
           </>
         )}
       </Stack.Navigator>

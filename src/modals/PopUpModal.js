@@ -21,8 +21,8 @@ const PopUpModal = ({ modalVisible, title, subtitle, onCancle, onSubmit }) => {
             <Text style={{fontSize:14, textAlign:'left', marginHorizontal:24}}>{subtitle}</Text>
             <SpaceComponent height={24} />
             <RowComponent>
-              <OpacityButtton onPress={onCancle} style={{flex:1}} textStyle={styles.modalBtnText} title={'Hủy'} />
-              <OpacityButtton  onPress={onSubmit} style={{flex:1}} textStyle={styles.modalBtnText} title={'Xác nhận'} />
+              <OpacityButtton onPress={onCancle} style={{flex:1}} textStyle={styles.modalBtnTextCancel} title={'Hủy'} />
+              <OpacityButtton onPress={onSubmit} style={{flex:1}} textStyle={styles.modalBtnText} title={'Xác nhận'} />
             </RowComponent>
             <SpaceComponent height={16} />
           </View>
@@ -64,6 +64,11 @@ const styles = StyleSheet.create({
   },
   modalBtnText: {
     color: 'blue',
+    fontWeight: '400',
+    fontSize: 16
+  },
+  modalBtnTextCancel: {
+    color: 'red',
     fontWeight: '400',
     fontSize: 16
   }

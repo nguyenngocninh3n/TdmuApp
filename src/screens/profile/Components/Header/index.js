@@ -9,6 +9,7 @@ import GlobalStyle from '../../../../assets/css/GlobalStyle'
 import { API } from '../../../../api'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import { OpacityButtton } from '../../../../components/ButtonComponent'
+import AvatarProfileModal from '../../../../modals/AvatarProfileModal'
 
 const BoxInfor = ({ title, value }) => {
   return (
@@ -19,17 +20,25 @@ const BoxInfor = ({ title, value }) => {
   )
 }
 const Header = ({ navigation, children, user, ownerID }) => {
-  const [oldScreen, setOldScreen] = useState('')
   const isOwner = user._id === ownerID
   console.log('isOwner: ', isOwner)
   const handleUpdateBio = () => {
-    navigation.navigate('BioScreen', {user})
+    navigation.navigate('BioScreen', { user })
   }
+
+  const [modelVisible, setModalVisible] = useState(false)
+  const onCloseModal = () => setModalVisible(false)
+  const onShowModal = () => setModalVisible(true)
+
   return (
     <View>
+      <View style={styles.backgroundContainer} >
+        <Text>background</Text>
+      </View>
+
       {/* AVATAR AND NAME */}
       <View style={styles.container}>
-        <AvatarComponent source={API.getFileUrl(user.avatar)} style={styles.userImg} />
+        <AvatarComponent onPress={onShowModal} source={API.getFileUrl(user.avatar)} style={styles.userImg} />
         <Text style={styles.userName}>{user.userName}</Text>
         <OpacityButtton
           title={isOwner ? user.bio || 'Thêm tiểu sử...' : user.bio || ''}
@@ -38,12 +47,7 @@ const Header = ({ navigation, children, user, ownerID }) => {
       </View>
       {/* BAR */}
       {children}
-      {/* FOLLOWER AND FOLLOWING
-      <RowComponent style={styles.userInfoWrapper}>
-        <BoxInfor title="Posts" value={10} />
-        <BoxInfor title="Follower" value={12} />
-        <BoxInfor title="Following" value={15} />
-      </RowComponent> */}
+      <AvatarProfileModal ownerID={ownerID} userID={user._id} avatar={user.avatar} onClose={onCloseModal} modalVisible={modelVisible} />
     </View>
   )
 }
@@ -51,9 +55,20 @@ const Header = ({ navigation, children, user, ownerID }) => {
 export default Header
 
 const styles = StyleSheet.create({
+  backgroundContainer: {
+    position:'relative',
+    height:320,
+    
+  },
   container: {
     alignItems: 'center',
-    backgroundColor: '#fff'
+    justifyContent:'center',
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+    position:'absolute',
+    // flexDirection:'column-reverse',
+    top:'10%',
+    left: '20%',
+    right:'20%',
   },
   userImg: {
     marginTop: 48,

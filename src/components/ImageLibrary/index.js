@@ -1,9 +1,10 @@
 import React from 'react'
-import { TouchableOpacity, PermissionsAndroid, Alert } from 'react-native'
+import { TouchableOpacity, PermissionsAndroid, Alert, Text, Pressable } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { MESSAGE_TYPE } from '../../utils/Constants'
 import { orderBy } from '@react-native-firebase/firestore'
+import SpaceComponent from '../SpaceComponent'
 
 const openImage = async ({ callback, limit }) => {
   try {
@@ -84,7 +85,7 @@ const openMixed = async ({ callback, limit }) => {
           imageArr.push({
             name: item.fileName,
             uri: item.uri,
-            customPath:  item.uri.replace('file://', ''),
+            customPath: item.uri.replace('file://', ''),
             type: item.type
           })
         }
@@ -98,7 +99,17 @@ const openMixed = async ({ callback, limit }) => {
   }
 }
 
-const ImageLibrary = ({ callback, type, iconName, iconSize, iconColor, limit }) => {
+const ImageLibrary = ({
+  children,
+  callback,
+  type,
+  text,
+  textStyle,
+  spacing,
+  iconSize,
+  iconColor,
+  limit
+}) => {
   const customProps = {}
   const handleOpenPhoto = () => {
     openImage({ callback, limit })
@@ -133,13 +144,22 @@ const ImageLibrary = ({ callback, type, iconName, iconSize, iconColor, limit }) 
   }
 
   return (
-    <TouchableOpacity>
-      <MaterialIcons
-        name={customProps.name}
-        size={iconSize ?? 32}
-        color={iconColor ?? 'blue'}
-        onPress={customProps.onPress}
-      />
+    <TouchableOpacity
+      onPress={customProps.onPress}
+      style={{ flexDirection: 'row', alignItems: 'center' }}
+    >
+      {children ? (
+        children
+      ) : (
+        <MaterialIcons
+          name={customProps.name}
+          size={iconSize ?? 32}
+          color={iconColor ?? 'blue'}
+          onPress={customProps.onPress}
+        />
+      )}
+      <SpaceComponent width={spacing ?? 16} />
+      <Text style={textStyle}>{text}</Text>
     </TouchableOpacity>
   )
 }

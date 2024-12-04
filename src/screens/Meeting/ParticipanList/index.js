@@ -1,12 +1,13 @@
 import { FlatList, Text, View } from 'react-native'
 import ParticipantView from '../ParticipanView'
 
-export default function ParticipantList({ participants }) {
+export default function ParticipantList({ participants, arr }) {
   return participants.length > 0 ? (
     <FlatList
+    style={{flexDirection:'column-reverse'}}
       data={participants}
-      renderItem={({ item }) => {
-        return <ParticipantView participantId={item} />
+      renderItem={({ item, index }) => {
+        return <ParticipantView participantId={item} name={arr[index].name} />
       }}
     />
   ) : (

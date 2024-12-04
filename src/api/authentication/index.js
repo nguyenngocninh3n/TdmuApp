@@ -21,15 +21,36 @@ const getConventionUserFriend = async (userID) => {
 }
 
 const updateUserBioAPI = async (userID, value) => {
-  const response = await axios.put(`${SERVER_POST}/user/${userID}/bio/update`, {value})
+  const response = await axios.put(`${SERVER_POST}/user/${userID}/bio/update`, { value })
   return response.data
 }
+
+const updateUserAvatarAPI = async (userID, current, avatar) => {
+  // console.log('value receive in update user avatar api: ', userID, ' ', current, ' ', avatar.length)
+  const response = await axios.put(`${SERVER_POST}/user/${userID}/avatar/update`, {
+    current,
+    avatar
+  })
+  return response.data
+}
+
+const updateUserBackgroundAPI = async (userID, current, background) => {
+  const response = await axios.put(`${SERVER_POST}/user/${userID}/background/update`, {
+    current,
+    background
+  })
+  return response.data
+}
+
+
 
 const AuthenApi = {
   loginAPI,
   getUserByIdAPI,
   getAllUserAPI,
   getConventionUserFriend,
-  updateUserBioAPI
+  updateUserBioAPI,
+  updateUserAvatarAPI,
+  updateUserBackgroundAPI
 }
 export default AuthenApi

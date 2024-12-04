@@ -76,13 +76,7 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
 
 const AkaScreen = ({ navigation, route }) => {
   const { conventionID, members, handleChangeAkaName } = route.params
-  const [memberData, setMemberData] = useState(() => {
-    let arr = []
-    for (const item in members) {
-      arr.push(members[item])
-    }
-    return arr
-  })
+  const [memberData, setMemberData] = useState(members)
   const [modalVisible, setModalVisible] = useState(false)
   const [chosenMember, setChosenMember] = useState({})
   const [state, dispatch] = useCustomContext()

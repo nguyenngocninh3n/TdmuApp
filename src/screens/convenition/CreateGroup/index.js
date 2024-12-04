@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ToastAndroid
+} from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import RowComponent from '../../../components/RowComponent'
 import { API } from '../../../api'
 import { useCustomContext } from '../../../store'
-import { FRIEND_STATUS, MEMBER_ROLE, MESSAGE_TYPE } from '../../../utils/Constants'
+import { FRIEND_STATUS, MEMBER_ROLE, MESSAGE_TYPE, RESPONSE_STATUS } from '../../../utils/Constants'
 import AvatarComponent from '../../../components/AvatarComponent'
 import SpaceComponent from '../../../components/SpaceComponent'
 import GoBackIcon from '../../../components/GoBackComponent/GoBackIcon'
@@ -15,6 +23,10 @@ const CreateGroup = ({ navigation, route }) => {
   const [selectedFriends, setSelectedFriends] = useState([])
   const [friends, setFriends] = useState([])
   const [state, dispatch] = useCustomContext()
+  const [groupName, setGroupName] = useState('')
+
+  const handleSetGroupName = (value) => setGroupName(value)
+
   useEffect(() => {
     API.getListFriend({ userID: state._id }).then((data) => {
       if (data) {
@@ -35,17 +47,17 @@ const CreateGroup = ({ navigation, route }) => {
     setSelectedFriends(
       (prev) =>
         prev.includes(selected)
-          ? prev.filter((item) => item !== selected ) // Bỏ chọn
+          ? prev.filter((item) => item !== selected) // Bỏ chọn
           : [...prev, selected] // Thêm vào danh sách chọn
     )
   }
 
   const handleCreateGroup = () => {
-    const members = selectedFriends.map(item => {
+    const members = selectedFriends.map((item) => {
       const customData = {
         _id: item._id,
         userName: item.userName,
-        avatar: item.userAvatar,
+        avatar: item.avatar,
         role: MEMBER_ROLE.MEMBER
       }
       return customData
@@ -56,7 +68,7 @@ const CreateGroup = ({ navigation, route }) => {
       avatar: state.avatar,
       role: MEMBER_ROLE.ADMIN
     })
-    const uids = selectedFriends.map(item => item._id)
+    const uids = selectedFriends.map((item) => item._id)
     uids.push(state._id)
     const type = 'group'
     const message = {
@@ -64,9 +76,17 @@ const CreateGroup = ({ navigation, route }) => {
       message: `${state.userName} đã tạo nhóm`,
       type: MESSAGE_TYPE.NOTIFY
     }
-    const newData = {members, uids, type, message}
+    const newData = { members, uids, type, message, name: groupName }
 
-    API.createGroupConvention(newData)
+    API.createGroupConvention(newData).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        ToastAndroid.show('Tạo nhóm thành công', ToastAndroid.SHORT)
+        navigation.navigate('ChattingScreen', { conventionID: response.data._id })
+      } else {
+        ToastAndroid.show('Tạo nhóm thất bại', ToastAndroid.SHORT)
+        navigation.navigate('ConventionScreen')
+      }
+    })
   }
 
   // Render một item bạn bè
@@ -80,7 +100,7 @@ const CreateGroup = ({ navigation, route }) => {
         onPress={() => toggleSelectFriend(item)}
       >
         <RowComponent alignItems>
-          <AvatarComponent source={API.getFileUrl(item.userAvatar)} size={48} />
+          <AvatarComponent source={API.getFileUrl(item.avatar)} size={48} />
           <SpaceComponent width={16} />
           <Text style={styles.friendName}>{item.userName}</Text>
         </RowComponent>
@@ -94,14 +114,24 @@ const CreateGroup = ({ navigation, route }) => {
       <RowComponent alignItems style={styles.goBackContainer}>
         <GoBackIcon size={24} />
         {selectedFriends.length >= 2 && (
-          <OpacityButtton onPress={handleCreateGroup} title={'Tạo'} textColor={'blue'} textSize={16} />
+          <OpacityButtton
+            disable={groupName ? false : true}
+            onPress={handleCreateGroup}
+            title={'Tạo'}
+            textColor={'blue'}
+            textSize={20}
+          />
         )}
       </RowComponent>
       <View style={styles.groupActionContainer}>
         <RowComponent>
           <Text>Tên nhóm:</Text>
           <SpaceComponent width={24} />
-          <TextInput placeholder="Nhập tên nhóm..." />
+          <TextInput
+            placeholder="Nhập tên nhóm..."
+            value={groupName}
+            onChangeText={handleSetGroupName}
+          />
         </RowComponent>
         <TextInput
           style={styles.searchBar}
@@ -114,6 +144,7 @@ const CreateGroup = ({ navigation, route }) => {
           data={filteredFriends}
           keyExtractor={(item) => item._id}
           renderItem={renderFriendItem}
+          ItemSeparatorComponent={(<SpaceComponent height={16} />)}
           contentContainerStyle={styles.friendList}
         />
       </View>

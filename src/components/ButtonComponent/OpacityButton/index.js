@@ -27,9 +27,9 @@ const OpacityButtton = ({
   const initValue = {
     onPress: () => {},
     textStyle: {
-      color: (submit && 'red') || textColor || '#000',
-      fontWeght: submit && '600',
-      fontSize: textSize,
+      color: (disable && 'gray') || (submit && 'red') || textColor || '#000',
+      fontWeight: (disable && '300') || '500',
+      fontSize: (disable && 16) || textSize,
       paddingVertical: 4,
       paddingHorizontal: paddingHorizontal ?? 4,
       textAlign: left ? 'left' : right ? 'right' : 'center',

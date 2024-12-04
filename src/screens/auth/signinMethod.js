@@ -12,7 +12,6 @@ async function getFCMToken() {
   return token
 }
 
-
 const configGoogleMethod = async () => {
   GoogleSignin.configure({
     webClientId: '77194624099-c6bfhn2iencledrpov9b8169nfl2f157.apps.googleusercontent.com'
@@ -38,23 +37,40 @@ async function signInWithGoogle() {
 
   // Get the users ID token
   let idToken = ''
+  let loginStatus = true
   await GoogleSignin.signIn().then((data) => {
-    idToken = data.data.idToken
+    if (data.type === 'success') {
+      idToken = data.data.idToken
+      loginStatus = true
+    } else {
+      loginStatus = false
+    }
   })
 
-  // Create a Google credential with the token
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+  if (loginStatus) {
+    // console.log('idtoken: ', idToken)
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
 
-  // Sign-in the user with the credential
-  return await auth()
-    .signInWithCredential(googleCredential)
-    .then(async (user) => {
-      const messagingToken = await getFCMToken()
-      const userData = { ...user.additionalUserInfo.profile, _id: user.user.uid, messagingToken }
-      const newUser = await API.loginAPI({ data: userData })
-      return newUser
-    })
-    .catch((error) => console.log('error when sigin with credential: ', error))
+    console.log('login status: ', loginStatus)
+    // console.log('google creadential: ', googleCredential)
+    // Sign-in the user with the credential
+    return await auth()
+      .signInWithCredential(googleCredential)
+      .then(async (user) => {
+        const messagingToken = await getFCMToken()
+        const userData = {
+          ...user.additionalUserInfo.profile,
+          _id: user.user.uid,
+          messagingToken
+        }
+        const newUser = await API.loginAPI({ data: userData })
+        return newUser
+      })
+      .catch((error) => console.log('error when sigin with credential: ', error))
+  } else {
+    return 'cancel'
+  }
 }
 
 export { signInWithGoogle, signOutWithGoogle }

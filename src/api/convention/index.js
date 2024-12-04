@@ -50,6 +50,17 @@ const createGroupConvention = async data => {
   return response.data
 }
 
+
+const addMemberToGroup = async (groupID, data) => {
+  const response = await axios.post(`${SERVER_POST}/convention/group/${groupID}/add`, data )
+  return response.data
+}
+
+const logoutGroupAPI = async (conventionID, userID, member) => {
+  const response = await axios.post(`${SERVER_POST}/convention/group/${conventionID}/logout/${userID}`, member)
+  return response.data
+}
+
 const getOwnerConventions = async (ownerID) => {
   const response = await axios.get(`${SERVER_POST}/convention/owner/${ownerID}`)
   return response.data
@@ -74,6 +85,8 @@ const ConventionAPI = {
   sendMessageAPI,
   createConventionAPI,
   createGroupConvention,
+  addMemberToGroup,
+  logoutGroupAPI,
   getOwnerConventions,
   updateMessage
 }

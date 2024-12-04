@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, TextInput, Modal } from 'react-native'
+import { View, Text, Pressable, StyleSheet, TextInput, Modal, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AvatarComponent from '../../../components/AvatarComponent'
 import SpaceComponent from '../../../components/SpaceComponent'
@@ -6,14 +6,31 @@ import RowComponent from '../../../components/RowComponent'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import { API } from '../../../api'
 import GoBackComponent from '../../../components/GoBackComponent'
 import { OpacityButtton } from '../../../components/ButtonComponent'
-import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
+import {
+  CONVENTION_TYPE,
+  MESSAGE_NOTIFY_STATUS,
+  MESSAGE_NOTIFY_TYPE,
+  MESSAGE_TYPE,
+  RESPONSE_STATUS
+} from '../../../utils/Constants'
+import PopUpModal from '../../../modals/PopUpModal'
 
 const DetailScreen = ({ navigation, route }) => {
-  const { conventionID, name, avatar, members, chatData, type, ownerID, conventionName } =
-    route.params
+  const {
+    conventionID,
+    name,
+    avatar,
+    members,
+    rawMembers,
+    chatData,
+    type,
+    ownerID,
+    conventionName
+  } = route.params
   console.log('members: ', members)
   const [modalVisible, setModalVisible] = useState(false)
   const [chatName, setChatName] = useState(conventionName)
@@ -54,19 +71,33 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const handleClickAka = () => {
-    navigation.navigate('AkaScreen', { conventionID, members })
+    const customMembers = Object.values(members)
+      .map((value) => value)
+      .filter((item) => item.status === 'ACTIVE')
+
+    navigation.navigate('AkaScreen', { conventionID, members: customMembers })
   }
 
   const handleClickMember = () => {
-    const customMembers = Object.values(members).map((value) => value)
-    navigation.navigate('MemberScreen', { members: customMembers })
+    const customMembers = Object.values(members)
+      .map((value) => value)
+      .filter((item) => item.status === 'ACTIVE')
+    navigation.navigate('MemberScreen', {
+      members: customMembers,
+      rawMembers: members,
+      conventionID
+    })
   }
 
   const handleClickSearch = () => {
+    const customMembers = Object.values(members)
+      .map((value) => value)
+      .filter((item) => item.status === 'ACTIVE')
+
     navigation.navigate('SearchConventionScreen', {
       chatData,
       conventionID,
-      members: Object.values(members).map((value) => value)
+      members: customMembers
     })
   }
 
@@ -91,6 +122,27 @@ const DetailScreen = ({ navigation, route }) => {
     })
   }
 
+  const handleAddMember = () => {
+    const customMembers = Object.values(members)
+      .map((value) => value)
+      .filter((item) => item.status === 'ACTIVE')
+
+    const customUids = customMembers.map(item => item._id)
+    navigation.navigate('AddMemberScreen', { conventionID, uids: customUids })
+  }
+
+  const handleLogoutGroup = (member) => {
+    console.log('logout group')
+    API.logoutGroupAPI(conventionID, ownerID, member).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        ToastAndroid.show('Đã rời khỏi nhóm', ToastAndroid.SHORT)
+        navigation.navigate('ConventionScreen')
+      } else {
+        ToastAndroid.show('Đã xảy ra lỗi!', ToastAndroid.SHORT)
+      }
+    })
+  }
+
   return (
     <View style={{ marginHorizontal: 16 }}>
       <GoBackComponent />
@@ -100,27 +152,29 @@ const DetailScreen = ({ navigation, route }) => {
         <Text style={{ fontSize: 24 }}>{name}</Text>
       </View>
       <SpaceComponent height={16} />
-      <RowComponent style={{ justifyContent: 'space-around' }}>
+      <RowComponent justify>
         <View style={{ alignItems: 'center' }}>
           <Ionicons onPress={handleCall} name="call-outline" size={24} />
-          <SpaceComponent width={24} />
           <Text>Gọi thoại</Text>
         </View>
+        <SpaceComponent width={32} />
         <View style={{ alignItems: 'center' }}>
           <Ionicons onPress={handleVideoCall} name="videocam-outline" size={24} />
-          <SpaceComponent width={24} />
           <Text>Gọi video</Text>
         </View>
-        <View style={{ alignItems: 'center' }}>
-          <AntDesign name="adduser" size={32} />
-          <SpaceComponent width={24} />
-          <Text>Thêm</Text>
-        </View>
+        <SpaceComponent width={32} />
+        {type === CONVENTION_TYPE.GROUP && (
+          <View style={{ alignItems: 'center' }}>
+            <AntDesign onPress={handleAddMember} name="adduser" size={32} />
+            <SpaceComponent width={24} />
+            <Text>Thêm</Text>
+          </View>
+        )}
       </RowComponent>
       <SpaceComponent height={32} />
 
       {/* PROFILE */}
-      {type && (
+      {type === CONVENTION_TYPE.PRIVATE && (
         <RowComponent alignItems onPress={handleClickProfile}>
           <Ionicons name="person" size={24} />
           <SpaceComponent width={8} />
@@ -129,7 +183,7 @@ const DetailScreen = ({ navigation, route }) => {
       )}
 
       {/* NAME */}
-      {!type && (
+      {type === CONVENTION_TYPE.GROUP && (
         <RowComponent alignItems onPress={handleClickConventionName}>
           <Ionicons name="text" size={24} />
           <SpaceComponent width={8} />
@@ -176,6 +230,10 @@ const DetailScreen = ({ navigation, route }) => {
         <SpaceComponent width={8} />
         <Text style={{ fontSize: 18, fontWeight: '500' }}>Ảnh và video</Text>
       </RowComponent>
+      <SpaceComponent height={20} />
+
+      {/* OUT ROOM */}
+      <LogOutGroupComponent onLogoutGroup={handleLogoutGroup} member={members[ownerID]} />
 
       {/* CUSTOM MODAL */}
       <CustomModal
@@ -187,6 +245,33 @@ const DetailScreen = ({ navigation, route }) => {
     </View>
   )
 }
+
+const LogOutGroupComponent = ({ onLogoutGroup, member }) => {
+  const [modalVisible, setModalVisible] = useState(false)
+  const onShowModal = () => setModalVisible(true)
+  const onHideModal = () => setModalVisible(false)
+
+  const handleLogoutGroup = () => {
+    onLogoutGroup(member)
+    onHideModal()
+  }
+
+  return (
+    <RowComponent alignItems onPress={onShowModal}>
+      <SimpleLineIcons name="logout" size={24} color={'red'} />
+      <SpaceComponent width={8} />
+      <Text style={{ fontSize: 18, fontWeight: '500', color: 'red' }}>Rời khỏi nhóm</Text>
+      <PopUpModal
+        modalVisible={modalVisible}
+        onCancle={onHideModal}
+        onSubmit={handleLogoutGroup}
+        title={'Bạn có chắc muốn rời khỏi nhóm!'}
+        subtitle={'Bạn sẽ không thể truy cập vào cuộc trò chuyện này nữa'}
+      />
+    </RowComponent>
+  )
+}
+
 
 const CustomModal = ({ modalVisible, onClose, onUpdate, name }) => {
   const [inputValue, setInputValue] = useState(name)

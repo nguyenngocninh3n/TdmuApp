@@ -147,9 +147,10 @@ const ChattingScreen = ({ navigation, route }) => {
     navigation.navigate('DetailScreen', {
       name: conventionInfo.name,
       avatar: conventionInfo.avatar,
-      type: conventionInfo.type === 'private' ? 'private' : null,
+      type: conventionInfo.type,
       conventionID,
       members: Object.fromEntries(members),
+      rawMembers:  Object.fromEntries(members),
       chatData,
       ownerID: state._id,
       conventionName: conventionInfo.name
