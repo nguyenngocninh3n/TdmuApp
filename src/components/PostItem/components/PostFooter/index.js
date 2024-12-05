@@ -52,7 +52,6 @@ const PostFooter = ({ postID, ownerID, item }) => {
       <CommentModal
         modalVisible={modalVisible}
         onClose={handleCloseModal}
-        userInfo={item}
         postID={postID}
       />
     </RowComponent>

@@ -7,7 +7,7 @@ import { API } from '../../../api'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import ChatHeader from './components/ChatHeader'
 import ChatInput from './components/ChatInput'
-import { useCustomContext } from '../../../store'
+import { actions, useCustomContext } from '../../../store'
 import ChatList from './components/ChatList'
 import ChatItemModal from './components/ChatItemModal'
 import SocketClient from '../../../socket'
@@ -17,15 +17,16 @@ import {
   MESSAGE_NOTIFY_STATUS,
   MESSAGE_NOTIFY_TYPE,
   MESSAGE_TYPE,
-  POST_TYPE
 } from '../../../utils/Constants'
 import SpaceComponent from '../../../components/SpaceComponent'
 
 const ChattingScreen = ({ navigation, route }) => {
   let { userID } = route.params
+  const ownerID = route.params?.ownerID
   const [conventionID, setConventionID] = useState(route.params.conventionID)
   const [chatData, setChatData] = useState([])
-  const [state, dispatch] = useCustomContext()
+  const [stateValue, dispatch] = useCustomContext()
+  const [state, setState] = useState(stateValue ? stateValue : route.params.ownerInfo)
   const [members, setMembers] = useState(new Map())
   const [conventionInfo, setConventionInfo] = useState({})
   const [modalVisible, setModalVisible] = useState(false)
@@ -89,7 +90,7 @@ const ChattingScreen = ({ navigation, route }) => {
 
   const handleSendMessage = async (message, type) => {
     const data = {
-      senderID: state._id,
+      senderID: state._id || ownerID,
       type: type,
       userID,
       message: message
@@ -150,7 +151,7 @@ const ChattingScreen = ({ navigation, route }) => {
       type: conventionInfo.type,
       conventionID,
       members: Object.fromEntries(members),
-      rawMembers:  Object.fromEntries(members),
+      rawMembers: Object.fromEntries(members),
       chatData,
       ownerID: state._id,
       conventionName: conventionInfo.name

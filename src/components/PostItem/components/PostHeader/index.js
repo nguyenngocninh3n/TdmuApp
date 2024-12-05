@@ -25,7 +25,7 @@ const PostHeader = ({ item, ownerID, groupID }) => {
           <RowComponent>
             <Text>{helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}</Text>
             <SpaceComponent width={8} />
-            {!groupID && <Text style={{ color: '#a1f' }}>{item.scope.toLowerCase()}</Text>}
+            {!groupID && <Text style={{ color: '#a1f' }}>{item.scope?.toLowerCase()}</Text>}
           </RowComponent>
         </ColumnComponent>
       </RowComponent>

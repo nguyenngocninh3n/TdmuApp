@@ -42,13 +42,20 @@ import OwnerProfile from '../screens/Profile/Owner'
 import UserProfile from '../screens/Profile/User'
 import MeetingProviderScreen from '../screens/Meeting/MeetingProvider'
 import AddMemberScreen from '../screens/convenition/AddMember'
+import MiddleWareNavigationScreen from '../screens/MiddlewareNavigatioin'
+import SinglePostScreen from '../screens/Post/SinglePost'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
 }
 
 messaging().onMessage(async (remoteMessage) => {
-  handleStartNotify(remoteMessage) //***** */
+  const conventionID = navigationRef.current.getCurrentRoute().params?.conventionID
+  const checkA = !conventionID
+  const checkB = conventionID !== remoteMessage.data.targetID
+  if (checkA || checkB) {
+    handleStartNotify(remoteMessage) //***** */
+  }
 })
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
@@ -58,12 +65,18 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 notifee.onForegroundEvent(({ type, detail }) => {
   if (type === EventType.PRESS) {
     console.log('type received: ', detail.notification.data)
-
-    if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
+    const notifyType = detail.notification.data?.type
+    const notifyData = detail.notification.data
+    if (notifyType === TYPE_SCREEN.PROFILE) {
       navigate('ProfileScreen')
-    } else if (detail.notification.data?.type === TYPE_SCREEN.FRIEND) {
+    } else if (notifyType === TYPE_SCREEN.FRIEND) {
       navigate('ProfileScreen', { userID: detail.notification.data?.senderID })
-    } else if (detail.notification.data?.type === TYPE_SCREEN.CALL) {
+    } else if (notifyType === TYPE_SCREEN.POST) {
+
+      navigate('SinglePostScreen', { ownerID: notifyData.ownerID, postID: notifyData.targetID })
+    } else if (notifyType === TYPE_SCREEN.CONVENTION) {
+      navigate('ChattingScreen', { conventionID: detail.notification.data.targetID })
+    } else if (notifyType === TYPE_SCREEN.CALL) {
       navigate('MeetingScreen', {
         ownerID: detail.notification.data?.ownerID,
         targetID: detail.notification.data?.targetID,
@@ -78,15 +91,19 @@ notifee.onForegroundEvent(({ type, detail }) => {
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
   if (type === EventType.PRESS) {
-    console.log('type received: ', detail.notification.data)
-    if (detail.notification.data?.type === TYPE_SCREEN.PROFILE) {
-      Linking.openURL(OPEN_SCREEN.profile(detail.notification.data.senderID))
-    } else if (detail.notification.data?.type === TYPE_SCREEN.FRIEND) {
-      Linking.openURL(OPEN_SCREEN.profile(detail.notification.data.senderID))
-    } else if (detail.notification.data?.type === TYPE_SCREEN.CALL) {
-      const targetID = detail.notification.data?.targetID
-      const ownerID = detail.notification.data?.ownerID
-      const meetingId = detail.notification.data?.meetingId
+    console.log('type received: ', detail.notification.data?.type)
+    const receivedData = detail.notification.data
+    const notifyType = receivedData?.type
+    if (notifyType === TYPE_SCREEN.PROFILE) {
+      Linking.openURL(OPEN_SCREEN.profile(receivedData.senderID))
+    } else if (notifyType === TYPE_SCREEN.FRIEND) {
+      Linking.openURL(OPEN_SCREEN.profile(receivedData.senderID))
+    } else if (notifyType === TYPE_SCREEN.CONVENTION) {
+      Linking.openURL(OPEN_SCREEN.convention(receivedData.targetID, receivedData.ownerID))
+    } else if (notifyType === TYPE_SCREEN.CALL) {
+      const targetID = receivedData?.targetID
+      const ownerID = receivedData?.ownerID
+      const meetingId = receivedData?.meetingId
       const customURL = `customview://call/${ownerID}/${targetID}/${meetingId}/true`
       Linking.openURL(customURL)
     } else {
@@ -110,11 +127,16 @@ const linking = {
       // PROFILE
       ProfileScreen: 'profile/:userID', // Màn hình Profile với tham số userId
 
+      //POST
+      SinglePostScreen: 'post/:postID/:ownerID',
+
       // GROUP
       GroupScreen: 'group/:groupID',
 
       // CONVENTION
-      ConventionScreen: 'convention/:conventionID',
+      MiddleWareNavigationScreen: 'convention/:conventionID/:ownerID/',
+
+      //CALL
       MeetingScreen: 'call/:ownerID/:targetID/:meetingID/:reply'
     }
   }
@@ -140,18 +162,19 @@ const Navigation = () => {
     }
   }, [])
 
-  useEffect(() => {
-    const getInitialURL = async () => {
-      const initialURL = await Linking.getInitialURL()
-      console.log('initialURL status: ', initialURL)
-      Linking.addEventListener('url', (event) => {
-        console.log('receive url: ', event.url)
-        Linking.openURL(url)
-      })
-    }
+  // useEffect(() => {
+  //   const getInitialURL = async () => {
+  //     const initialURL = await Linking.getInitialURL()
+  //     console.log('initialURL status: ', initialURL)
+  //     Linking.addEventListener('url', (event) => {
+  //       const url = event.url
+  //       console.log('receive url: ', url)
+  //       Linking.openURL(url)
+  //     })
+  //   }
 
-    getInitialURL()
-  }, [])
+  //   getInitialURL()
+  // }, [])
 
   return (
     <NavigationContainer linking={linking} ref={navigationRef}>
@@ -187,6 +210,7 @@ const Navigation = () => {
             {/* POST */}
             <Stack.Screen name="EditPostScreen" component={EditPost} />
             <Stack.Screen name="NewPostScreen" component={NewPost} />
+            <Stack.Screen name="SinglePostScreen" component={SinglePostScreen} />
 
             {/* CONVENTION */}
             <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
@@ -201,6 +225,10 @@ const Navigation = () => {
             <Stack.Screen name="CreateGroupScreen" component={CreateGroup} />
             <Stack.Screen name="MeetingScreen" component={MeetingProviderScreen} />
             <Stack.Screen name="AddMemberScreen" component={AddMemberScreen} />
+            <Stack.Screen
+              name="MiddleWareNavigationScreen"
+              component={MiddleWareNavigationScreen}
+            />
           </>
         )}
       </Stack.Navigator>

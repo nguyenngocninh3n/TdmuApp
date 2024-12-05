@@ -30,19 +30,19 @@ function runSocketClient(userID, navigation) {
       default:
         messageCustom = message
     }
-    startLocalNotification({
-      ownerID:userID,
-      conventionID: conventionID,
-      title: senderName,
-      senderAvatar: senderAvatar,
-      message: messageCustom,
-      senderID: senderID,
-      data: {
-        type: NOTIFICATION_TYPE.CONVENTION,
-        screen: 'ChattingScreen',
-        id: conventionID
-      }
-    })
+    // startLocalNotification({
+    //   ownerID:userID,
+    //   conventionID: conventionID,
+    //   title: senderName,
+    //   senderAvatar: senderAvatar,
+    //   message: messageCustom,
+    //   senderID: senderID,
+    //   data: {
+    //     type: NOTIFICATION_TYPE.CONVENTION,
+    //     screen: 'ChattingScreen',
+    //     id: conventionID
+    //   }
+    // })
   })
 }
 

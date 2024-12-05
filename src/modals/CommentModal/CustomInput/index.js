@@ -5,7 +5,7 @@ import { OpacityButtton } from '../../../components/ButtonComponent'
 import Feather from 'react-native-vector-icons/Feather'
 import SpaceComponent from '../../../components/SpaceComponent'
 
-const CustomInput = ({ onSubmit, onCancel, replyItem }) => {
+const CustomInput = ({ onSubmit, onCancel, replyItem, style }) => {
   const [inputValue, setInputValue] = useState('')
   const ref = useRef()
   const handleInputChange = (value) => setInputValue(value)
@@ -30,7 +30,7 @@ const CustomInput = ({ onSubmit, onCancel, replyItem }) => {
   }, [replyItem])
 
   return (
-    <View>
+    <View style={style}>
       <RowComponent>
         {replyItem && (
           <>

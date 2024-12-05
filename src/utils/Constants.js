@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.5'
+const URL = 'http://192.168.1.7'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -97,7 +97,7 @@ const TYPE_SCREEN = {
 
 const OPEN_SCREEN = {
   profile: (userID) => `${preURL}profile/${userID}`,
-  convention: (conventionID) => `${preURL}convention/${conventionID}`,
+  convention: (conventionID, ownerID) => `${preURL}convention/${conventionID}/${ownerID}`,
   home: () => `${preURL}home`
 }
 

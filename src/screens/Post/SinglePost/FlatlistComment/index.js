@@ -1,26 +1,21 @@
 import {
   View,
-  Text,
   StyleSheet,
-  Pressable,
-  Modal,
-  TouchableOpacity,
   FlatList,
   ToastAndroid
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useCustomContext } from '../../../../store'
+import { API } from '../../../../api'
+import { RESPONSE_STATUS } from '../../../../utils/Constants'
+import SpaceComponent from '../../../../components/SpaceComponent'
+import CommentItem from '../../../../components/CommentItem'
+import CustomInput from '../../../../modals/CommentModal/CustomInput'
+import EditableModal from '../../../../modals/EditableModal'
+import PopUpModal from '../../../../modals/PopUpModal'
 
-import { API } from '../../api'
-import CustomInput from './CustomInput'
-import CommentItem from '../../components/CommentItem'
-import SpaceComponent from '../../components/SpaceComponent'
-import EditableModal from '../EditableModal'
-import PopUpModal from '../PopUpModal'
-import { RESPONSE_STATUS } from '../../utils/Constants'
-import { useCustomContext } from '../../store'
-import { stat } from 'react-native-fs'
 
-const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
+const FlatListComment = ({ postID }) => {
   const [commentData, setCommmentData] = useState([])
   console.log('comment modal re-render')
   const [state, dispatch] = useCustomContext()
@@ -29,18 +24,14 @@ const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
   const [editableItem, setEditableItem] = useState()
   const [replyItem, setReplyItem] = useState()
   useEffect(() => {
+    API.getPostCommentsAPI(postID).then((data) => {
+      if (data) {
+        console.log('call api: ', data.length)
+        setCommmentData(handleRenderData(data))
+      }
+    })
+  }, [postID])
 
-    if (modalVisible) {
-      API.getPostCommentsAPI(postID).then((data) => {
-        if (data) {
-          console.log('call api: ', data.length)
-          setCommmentData(handleRenderData(data))
-        }
-      })
-    }
-  }, [modalVisible, postID])
-
-  const handleCloseModal = () => onClose()
   const handleShowEditableModal = (item) => {
     setEditableItem(item)
     setEditableModal(true)
@@ -173,93 +164,57 @@ const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
   }
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        handleCloseModal
-      }}
-    >
-      <Pressable style={styles.pressableContainer} onPress={handleCloseModal}>
-        <Pressable style={styles.pressableBody} onPress={(e) => e.stopPropagation()}>
-          <View style={styles.modalContainer}>
-            <View
-              style={{
-                height: 16,
-                backgroundColor: '#fff',
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20
-              }}
+    <View style={{flex:1}}>
+      <FlatList
+        style={styles.flatListComment}
+        scrollEnabled={false}
+        data={commentData}
+        ListFooterComponent={<SpaceComponent height={32} />}
+        keyExtractor={(item) => item._id}
+        renderItem={React.useCallback(
+          ({ item }) => (
+            <CommentItem
+              item={item}
+              ownerID={state._id}
+              key={item._id}
+              onEdit={handleShowEditableModal}
+              onDelete={handleShowDeletableModal}
+              onReact={handleReactComment}
+              onReply={handlePrereplyComment}
+              onClose={() => {}}
             />
-            <FlatList
-              style={styles.flatListComment}
-              data={commentData}
-              ListFooterComponent={<SpaceComponent height={32} />}
-              keyExtractor={(item) => item._id}
-              renderItem={React.useCallback(
-                ({ item }) => (
-                  <CommentItem
-                    item={item}
-                    ownerID={state._id}
-                    key={item._id}
-                    onEdit={handleShowEditableModal}
-                    onDelete={handleShowDeletableModal}
-                    onReact={handleReactComment}
-                    onReply={handlePrereplyComment}
-                    onClose={handleCloseModal}
-                  />
-                ),
-                []
-              )}
-            />
-            <CustomInput
-              onSubmit={handleSendComment}
-              onCancel={handleCanclePreReplyComment}
-              replyItem={replyItem}
-            />
-          </View>
-          <EditableModal
-            title={'Chỉnh sửa bình luận'}
-            content={editableItem?.content}
-            modalVisible={editableModal}
-            onClose={handleCloseEditableModal}
-            onSubmit={handleEditComment}
-          />
-          <PopUpModal
-            modalVisible={deletableModal}
-            title={'Xóa bình luận?'}
-            subtitle={'Bình luận này sẽ bị gỡ bỏ khỏi bài viết!'}
-            onCancle={handleCloseDeletableModal}
-            onSubmit={handleDeleteComment}
-          />
-        </Pressable>
-      </Pressable>
-    </Modal>
+          ),
+          []
+        )}
+      />
+      <CustomInput
+       style={{position:'absolute',left:0, right:0, top: 5, zIndex:10}}
+        onSubmit={handleSendComment}
+        onCancel={handleCanclePreReplyComment}
+        replyItem={replyItem}
+      />
+      <EditableModal
+        title={'Chỉnh sửa bình luận'}
+        content={editableItem?.content}
+        modalVisible={editableModal}
+        onClose={handleCloseEditableModal}
+        onSubmit={handleEditComment}
+      />
+      <PopUpModal
+        modalVisible={deletableModal}
+        title={'Xóa bình luận?'}
+        subtitle={'Bình luận này sẽ bị gỡ bỏ khỏi bài viết!'}
+        onCancle={handleCloseDeletableModal}
+        onSubmit={handleDeleteComment}
+      />
+    </View>
   )
-})
+}
 
-export default CommentModal
+export default FlatListComment
 
 const styles = StyleSheet.create({
-  pressableContainer: {
-    flex: 1,
-    paddingTop: 24
-  },
 
-  pressableBody: {
-    flex: 1
-  },
-
-  modalContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#aaa',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingHorizontal: 12
-  },
 
   flatListComment: {
     flex: 1,
