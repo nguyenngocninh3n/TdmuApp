@@ -6,6 +6,11 @@ const getPostAPI = async (postID) => {
   return response.data
 }
 
+const getNewFeedPostsAPI = async (userID) => {
+  const response = await axios.get(`${SERVER_POST}/post/newfeed/${userID}`)
+  return response.data
+}
+
 const getUserPostsAPI = async (userID, ownerID) => {
   const response = await axios.get(`${SERVER_POST}/post/user?userID=${userID}&ownerID=${ownerID}`)
   return response.data
@@ -39,6 +44,7 @@ const sharePostAPI = async (postID, data) => {
 const postAPI = {
   getPostAPI,
   getUserPostsAPI,
+  getNewFeedPostsAPI,
   storePostAPI,
   editPostAPI,
   trashPostAPI,
