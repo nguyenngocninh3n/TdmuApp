@@ -4,49 +4,83 @@ import { helper } from '../../../utils/helpers'
 import AvatarComponent from '../../../components/AvatarComponent'
 import { API } from '../../../api'
 import SpaceComponent from '../../../components/SpaceComponent'
-import { MESSAGE_TYPE } from '../../../utils/Constants'
+import { MESSAGE_TYPE, NOTIFY_CONVENTION_STATUS } from '../../../utils/Constants'
 
-const ShortChatingComponent = ({ convention, navigation, ownerID }) => {
+const convertMessage = (messageOwner, lastChat) => {
+  let lastMessage = ''
+  switch (lastChat.type) {
+    case MESSAGE_TYPE.TEXT:
+      lastMessage = messageOwner + ': ' + lastChat.message
+      break
+    case MESSAGE_TYPE.NOTIFY:
+      lastMessage = lastChat.message
+      break
+    case MESSAGE_TYPE.IMAGE:
+    case MESSAGE_TYPE.VIDEO: {
+      lastMessage =
+        messageOwner +
+        ': ' +
+        `đã gửi ${lastChat.message.split(',').length} ${lastChat.type.toLowerCase()}`
+      break
+    }
+    default:
+      lastMessage = lastChat.message
+  }
+  return lastMessage
+}
+
+const convertName = (convention, privateUser) =>
+  convention.type === 'private' ? privateUser.aka || privateUser.userName : convention.name
+
+
+const handleCheckNotifyCustomStatus = (status, upto) => {
+  console.log('status: ', status)
+  switch(status) {
+    case NOTIFY_CONVENTION_STATUS.ALLOW: return ''
+    case NOTIFY_CONVENTION_STATUS.NOT_ALLOW: return 'Đoạn chat này đã bị tắt thông báo'
+    case NOTIFY_CONVENTION_STATUS.CUSTOM: {
+      const newDate  = Date.now()
+      const customDate = Date.parse(upto)
+      const customTime = 'Thông báo này sẽ được tắt cho đến: ' + new Date(upto).getHours() + ' : ' + new Date(upto).getMinutes()
+      console.log('currrent time and upto: ', newDate - customDate > 0)
+      return newDate > customDate ? '' : customTime 
+    }
+    default: return ''
+  }
+}
+
+const ShortChatingComponent = ({ convention, navigation, ownerID, onLongPress }) => {
   const { members, data } = convention
   const membersMap = new Map()
   members.forEach((item) => {
     membersMap.set(item._id, item)
   })
 
-  const privateUserID = convention.uids.filter((item) => item !== ownerID).at(0)
-  const privateUser = membersMap.get(privateUserID)
+  const privateUser = membersMap.get(convention.uids.filter((item) => item !== ownerID).at(0))
   const lastChat = data.at(-1)
   const lastTime = helper.DateTimeHelper.displayTimeDescendingFromDate(lastChat.createdAt)
   const avatar = convention.avatar ? convention.avatar : privateUser.avatar
-  const chatName =
-    convention.type === 'private' ? privateUser.aka || privateUser.userName : convention.name
+  const chatName = convertName(convention, privateUser)
+
   const messageOwner = membersMap.get(lastChat.senderID).userName
-  var lastMessage = ''
-  switch (lastChat.type) {
-    case MESSAGE_TYPE.TEXT:
-      lastMessage = messageOwner + ': ' + lastChat.message; break
-    case MESSAGE_TYPE.NOTIFY:
-      lastMessage = lastChat.message; break
-    case MESSAGE_TYPE.IMAGE:
-    case MESSAGE_TYPE.VIDEO: {
-      lastMessage = messageOwner + ': ' + `đã gửi ${lastChat.message.split(',').length} ${lastChat.type.toLowerCase()}`
-      break
-    }
-    default:
-      lastMessage = lastChat.message
-  }
+  const lastMessage = convertMessage(messageOwner, lastChat)
+
+  const handleOnLongPress = () => onLongPress({_id: convention._id, type: convention.type})
+ const currentTime = Date.now()
+ const ownerMember =  membersMap.get(ownerID)
+  const notifyMessage = handleCheckNotifyCustomStatus(ownerMember.notify, ownerMember.upto)
   return (
     <RowComponent
+      onLongPress={handleOnLongPress}
       onPress={() => navigation.navigate('ChattingScreen', { conventionID: convention._id })}
     >
       <AvatarComponent source={API.getFileUrl(avatar)} />
       <SpaceComponent width={8} />
       <View>
+        <Text>{notifyMessage}</Text>
         <Text style={{ fontWeight: '500', fontSize: 17 }}>{chatName}</Text>
-        <RowComponent >
-          <Text style={{fontWeight: '400', fontSize: 15}}>
-            {lastMessage.trim()}
-          </Text>
+        <RowComponent>
+          <Text style={{ fontWeight: '400', fontSize: 15 }}>{lastMessage.trim()}</Text>
           <SpaceComponent width={16} />
           <Text style={{ fontSize: 15, fontWeight: '400' }}>{lastTime} </Text>
         </RowComponent>

@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.7'
+const URL = 'http://192.168.1.8'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -114,6 +114,13 @@ const CONVENTION_TYPE = {
   GROUP: 'group'
 }
 
+const NOTIFY_CONVENTION_STATUS = {
+  ALLOW: 'ALLOW',
+  NOT_ALLOW: 'NOT_ALLOW',
+  CUSTOM: 'CUSTOM'
+}
+
+
 export {
   SERVER_POST,
   POST_ATTACHMENT,
@@ -132,5 +139,6 @@ export {
   SCOPE,
   OPEN_SCREEN,
   TYPE_SCREEN,
-  CONVENTION_TYPE
+  CONVENTION_TYPE,
+  NOTIFY_CONVENTION_STATUS
 }

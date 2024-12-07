@@ -24,6 +24,8 @@ const signOutWithGoogle = async () => {
   GoogleSignin.signOut()
     .then((result) => {
       auth().signOut()
+      messaging().deleteToken()
+
     })
     .catch((error) => console.log('error when sign out', error))
 }
@@ -58,7 +60,7 @@ async function signInWithGoogle() {
     return await auth()
       .signInWithCredential(googleCredential)
       .then(async (user) => {
-        const messagingToken = await getFCMToken()
+        const messagingToken = await messaging().getToken()
         const userData = {
           ...user.additionalUserInfo.profile,
           _id: user.user.uid,

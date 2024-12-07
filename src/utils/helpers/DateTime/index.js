@@ -192,5 +192,6 @@ export const DateTimeHelper = {
   displayTimeDescendingFromDate,
   displayTimeDescendingFromTimeStamp,
 
-  displayActiveTimeFromDate
+  displayActiveTimeFromDate,
+  timeCounter
 }

@@ -42,7 +42,7 @@ import OwnerProfile from '../screens/Profile/Owner'
 import UserProfile from '../screens/Profile/User'
 import MeetingProviderScreen from '../screens/Meeting/MeetingProvider'
 import AddMemberScreen from '../screens/convenition/AddMember'
-import MiddleWareNavigationScreen from '../screens/MiddlewareNavigatioin'
+import MiddleWareNavigationScreen from '../screens/MiddlewareNavigation'
 import SinglePostScreen from '../screens/Post/SinglePost'
 
 async function requestUserPermission() {

@@ -3,6 +3,7 @@ import TabData from '../../data/TabData'
 import Header from '../../components/Header'
 import ListGroupScreen from '../../screens/Group/ListGroup'
 import MeetingProviderScreen from '../../screens/Meeting/MeetingProvider'
+import StoryScreen from '../../screens/Story'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
 const MainNavigation = ({ navigation }) => {
@@ -34,6 +35,7 @@ const MainNavigation = ({ navigation }) => {
       ))}
       <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
       <Tab.Screen name="MeetingScreen" component={MeetingProviderScreen} />
+      <Tab.Screen name="StoryScreen" component={StoryScreen} />
     </Tab.Navigator>
   )
 }

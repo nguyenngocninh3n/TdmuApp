@@ -77,6 +77,14 @@ const updateMessage = async (conventionID, messageID, data) => {
   }
 }
 
+const updateNotifyConventionStatus = async (conventionID, userID, status, upto) => {
+  const response = await axios.post(
+    `${SERVER_POST}/convention/${conventionID}/notify`,
+    { conventionID, userID, status, upto }
+  )
+  return response.data
+}
+
 
 const ConventionAPI = {
   getConventionID,
@@ -88,7 +96,8 @@ const ConventionAPI = {
   addMemberToGroup,
   logoutGroupAPI,
   getOwnerConventions,
-  updateMessage
+  updateMessage,
+  updateNotifyConventionStatus
 }
 
 export default ConventionAPI
