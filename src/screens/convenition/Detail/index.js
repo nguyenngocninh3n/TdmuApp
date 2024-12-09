@@ -165,7 +165,7 @@ const DetailScreen = ({ navigation, route }) => {
         <SpaceComponent width={32} />
         {type === CONVENTION_TYPE.GROUP && (
           <View style={{ alignItems: 'center' }}>
-            <AntDesign onPress={handleAddMember} name="adduser" size={32} />
+            <AntDesign onPress={handleAddMember} name="adduser" size={24} />
             <SpaceComponent width={24} />
             <Text>Thêm</Text>
           </View>

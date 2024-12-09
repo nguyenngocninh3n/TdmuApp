@@ -8,7 +8,7 @@ import SocketClient from '../../../../../socket'
 import { MESSAGE_ACTION } from '../../../../../utils/Constants'
 import { useCustomContext } from '../../../../../store'
 
-const ChatList = React.memo(({ conventionID, onLongPress }) => {
+const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
   const [state, dispatch] = useCustomContext()
   const [chatData, setChatData] = useState([])
   const [members, setMembers] = useState(new Map())
@@ -56,30 +56,35 @@ const ChatList = React.memo(({ conventionID, onLongPress }) => {
 
   const flatlistRef = useRef()
   const handleScrollTo = () => {
-    const customOffset = offsets.at(indexRef.current)
-    console.log('customOffset: ', customOffset)
-    flatlistRef.current.scrollToOffset({ animated: true, offset: customOffset.position - customOffset.height  })
+    const customOffset = offsets.at(search)
+    flatlistRef.current.scrollToOffset({
+      animated: true,
+      offset: customOffset.position - customOffset.height
+    })
   }
 
-  const indexRef = useRef(0)
+  useEffect(() => {
+    if (search && offsets.length>0) {
+      console.info('search value: ', search)
+      console.log('offsets: ', offsets)
+      handleScrollTo(search)
+    }
+  }, [search, offsets])
 
   const onLayout = (height, index) => {
     setOffsets((pre) => {
       const newArr = [...pre]
-      newArr[index] = {
+       newArr[index] = {
         height: height + 8,
         position: (newArr?.at(index - 1)?.position || 0) + height
       }
+     
       return newArr
     })
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <View>
-        <TextInput onChangeText={(value) => (indexRef.current = +value)} />
-        <Button title="scroll to" onPress={handleScrollTo} />
-      </View>
+    <View style={{ flex: 1,backgroundColor:'#fff' }}>
       <FlatList
         style={{ flex: 1, marginLeft: 8, marginRight: 8 }}
         inverted

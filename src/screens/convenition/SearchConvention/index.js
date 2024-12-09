@@ -60,7 +60,7 @@ const SearchConventionScreen = ({ navigation, route }) => {
   const handleSearch = () => {
     const result = chatData
       .map((item, index) => ({ ...item, index: index }))
-      .filter((item, index) => {
+      .filter((item) => {
         if (item.type === MESSAGE_TYPE.TEXT) {
           if (item.message.includes(searchValue)) {
             return true
@@ -75,7 +75,14 @@ const SearchConventionScreen = ({ navigation, route }) => {
   const handleTextInputChange = (value) => setSearchValue(value)
 
   const handleClickSearchItem = (item) => {
-    navigation.navigate('ChattingScreen', { conventionID, searchIndex: item.index })
+    const arrIndex = searchResult.map(element => element.index)
+    const search = {
+      text: searchValue,
+      currentIndex: arrIndex.indexOf(item.index),
+      data: arrIndex
+    }
+    console.log('search var: ', search)
+    navigation.navigate('ChattingScreen', { conventionID, search: search })
   }
 
   return (

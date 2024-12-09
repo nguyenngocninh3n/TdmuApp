@@ -16,20 +16,20 @@ const example = {
 
 
 const PollScreen = () => {
-  const [poll, setPoll] = useState(null) // Lưu thông tin poll
+  const [poll, setPoll] = useState(example) // Lưu thông tin poll
   const [selectedOption, setSelectedOption] = useState(null) // Lựa chọn của người dùng
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   // Lấy poll từ API
-  useEffect(() => {
-    axios
-      .get('https://your-api-url.com/polls/1') // Thay URL bằng API thực tế
-      .then((response) => {
-        setPoll(response.data)
-        setLoading(false)
-      })
-      .catch((error) => console.error(error))
-  }, [])
+  // useEffect(() => {
+  //   axios
+  //     .get('https://your-api-url.com/polls/1') // Thay URL bằng API thực tế
+  //     .then((response) => {
+  //       setPoll(response.data)
+  //       setLoading(false)
+  //     })
+  //     .catch((error) => console.error(error))
+  // }, [])
 
   const handleVote = (optionId) => {
     setSelectedOption(optionId)

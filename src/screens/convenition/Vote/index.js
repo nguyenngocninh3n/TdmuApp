@@ -31,14 +31,16 @@ const CreatePollScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('https://your-api-url.com/polls', {
-        question,
-        options: filledOptions,
-        userId: '12345' // Lấy từ thông tin người dùng đã đăng nhập
-      })
+      // const response = await axios.post('https://your-api-url.com/polls', {
+      //   question,
+      //   options: filledOptions,
+      //   userId: '12345' // Lấy từ thông tin người dùng đã đăng nhập
+      // })
+      console.log('question: ', question)
+      console.log('options: ', options.filter(item => item.trim()))
 
       Alert.alert('Thành công', 'Bình chọn đã được tạo!')
-      navigation.goBack() // Quay lại màn hình trước
+      // navigation.goBack() // Quay lại màn hình trước
     } catch (error) {
       console.error(error)
       Alert.alert('Lỗi', 'Không thể tạo bình chọn.')

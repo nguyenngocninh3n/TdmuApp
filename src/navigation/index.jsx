@@ -46,6 +46,7 @@ import MiddleWareNavigationScreen from '../screens/MiddlewareNavigation'
 import SinglePostScreen from '../screens/Post/SinglePost'
 import SuggestFriendScreen from '../screens/Friend/Suggest'
 import PendingFriendScreen from '../screens/Friend/Pending'
+import ChattingSearchScreen from '../screens/convenition/chatting-search'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -218,7 +219,9 @@ const Navigation = () => {
 
             {/* CONVENTION */}
             <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
-            <Stack.Screen name="ChattingScreen" component={ChattingScreen} />
+            <Stack.Screen name="ChattingScreen" component={ChattingSearchScreen} />
+            {/* <Stack.Screen  name="ChattingSearchScreen" component={ChattingSearchScreen} /> */}
+
             <Stack.Screen name="DetailScreen" component={DetailScreen} />
             <Stack.Screen name="FileViewingScreen" component={FileViewing} />
             <Stack.Screen name="MemberScreen" component={MemberScreen} />
