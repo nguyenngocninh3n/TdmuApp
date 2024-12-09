@@ -1,12 +1,12 @@
 import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { API } from '../../api'
-import RowComponent from '../../components/RowComponent'
-import AvatarComponent from '../../components/AvatarComponent'
-import SpaceComponent from '../../components/SpaceComponent'
-import { useCustomContext } from '../../store'
-import { OpacityButtton } from '../../components/ButtonComponent'
-import { FRIEND_STATUS, RESPONSE_STATUS } from '../../utils/Constants'
+import { API } from '../../../api'
+import RowComponent from '../../../components/RowComponent'
+import AvatarComponent from '../../../components/AvatarComponent'
+import SpaceComponent from '../../../components/SpaceComponent'
+import { useCustomContext } from '../../../store'
+import { OpacityButtton } from '../../../components/ButtonComponent'
+import { FRIEND_STATUS, RESPONSE_STATUS } from '../../../utils/Constants'
 
 const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
   const [title, setTitle] = useState()
@@ -74,16 +74,14 @@ const handleRemoveSuggest = async (ownerID, userID) => {
   return response
 }
 
-const AcceptingFriendScreen = ({ navigation, route }) => {
+const SuggestFriendScreen = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
   const [suggests, setSuggests] = useState([])
 
   useEffect(() => {
-    API.getAcceptingFriend(state._id).then((data) => {
-      console.log('data: ', data)
-      if (data.status === RESPONSE_STATUS.SUCCESS) {
-        setSuggests(data.data.data)
-      }
+    API.getSuggestFriend(state._id).then((data) => {
+      console.log('data in get suggest friend: ', data)
+      setSuggests(data)
     })
   }, [])
 
@@ -94,39 +92,21 @@ const AcceptingFriendScreen = ({ navigation, route }) => {
       setSuggests(newArr)
     })
   }
-  const handleAccept = (userID) => {
-    console.log('handle accept friend: ', userID)
-  }
-  const onSuggestFriend = () => navigation.navigate('SuggestFriendScreen', { userID: state._id })
-  const onFriend = () => navigation.navigate('FriendScreen', { userID: state._id })
-  const onPendingFriend = () => navigation.navigate('PendingFriendScreen', { userID: state._id })
-
   return (
     <View style={{ marginHorizontal: 12 }}>
       <SpaceComponent height={8} />
-      <RowComponent>
-        <OpacityButtton title={'Gợi ý'} onPress={onSuggestFriend} />
-        <OpacityButtton title={'Bạn bè'} onPress={onFriend} />
-        <OpacityButtton title={'Đã gửi yêu cần'} onPress={onPendingFriend} />
-      </RowComponent>
-      <SpaceComponent height={16} />
-      {suggests.length === 0 && <Text style={{fontWeight:'900', fontSize:20, textTransform:'capitalize', textAlign:'center', marginTop:100, color:'#333'}}>Danh sách rỗng</Text>}
+      {suggests.length === 0 && <Text>Danh sách rỗng</Text>}
 
       <FlatList
         data={suggests}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={<SpaceComponent height={8} />}
         renderItem={({ item, index }) => (
-          <FriendItem
-            ownerID={state._id}
-            item={item}
-            onPress={handlePressItem}
-            onRemove={handleRemove}
-          />
+          <FriendItem ownerID={state._id} item={item} onPress={handlePressItem} onRemove={handleRemove} />
         )}
       />
     </View>
   )
 }
 
-export default AcceptingFriendScreen
+export default SuggestFriendScreen

@@ -18,7 +18,7 @@ import ConvenitionScreen from '../screens/convenition/home'
 import CreateGroup from '../screens/convenition/CreateGroup'
 import ConventionName from '../screens/convenition/ConventionName'
 import EditPost from '../screens/Post/EditPost'
-import FriendScreen from '../screens/Friend'
+// import FriendScreen from '../screens/Friend'
 import BioScreen from '../screens/Profile/BioScreen'
 import GroupScreen from '../screens/Group'
 import NewGroupScreen from '../screens/Group/NewGroup'
@@ -44,6 +44,8 @@ import MeetingProviderScreen from '../screens/Meeting/MeetingProvider'
 import AddMemberScreen from '../screens/convenition/AddMember'
 import MiddleWareNavigationScreen from '../screens/MiddlewareNavigation'
 import SinglePostScreen from '../screens/Post/SinglePost'
+import SuggestFriendScreen from '../screens/Friend/Suggest'
+import PendingFriendScreen from '../screens/Friend/Pending'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -72,7 +74,6 @@ notifee.onForegroundEvent(({ type, detail }) => {
     } else if (notifyType === TYPE_SCREEN.FRIEND) {
       navigate('ProfileScreen', { userID: detail.notification.data?.senderID })
     } else if (notifyType === TYPE_SCREEN.POST) {
-
       navigate('SinglePostScreen', { ownerID: notifyData.ownerID, postID: notifyData.targetID })
     } else if (notifyType === TYPE_SCREEN.CONVENTION) {
       navigate('ChattingScreen', { conventionID: detail.notification.data.targetID })
@@ -188,9 +189,12 @@ const Navigation = () => {
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="OwnerProfileScreen" component={OwnerProfile} />
             <Stack.Screen name="UserProfileScreen" component={UserProfile} />
-            <Stack.Screen name="FriendScreen" component={FriendScreen} />
+            {/* <Stack.Screen name="FriendScreen" component={FriendScreen} /> */}
             <Stack.Screen name="BioScreen" component={BioScreen} />
 
+            {/* FRIEND */}
+            <Stack.Screen name="SuggestFriendScreen" component={SuggestFriendScreen} />
+            <Stack.Screen name="PendingFriendScreen" component={PendingFriendScreen} />
             {/* SEARCH */}
             <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
             {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}

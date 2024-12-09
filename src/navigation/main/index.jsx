@@ -4,10 +4,12 @@ import Header from '../../components/Header'
 import ListGroupScreen from '../../screens/Group/ListGroup'
 import MeetingProviderScreen from '../../screens/Meeting/MeetingProvider'
 import StoryScreen from '../../screens/Story'
+import SuggestFriendScreen from '../../screens/Friend/Suggest'
+import FriendScreen from '../../screens/Friend'
+import AcceptingFriendScreen from '../../screens/Friend'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
 const MainNavigation = ({ navigation }) => {
-
   return (
     <Tab.Navigator
       screenOptions={{
@@ -33,8 +35,8 @@ const MainNavigation = ({ navigation }) => {
           }}
         />
       ))}
+      <Tab.Screen name="AcceptingFriendScreen" component={AcceptingFriendScreen} />
       <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
-      <Tab.Screen name="MeetingScreen" component={MeetingProviderScreen} />
       <Tab.Screen name="StoryScreen" component={StoryScreen} />
     </Tab.Navigator>
   )
