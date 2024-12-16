@@ -4,7 +4,7 @@ import AuthNavigation from './auth'
 import MainNavigation from './main'
 import auth from '@react-native-firebase/auth'
 import { useEffect, useState } from 'react'
-import ChattingScreen from '../screens/convenition/chatting'
+// import ChattingScreen from '../screens/convenition/chatting'
 import { actions, navigate, navigationRef, useCustomContext } from '../store'
 import NewPost from '../screens/Post/NewPost'
 import ProfileScreen from '../screens/Profile'
@@ -47,6 +47,8 @@ import SinglePostScreen from '../screens/Post/SinglePost'
 import SuggestFriendScreen from '../screens/Friend/Suggest'
 import PendingFriendScreen from '../screens/Friend/Pending'
 import ChattingSearchScreen from '../screens/convenition/chatting-search'
+import CreatePollScreen from '../screens/convenition/Vote'
+import ScheduleScreen from '../screens/Schedule'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -196,6 +198,7 @@ const Navigation = () => {
             {/* FRIEND */}
             <Stack.Screen name="SuggestFriendScreen" component={SuggestFriendScreen} />
             <Stack.Screen name="PendingFriendScreen" component={PendingFriendScreen} />
+
             {/* SEARCH */}
             <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
             {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}
@@ -217,11 +220,15 @@ const Navigation = () => {
             <Stack.Screen name="NewPostScreen" component={NewPost} />
             <Stack.Screen name="SinglePostScreen" component={SinglePostScreen} />
 
+            {/* POLL */}
+            <Stack.Screen name="CreatePollScreen" component={CreatePollScreen} />
+
+            {/* SCHEDULE */}
+            <Stack.Screen name="ScheduleScreen" component={ScheduleScreen} />
+
             {/* CONVENTION */}
             <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
             <Stack.Screen name="ChattingScreen" component={ChattingSearchScreen} />
-            {/* <Stack.Screen  name="ChattingSearchScreen" component={ChattingSearchScreen} /> */}
-
             <Stack.Screen name="DetailScreen" component={DetailScreen} />
             <Stack.Screen name="FileViewingScreen" component={FileViewing} />
             <Stack.Screen name="MemberScreen" component={MemberScreen} />

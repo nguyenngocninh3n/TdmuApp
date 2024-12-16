@@ -118,9 +118,7 @@ const ChattingScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     SocketClient.socket.on('convention', (response) => {
-      console.info('into in chatting screen: ', response)
       if (response.type === MESSAGE_TYPE.NOTIFY) {
-        console.info('into notify')
 
         const notify = response.notify
         if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AKA && conventionInfo.type === 'private') {

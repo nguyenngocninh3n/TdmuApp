@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Button, FlatList, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SpaceComponent from '../../../../../components/SpaceComponent'
 import ChatItem from './components/ChatItem'
 import { API } from '../../../../../api'
@@ -13,7 +13,7 @@ const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
   const [chatData, setChatData] = useState([])
   const [members, setMembers] = useState(new Map())
   const [ownerID, setOwnerID] = useState(state._id)
-
+  console.info('chatlist rerender')
   const [offsets, setOffsets] = useState([])
 
   useEffect(() => {
@@ -33,8 +33,10 @@ const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
     SocketClient.socket.on('convention', (value) => {
       if (value.action === MESSAGE_ACTION.ADD) {
         setChatData((pre) => {
+          console.log('into set chat data: ADD MESSAGE')
           const { _id, senderID, message, type, createdAt, updatedAt } = value
-          const newData = { _id, senderID, message, type, createdAt, updatedAt }
+          const pollID = value?.pollID
+          const newData = { _id, senderID, message, type, createdAt, updatedAt, pollID: pollID }
           return [newData, ...pre]
         })
       } else if (value.action === MESSAGE_ACTION.EDIT || value.action === MESSAGE_ACTION.REMOVE) {
@@ -64,27 +66,29 @@ const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
   }
 
   useEffect(() => {
-    if (search && offsets.length>0) {
+    if (search && offsets.length > 0) {
       console.info('search value: ', search)
       console.log('offsets: ', offsets)
       handleScrollTo(search)
     }
   }, [search, offsets])
 
-  const onLayout = (height, index) => {
-    setOffsets((pre) => {
-      const newArr = [...pre]
-       newArr[index] = {
-        height: height + 8,
-        position: (newArr?.at(index - 1)?.position || 0) + height
-      }
-     
-      return newArr
-    })
-  }
+  const onLayout = useCallback((height, index) => {
+    if (search && index) {
+      setOffsets((pre) => {
+        const newArr = [...pre]
+        newArr[index] = {
+          height: height + 8,
+          position: (newArr?.at(index - 1)?.position || 0) + height
+        }
+
+        return newArr
+      })
+    }
+  }, [])
 
   return (
-    <View style={{ flex: 1,backgroundColor:'#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <FlatList
         style={{ flex: 1, marginLeft: 8, marginRight: 8 }}
         inverted
@@ -96,21 +100,33 @@ const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
         ListFooterComponent={<SpaceComponent height={64} />}
         ListHeaderComponent={<SpaceComponent height={32} />}
         ItemSeparatorComponent={<SpaceComponent height={8} />}
-        renderItem={React.useCallback(
-          ({ item, index }) => (
+        renderItem={({ item, index }) => {
+         return search ? (
             <ChatItem
               index={index}
               onLayout={onLayout}
               onLongPress={onLongPress}
               members={members}
-              beforeItem={chatData?.at(index + 1)}
+              beforeItem={chatData[index + 1]}
               ownerID={ownerID}
               item={item}
-              key={item._id + item.createdAt}
+              key={item._id}
+              conventionID={conventionID}
             />
-          ),
-          [chatData, onLongPress, members, ownerID]
-        )}
+          ) : (
+            <ChatItem
+              index={undefined}
+              onLayout={onLayout}
+              onLongPress={onLongPress}
+              members={members}
+              beforeItem={chatData[index + 1]}
+              ownerID={ownerID}
+              item={item}
+              key={item._id}
+              conventionID={conventionID}
+            />
+          )
+        }}
       />
     </View>
   )

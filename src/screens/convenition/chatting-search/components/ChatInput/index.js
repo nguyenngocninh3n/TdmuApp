@@ -7,7 +7,10 @@ import ImageLibrary, { openImage } from '../../../../../components/ImageLibrary'
 import SpaceComponent from '../../../../../components/SpaceComponent'
 import { MESSAGE_TYPE } from '../../../../../utils/Constants'
 import RNFS from 'react-native-fs'
-const ChatInput = ({ onPress }) => {
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import { navigationRef } from '../../../../../store'
+
+const ChatInput = ({ onPress, conventionID, onPoll }) => {
   const [message, setMessage] = useState('')
   const handleSendMessage = () => {
     onPress(message, MESSAGE_TYPE.TEXT)
@@ -41,6 +44,7 @@ const ChatInput = ({ onPress }) => {
       <SpaceComponent width={8} />
       <ImageLibrary type={MESSAGE_TYPE.IMAGE} callback={handleSendImage} />
       <ImageLibrary type={MESSAGE_TYPE.VIDEO} callback={handleSendvideo} />
+      <EvilIcons style={{paddingBottom:8}} name="chart" size={42} color={'blue'} onPress={onPoll} />
       <SpaceComponent width={8} />
       <TextInput value={message} onChangeText={handleTextChange} style={styles.chatInput} multiline placeholder="Nhập tin nhắn..." />
       <TouchableOpacity onPress={handleSendMessage} style={styles.chatInputIcon}>

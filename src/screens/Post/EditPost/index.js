@@ -27,7 +27,7 @@ const EditPost = ({ navigation, route }) => {
     })
   }, [])
 
-  const handleSubmit = (ownerID, attachments, value, scope) => {
+  const handleSubmit = (ownerID, attachments, value, scope, pollID) => {
     console.log('submit edit post: ', scope)
     const isValueChanged = !(value === postData.content)
     const isAttachmentsChanged = !(JSON.stringify(files) === JSON.stringify(attachments))
@@ -62,6 +62,9 @@ const EditPost = ({ navigation, route }) => {
       ToastAndroid.show('Chỉnh sửa bài viết thành công', ToastAndroid.SHORT)
       navigation.goBack()
       return
+    }
+    if (pollID) {
+      newPostData.pollID = pollID
     }
     API.editPostAPI(postID, newPostData).then((result) => {
       if (result === RESPONSE_STATUS.SUCCESS) {

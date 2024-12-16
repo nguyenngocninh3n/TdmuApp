@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import SpaceComponent from '../../../components/SpaceComponent'
+import PollModal from '../../../modals/PollModal'
 
 const ChattingSearchScreen = ({ navigation, route }) => {
   let { userID } = route.params
@@ -26,9 +27,10 @@ const ChattingSearchScreen = ({ navigation, route }) => {
   const [members, setMembers] = useState(new Map())
   const [conventionInfo, setConventionInfo] = useState({})
   const [modalVisible, setModalVisible] = useState(false)
+  const [pollModalVisible, setPollModalVisible] = useState(false)
   const [selectionItem, setSelectionItem] = useState({})
   console.log('chatting screen re-render')
-
+  const [searchStatus, setSearchStatus] = useState(false)
   const setDataForConvention = (data) => {
     setConventionID(data._id)
     setMembers(() => {
@@ -84,12 +86,15 @@ const ChattingSearchScreen = ({ navigation, route }) => {
     }
   }
 
-  const handleSendMessage = async (message, type) => {
+  const handleSendMessage = async (message, type, pollID) => {
     const data = {
       senderID: state._id || ownerID,
       type: type,
       userID,
       message: message
+    }
+    if (pollID) {
+      data.pollID = pollID
     }
     if (!conventionID) {
       const newData = await API.createConventionAPI({
@@ -109,29 +114,30 @@ const ChattingSearchScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    getConventionByID(conventionID)
+  
+      getConventionByID(conventionID)
   }, [])
+
+  // useEffect(() => {
+  //   if (search && !searchStatus) {
+  //     getConventionByID(conventionID)
+  //     setSearchStatus(true)
+  //   }
+  // }, [search])
 
   useEffect(() => {
     SocketClient.socket.on('convention', (response) => {
-      console.info('into in chatting screen: ', response)
       if (response.type === MESSAGE_TYPE.NOTIFY) {
-        console.info('into notify')
-
         const notify = response.notify
         if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AKA && conventionInfo.type === 'private') {
           if (notify.changedID !== state._id) {
             if (notify.action === MESSAGE_NOTIFY_STATUS.UPDATE) {
-              console.log('update status: ', notify.value)
               setConventionInfo((pre) => ({ ...pre, name: notify.value }))
             } else {
-              console.log('clear status: ', notify.value)
-
               setConventionInfo((pre) => ({ ...pre, name: members.get(notify.changedID).userName }))
             }
           }
         } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_CONVENTION_NAME) {
-          console.log('change convention name: ', notify.value)
           setConventionInfo((pre) => ({ ...pre, name: notify.value }))
         } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AVATAR) {
           setConventionInfo((pre) => ({ ...pre, avatar: notify.value }))
@@ -251,7 +257,7 @@ const ChattingSearchScreen = ({ navigation, route }) => {
         </RowComponent>
       )}
       <ChatList
-        search={search?.data[search?.currentIndex]}
+        search={search ? search?.data[search?.currentIndex] : null}
         conventionID={conventionID}
         ownerID={state._id}
         onLongPress={handleOnShow}
@@ -264,7 +270,16 @@ const ChattingSearchScreen = ({ navigation, route }) => {
         ownerID={state._id}
         conventionID={conventionID}
       />
-      <ChatInput onPress={handleSendMessage} />
+      <PollModal
+        modalVisible={pollModalVisible}
+        onCancle={() => setPollModalVisible(false)}
+        onSubmit={handleSendMessage}
+      />
+      <ChatInput
+        onPress={handleSendMessage}
+        conventionID={conventionID}
+        onPoll={() => setPollModalVisible(true)}
+      />
     </View>
   )
 }

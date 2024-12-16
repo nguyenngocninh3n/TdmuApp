@@ -8,7 +8,7 @@ import { useCustomContext } from '../../../store'
 const NewPost = ({ navigation, route }) => {
   console.log('newpost re-render: ', route.params)
   const [state, dispatch] = useCustomContext()
-  const handleSubmit = (ownerID, customAttachments, value, scope) => {
+  const handleSubmit = (ownerID, customAttachments, value, scope, pollID) => {
     console.log('scope: ', scope)
     const newPostData = {
       groupID: route.params.groupID ?? null,
@@ -19,6 +19,9 @@ const NewPost = ({ navigation, route }) => {
       content: value,
       scope: scope,
       type: route.params.groupID ? POST_TYPE.GROUP : POST_TYPE.PERSONAL
+    }
+    if (pollID) {
+      newPostData.pollID = pollID
     }
     API.storePostAPI(newPostData).then((result) => {
       if (result === RESPONSE_STATUS.SUCCESS) {

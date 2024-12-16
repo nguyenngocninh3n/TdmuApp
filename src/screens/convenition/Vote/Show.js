@@ -1,111 +1,190 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
-import axios from 'axios'
+import { API } from '../../../api'
+import { useCustomContext } from '../../../store'
+import { RESPONSE_STATUS } from '../../../utils/Constants'
+import { OpacityButtton } from '../../../components/ButtonComponent'
+import RowComponent from '../../../components/RowComponent'
+import SpaceComponent from '../../../components/SpaceComponent'
+import PollingModal from '../../../modals/PollingModal'
+import AvatarComponent from '../../../components/AvatarComponent'
+import SocketClient from '../../../socket'
 
-const example = {
-  _id: 'pollId1',
-  question: 'Bạn thích loại trái cây nào?',
-  options: [
-    { id: '1', text: 'Táo', votes: 0 },
-    { id: '2', text: 'Chuối', votes: 0 },
-    { id: '3', text: 'Cam', votes: 0 }
-  ],
-  createdBy: 'userId1',
-  createdAt: '2024-12-07T10:00:00Z'
-}
-
-
-const PollScreen = () => {
-  const [poll, setPoll] = useState(example) // Lưu thông tin poll
-  const [selectedOption, setSelectedOption] = useState(null) // Lựa chọn của người dùng
-  const [loading, setLoading] = useState(false)
-
-  // Lấy poll từ API
-  // useEffect(() => {
-  //   axios
-  //     .get('https://your-api-url.com/polls/1') // Thay URL bằng API thực tế
-  //     .then((response) => {
-  //       setPoll(response.data)
-  //       setLoading(false)
-  //     })
-  //     .catch((error) => console.error(error))
-  // }, [])
-
-  const handleVote = (optionId) => {
-    setSelectedOption(optionId)
-
-    // Gửi lựa chọn đến API
-    axios
-      .patch(`https://your-api-url.com/polls/${poll._id}/vote`, { optionId })
-      .then(() => {
-        // Cập nhật số phiếu
-        const updatedOptions = poll.options.map((option) =>
-          option.id === optionId ? { ...option, votes: option.votes + 1 } : option
-        )
-        setPoll({ ...poll, options: updatedOptions })
-      })
-      .catch((error) => console.error(error))
-  }
-
-  if (loading) {
-    return <Text>Loading...</Text>
-  }
-
+const CountItem = ({ length }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.question}>{poll.question}</Text>
-      <FlatList
-        data={poll.options}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.option, selectedOption === item.id && styles.selectedOption]}
-            onPress={() => handleVote(item.id)}
-          >
-            <Text style={styles.optionText}>{item.text}</Text>
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.resultContainer}>
-        {poll.options.map((option) => (
-          <View key={option.id} style={styles.resultBar}>
-            <Text>{option.text}</Text>
-            <View
-              style={[
-                styles.bar,
-                {
-                  width: `${
-                    (option.votes / poll.options.reduce((acc, opt) => acc + opt.votes, 0)) * 100
-                  }%`
-                }
-              ]}
-            />
-          </View>
-        ))}
-      </View>
+    <View
+      style={{
+        width: 32,
+        height: 32,
+        backgroundColor: '#fff',
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        justifyContent: 'center'
+      }}
+    >
+      <Text style={{ textAlign: 'center' }}>+{length - 1}</Text>
     </View>
   )
 }
 
+const PollScreen = React.memo(({ pollID, members, conventionID, postID }) => {
+  const [poll, setPoll] = useState()
+  const [selectedOption, setSelectedOption] = useState(null)
+  const [state, dispatch] = useCustomContext()
+  console.log('poll screen re-render: ', pollID)
+
+  const [modalVisible, setModalVisible] = useState(false)
+  const onShowModal = () => setModalVisible(true)
+  const onCloseModal = () => setModalVisible(false)
+  useEffect(() => {
+    if (pollID) {
+      API.getPoll(pollID)
+        .then((response) => {
+          console.log('response poll data: ', response)
+          setPoll(response.data)
+          if (response === RESPONSE_STATUS.SUCCESS) {
+            const selectionID = response.data.results
+              .filter((item) => item.userID === state._id)
+              ?.at(0)?.optionID
+            console.log('selectionID: ', selectionID)
+            setSelectedOption(selectionID)
+          }
+        })
+        .catch((error) => console.error(error))
+    }
+  }, [])
+
+  useEffect(() => {
+    console.info('listeners name: ', SocketClient.socket.listeners())
+    SocketClient.socket.on('client_addPolling', (data) => {
+      setPoll((pre) => ({
+        ...pre,
+        results: [...poll.results, data.data]
+      }))
+    })
+
+    SocketClient.socket.on('client_updatePolling', (data) => {
+      console.log('listen update Polling in client: ', data)
+      setPoll((pre) => {
+        if (pre) {
+          if (pre.results.find((item) => JSON.stringify(item) !== JSON.stringify(data))) {
+            const currentPoll = { ...pre }
+            console.log('currrent poll: ', currentPoll)
+
+            const filterIndex = currentPoll.results.findIndex(
+              (item) => item.userID === data.data.userID
+            )
+            currentPoll.results[filterIndex] = data.data
+            return currentPoll
+          }
+          return pre
+        }
+        return pre
+      })
+    })
+  }, [])
+
+  return !poll ? (
+    <Text>loading...</Text>
+  ) : (
+    <View style={styles.container}>
+      <Text style={styles.question}>{poll.question}</Text>
+      <FlatList
+        data={poll.options}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => {
+          const chosens = poll.results.filter((result) => result.optionIDs.includes(item._id))
+          const chosensLength = chosens.length
+          const itemLength = (chosensLength / (members?.size || poll.results.length)) * 100
+          console.log(
+            'item length: ',
+            itemLength,
+            'chosenlength: ',
+            chosensLength,
+            ' pollingcount: ',
+            poll.results.length
+          )
+          return (
+            <View style={{ flex: 1 }}>
+              <SpaceComponent height={12} />
+              <RowComponent style={{ justifyContent: 'space-between', width: '90%' }}>
+                <Text style={{ fontSize: 16 }}>{item.value}</Text>
+                {chosensLength > 0 && (
+                  <RowComponent>
+                    <AvatarComponent
+                      source={API.getFileUrl(members?.get(chosens.at(-1).userID)?.avatar)}
+                      size={32}
+                    />
+                    {chosensLength > 1 && <CountItem length={chosensLength} />}
+                  </RowComponent>
+                )}
+              </RowComponent>
+              <SpaceComponent height={4} />
+              <RowComponent
+                style={{ backgroundColor: '#ddd', width: '90%', height: 12, borderRadius: 25 }}
+              >
+                <View
+                  style={{
+                    backgroundColor: 'blue',
+                    width: itemLength + '%',
+                    height: '100%',
+                    borderRadius: 25
+                  }}
+                />
+              </RowComponent>
+            </View>
+          )
+        }}
+      />
+      <SpaceComponent height={24} />
+      <OpacityButtton
+        title={'Thay đổi bình chọn'}
+        bgColor={'#fff'}
+        style={{ borderRadius: 25 }}
+        textColor={'#333'}
+        textSize={17}
+        textStyle={{ fontWeight: 'bold' }}
+        onPress={onShowModal}
+      />
+      <PollingModal
+        members={members}
+        pollID={pollID}
+        ownerID={state._id}
+        poll={poll}
+        modalVisible={modalVisible}
+        onCancle={onCloseModal}
+        conventionID={conventionID}
+        postID={postID}
+      />
+    </View>
+  )
+})
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16
+    padding: 16,
+    marginTop: 4,
+    marginHorizontal: 32,
+    backgroundColor: '#acf5',
+    borderRadius: 20
   },
   question: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 17,
+    textAlign: 'center',
+    fontWeight: '600',
     marginBottom: 16
   },
   option: {
-    padding: 16,
+    padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     marginBottom: 8
   },
   selectedOption: {
-    backgroundColor: '#d1e7dd'
+    backgroundColor: 'blue'
   },
   optionText: {
     fontSize: 16

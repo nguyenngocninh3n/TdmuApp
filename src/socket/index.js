@@ -14,7 +14,6 @@ function runSocketClient(userID, navigation) {
   emitUserJoinRoom(userID)
   onConventionStored()
   onConvention((value) => {
-    console.log('data on convention listener: ', value)
     const { conventionID, type, message, senderID, senderName, senderAvatar } = value
     let messageCustom = ''
     switch (type) {
@@ -51,7 +50,7 @@ async function get(userID) {
 }
 
 async function onFriendActive(callBack) {
-  socket.on('friendActive', data => {
+  socket.on('friendActive', (data) => {
     callBack(data)
   })
 }
@@ -69,6 +68,15 @@ async function emitConventionJoinRooms(ownerID) {
     joinChatRooms(conventionIDs)
   }
 }
+
+async function emitConventionJoinRoomsByArray(array) {
+  joinChatRooms(array)
+}
+
+async function exitRooms (array) {
+  socket.emit('exitRooms', array)
+}
+
 async function emitConventionJoinRoom(conventionID) {
   joinChatRoom(conventionID)
 }
@@ -115,6 +123,8 @@ const SocketClient = {
   runSocketClient,
   emitConventionJoinRoom,
   emitConventionJoinRooms,
+  emitConventionJoinRoomsByArray,
+  exitRooms,
   onConvention,
   onConventions,
   emitConvention,

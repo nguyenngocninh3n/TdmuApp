@@ -9,6 +9,7 @@ import FriendScreen from '../../screens/Friend'
 import AcceptingFriendScreen from '../../screens/Friend'
 import PollScreen from '../../screens/convenition/Vote/Show'
 import CreatePollScreen from '../../screens/convenition/Vote'
+import ScheduleScreen from '../../screens/Schedule'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 const Tab = createBottomTabNavigator()
 const MainNavigation = ({ navigation }) => {
@@ -38,10 +39,10 @@ const MainNavigation = ({ navigation }) => {
         />
       ))}
       {/* <Tab.Screen name="AcceptingFriendScreen" component={AcceptingFriendScreen} /> */}
-      {/* <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} /> */}
-      <Tab.Screen name="PollScreen" component={PollScreen} />
-      <Tab.Screen name="CreatePollScreen" component={CreatePollScreen} />
+      <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
       {/* <Tab.Screen name="StoryScreen" component={StoryScreen} /> */}
+      <Tab.Screen name="ScheduleScreen" component={ScheduleScreen} />
+
     </Tab.Navigator>
   )
 }

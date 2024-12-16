@@ -9,14 +9,17 @@ import { useCustomContext } from '../../store'
 const HomeScreen = ({ navigation }) => {
   const [state, dispatch] = useCustomContext()
   return (
-    <ScrollView>
-      <View>
-        {/* <SubHeader navigation={navigation} user={user} /> */}
-        <Story />
-        <NewPostBox navigation={navigation} />
-        {state && <FlatListPostNewFeed />}
-      </View>
-    </ScrollView>
+    // <ScrollView>
+    //   <View>
+    //     {/* <SubHeader navigation={navigation} user={user} /> */}
+    //     <Story />
+    //     <NewPostBox navigation={navigation} />
+    //     {state && <FlatListPostNewFeed />}
+    //   </View>
+    // </ScrollView>
+    <View style={{flex:1}}>
+      {state && <FlatListPostNewFeed navigation={navigation} />}
+    </View>
   )
 }
 

@@ -34,15 +34,13 @@ const convertName = (convention, privateUser) =>
 
 
 const handleCheckNotifyCustomStatus = (status, upto) => {
-  console.log('status: ', status)
   switch(status) {
     case NOTIFY_CONVENTION_STATUS.ALLOW: return ''
     case NOTIFY_CONVENTION_STATUS.NOT_ALLOW: return 'Đoạn chat này đã bị tắt thông báo'
     case NOTIFY_CONVENTION_STATUS.CUSTOM: {
-      const newDate  = Date.now()
+      const newDate = Date.now()
       const customDate = Date.parse(upto)
       const customTime = 'Thông báo này sẽ được tắt cho đến: ' + new Date(upto).getHours() + ' : ' + new Date(upto).getMinutes()
-      console.log('currrent time and upto: ', newDate - customDate > 0)
       return newDate > customDate ? '' : customTime 
     }
     default: return ''

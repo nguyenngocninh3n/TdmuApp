@@ -1,23 +1,45 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native'
-import axios from 'axios'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Alert,
+  ToastAndroid
+} from 'react-native'
+import RowComponent from '../../../components/RowComponent'
+import SpaceComponent from '../../../components/SpaceComponent'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { API } from '../../../api'
+import { useCustomContext } from '../../../store'
+import { MESSAGE_TYPE, POLL_TYPE, RESPONSE_STATUS } from '../../../utils/Constants'
+import { OpacityButtton } from '../../../components/ButtonComponent'
 
-const CreatePollScreen = ({ navigation }) => {
+
+const CreatePollScreen = ({ onSendMessage, onCancel, submitState, onPollChange, onPollClear }) => {
   const [question, setQuestion] = useState('')
-  const [options, setOptions] = useState(['', '']) // Ít nhất 2 tùy chọn mặc định
-
+  const [options, setOptions] = useState(['']) // Ít nhất 2 tùy chọn mặc định
+  const [state, dispatch] = useCustomContext()
   const handleAddOption = () => {
-    if (options.length < 10) {
-      setOptions([...options, '']) // Thêm 1 trường trống mới
-    } else {
-      Alert.alert('Giới hạn', 'Bạn chỉ có thể thêm tối đa 10 tùy chọn.')
-    }
+    setOptions([...options, ''])
+    onPollChange({ options: [...options, ''] })
   }
 
   const handleOptionChange = (text, index) => {
     const updatedOptions = [...options]
     updatedOptions[index] = text
     setOptions(updatedOptions)
+    onPollChange({ options: updatedOptions })
+  }
+
+  const handleRemoveOption = (deletedIndex) => {
+    const currentOptions = [...options]
+    const updatedOptions = currentOptions.filter((item, index) => index !== deletedIndex)
+    setOptions(updatedOptions)
+    onPollChange({ options: updatedOptions })
   }
 
   const handleSubmit = async () => {
@@ -26,58 +48,89 @@ const CreatePollScreen = ({ navigation }) => {
     }
 
     const filledOptions = options.filter((option) => option.trim())
-    if (filledOptions.length < 2) {
+    if (options.length < 2) {
       return Alert.alert('Lỗi', 'Cần ít nhất 2 tùy chọn.')
+    } else if (filledOptions.length < options.length) {
+      return Alert.alert('Lỗi', 'Tùy chọn không được rỗng.')
     }
 
-    try {
-      // const response = await axios.post('https://your-api-url.com/polls', {
-      //   question,
-      //   options: filledOptions,
-      //   userId: '12345' // Lấy từ thông tin người dùng đã đăng nhập
-      // })
-      console.log('question: ', question)
-      console.log('options: ', options.filter(item => item.trim()))
+    const customData = {
+      targetID: null,
+      userID: state._id,
+      question,
+      options: filledOptions,
+      result: [],
+      type: POLL_TYPE.CONVENTION
+    }
+    API.createPoll(customData).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        onSendMessage('đã tạo bình chọn', MESSAGE_TYPE.POLL, response.data._id)
+        onCancel()
+      } else {
+        Alert.alert('Lỗi', response.data)
+      }
+    })
+  }
 
-      Alert.alert('Thành công', 'Bình chọn đã được tạo!')
-      // navigation.goBack() // Quay lại màn hình trước
-    } catch (error) {
-      console.error(error)
-      Alert.alert('Lỗi', 'Không thể tạo bình chọn.')
+  const handleCancle = () => {
+    if (submitState) {
+      onPollClear()
+      onCancel()
+    } else {
+      onCancel()
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tạo bình chọn mới</Text>
+      <RowComponent alignItems style={{ justifyContent: 'space-between' }}>
+        <Text style={styles.title}>Tạo bình chọn mới</Text>
+        <OpacityButtton padding={4} onPress={handleCancle}>
+          <FontAwesome style={styles.title} name="close" size={42} color={'#666'} />
+        </OpacityButtton>
+      </RowComponent>
       <TextInput
         style={styles.input}
         placeholder="Nhập câu hỏi của bạn"
         value={question}
-        onChangeText={setQuestion}
+        onChangeText={(value) => {
+          setQuestion(value)
+          onPollChange({ question: value })
+        }}
       />
 
       <FlatList
         data={options}
+        scrollEnabled={!submitState}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TextInput
-            style={styles.input}
-            placeholder={`Tùy chọn ${index + 1}`}
-            value={item}
-            onChangeText={(text) => handleOptionChange(text, index)}
-          />
+          <RowComponent style={{ flex: 1 }}>
+            <TextInput
+              style={styles.itemInput}
+              placeholder={`Tùy chọn ${index + 1}`}
+              value={item}
+              onChangeText={(text) => handleOptionChange(text, index)}
+            />
+            <SpaceComponent height={4} />
+            <MaterialIcons
+              name="clear"
+              size={24}
+              onPress={() => handleRemoveOption(index)}
+              style={{ paddingHorizontal: 10 }}
+            />
+          </RowComponent>
         )}
-        ListFooterComponent={() => (
+        ListFooterComponent={
           <TouchableOpacity style={styles.addOptionButton} onPress={handleAddOption}>
             <Text style={styles.addOptionText}>+ Thêm tùy chọn</Text>
           </TouchableOpacity>
-        )}
+        }
       />
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Tạo bình chọn</Text>
-      </TouchableOpacity>
+      {!submitState && (
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Tạo bình chọn</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }
@@ -86,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff'
+    backgroundColor: '#eee'
   },
   title: {
     fontSize: 24,
@@ -100,6 +153,15 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8
   },
+  itemInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8
+  },
+
   addOptionButton: {
     marginTop: 8,
     padding: 12,

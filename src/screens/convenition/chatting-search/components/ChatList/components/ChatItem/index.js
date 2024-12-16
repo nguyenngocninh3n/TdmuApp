@@ -5,8 +5,9 @@ import { MESSAGE_TYPE } from '../../../../../../../utils/Constants'
 import VideoMessage from '../VideoMessage'
 import ImageMessage from '../ImageMessage'
 import TextMessage from '../TextMessage'
+import PollScreen from '../../../../../Vote/Show'
 
-const ChatItem = React.memo(({ item, index, onLayout, members, ownerID, beforeItem, onLongPress }) => {
+const ChatItem = React.memo(({ item, index, onLayout, members, ownerID, beforeItem, onLongPress, conventionID, search }) => {
   const boolCheckOwner = item.senderID === ownerID ? true : false
   console.log('re-render chatitem: ', beforeItem?.message)
   var messageType = TextMessage
@@ -45,6 +46,15 @@ const ChatItem = React.memo(({ item, index, onLayout, members, ownerID, beforeIt
   if (item.type === MESSAGE_TYPE.NOTIFY) {
     return (
       <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 13 }}>{item.message}</Text>
+    )
+  }
+  if (item.type === MESSAGE_TYPE.POLL) {
+    const sender = members.get(item.senderID)
+    return (
+      <View>
+        <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 13 }}>{sender?.aka ?? sender?.userName + item.message}</Text>
+        <PollScreen conventionID={conventionID} pollID={item.pollID} members={members} />
+      </View>
     )
   }
   if (!beforeItem) {
