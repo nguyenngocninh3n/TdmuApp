@@ -1,4 +1,4 @@
-const URL = 'http://192.168.1.4'
+const URL = 'http://192.168.1.9'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -132,6 +132,12 @@ const POLL_TYPE = {
   POST: 'POST'
 }
 
+
+const REACTION_TYPE  = {
+  POST: 'POST',
+  COMMENT: 'COMMENT'
+}
+
 export {
   SERVER_POST,
   POST_ATTACHMENT,
@@ -153,5 +159,6 @@ export {
   CONVENTION_TYPE,
   NOTIFY_CONVENTION_STATUS,
   POLL_STATUS,
-  POLL_TYPE
+  POLL_TYPE,
+  REACTION_TYPE
 }

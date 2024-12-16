@@ -6,6 +6,8 @@ import SpaceComponent from '../../../SpaceComponent'
 import CommentModal from '../../../../modals/CommentModal'
 import { API } from '../../../../api'
 import { useCustomContext } from '../../../../store'
+import { Text, View } from 'react-native'
+import { REACTION_TYPE } from '../../../../utils/Constants'
 
 const icon = {
   none: 'heart',
@@ -20,41 +22,57 @@ const PostFooter = ({ postID, ownerID, item }) => {
   const handleCloseModal = useCallback(() => setModalVisible(false), [])
 
   useEffect(() => {
-    API.getReactionOfUserByTargetAPI(postID, ownerID).then((data) => {
-      setReaction(data)
-    }).catch(error => {
-      console.log('Lỗi khi getReactionOfUserByTargetAPI ', error)
-    })
+    API.getReactionOfUserByTargetAPI(postID, ownerID)
+      .then((data) => {
+        console.log('get reaction: ', )
+        setReaction(data)
+      })
+      .catch((error) => {
+        console.log('Lỗi khi getReactionOfUserByTargetAPI ', error)
+      })
   }, [])
 
-
-  const handleUpdateReaction = useCallback(() => {
+  const handleUpdateReaction = () => {
     const customData = {
       targetID: postID,
+      type: REACTION_TYPE.POST,
       userID: ownerID,
       userName: state.userName,
-      avatar: state.avatar
+      avatar: state.avatar,
+      status: reaction?.status
     }
-    API.updateReactionOfUserByTargetAPI(customData).then((data) => {
-      setReaction(data)
-    }).catch(error => {
-      console.log('Lỗi khi getReactionOfUserByTargetAPI ', error)
-    })
-  }, [])
+    API.updateReactionOfUserByTargetAPI(customData)
+      .then((data) => {
+        console.log('update reaction: ', data)
+        setReaction(data)
+      })
+      .catch((error) => {
+        console.log('Lỗi khi getReactionOfUserByTargetAPI ', error)
+      })
+  }
 
   return (
-    <RowComponent>
-      <OpacityButtton onPress={handleUpdateReaction} children={<Octicons name={reaction?.status ? icon.react : icon.none} size={22} />} />
-      <SpaceComponent width={32} />
-      <OpacityButtton onPress={handleShowModal} children={<Octicons name="comment" size={22} />} />
-      <SpaceComponent width={32} />
-      <OpacityButtton children={<Octicons name="share-android" size={22} />} />
-      <CommentModal
-        modalVisible={modalVisible}
-        onClose={handleCloseModal}
-        postID={postID}
-      />
-    </RowComponent>
+    <View>
+      <RowComponent alignItems>
+        <OpacityButtton
+          onPress={handleUpdateReaction}
+          children={<Octicons name={reaction?.status ? icon.react : icon.none} size={22} />}
+        />
+        <SpaceComponent width={24} />
+        <OpacityButtton
+          onPress={handleShowModal}
+          children={<Octicons name="comment" size={22} />}
+        />
+        <SpaceComponent width={4} />
+        <Text style={{ fontSize: 18, fontWeight: '700' }}>
+          {item.commentsCount > 0 && item.commentsCount}
+        </Text>
+        <SpaceComponent width={24} />
+        <OpacityButtton children={<Octicons name="share-android" size={22} />} />
+        <CommentModal modalVisible={modalVisible} onClose={handleCloseModal} postID={postID} />
+      </RowComponent>
+      {item.reactionsCount > 0 && <Text>Có {item.reactionsCount} lượt thích bài viết này</Text>}
+    </View>
   )
 }
 

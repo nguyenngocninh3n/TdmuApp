@@ -69,7 +69,7 @@ async function emitConventionJoinRooms(ownerID) {
   }
 }
 
-async function emitConventionJoinRoomsByArray(array) {
+async function emitJoinRoomsByArray(array) {
   joinChatRooms(array)
 }
 
@@ -123,7 +123,7 @@ const SocketClient = {
   runSocketClient,
   emitConventionJoinRoom,
   emitConventionJoinRooms,
-  emitConventionJoinRoomsByArray,
+  emitJoinRoomsByArray,
   exitRooms,
   onConvention,
   onConventions,

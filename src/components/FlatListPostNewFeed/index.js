@@ -7,54 +7,56 @@ import { useCustomContext } from '../../store'
 import SocketClient from '../../socket'
 import NewPostBox from '../NewPostBox'
 import Stories from '../Stories'
+import { REACTION_TYPE } from '../../utils/Constants'
 
-const FlatListPostNewFeed = ({navigation}) => {
+const FlatListPostNewFeed = ({ navigation }) => {
   const [postsData, setPostsData] = useState([])
   const [state, dispatch] = useCustomContext()
   console.log('flatlistposts newfeed re-render')
   useEffect(() => {
     API.getNewFeedPostsAPI(state._id).then((response) => {
+      console.log(response)
       setPostsData(response)
     })
   }, [])
 
-  const viewableItemsMap = useRef(new Map()) // Để theo dõi trạng thái từng item
+  // ON LISTEN REACTION ACTION
+  useEffect(() => {
+    const event_name = REACTION_TYPE.POST+'reaction'
+    console.log('event_name on socket listion reaction: ', event_name)
+    SocketClient.socket.on(event_name, (data) => {
+      console.info('reaction listen: ', data.postID)
+      setPostsData((pre) => {
+        const postList = [...pre]
+        const filterIndex = postList.findIndex((item) => item._id === data.postID)
+        console.log('filter index: ', filterIndex)
+        postList[filterIndex].reactionsCount += data.number
+        return postList
+      })
+    })
+  }, [])
+
+  // POSTVIEW ACTION
   const timeoutRefs = useRef(new Map()) // Lưu timeout cho từng item
-
-
-  const handleJoinPostIdRoom = (postID) => {
-    SocketClient.emitConventionJoinRoomsByArray([postID])
-  }
-
-  const handleExitPostIdRoom = (postID) => {
-    SocketClient.exitRooms([postID])
-  }
-
-  const handleAddPostView = (userID, postID) => {
-    API.addPostViewAPI(userID, postID)
-  }
+  const handleJoinPostIdRoom = (postID) => SocketClient.emitJoinRoomsByArray([postID])
+  const handleExitPostIdRoom = (postID) => SocketClient.exitRooms([postID])
+  const handleAddPostView = (userID, postID) => API.addPostViewAPI(userID, postID)
 
   const onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
     changed.forEach(({ item, isViewable }) => {
-      const itemId = item._id
-
+      const postID = item._id
+      const userID = state._id
       if (isViewable) {
-        // Nếu item hiển thị >= 50%: gọi API_A
-        handleJoinPostIdRoom(item._id)
-
-        // Đặt timeout 2s để gọi API_C
-        const timeout = setTimeout(() => {
-          handleAddPostView(state._id, item._id)
-        }, 2000)
-        timeoutRefs.current.set(itemId, timeout)
+        //nếu item hiển thị => join room preparing add postview
+        handleJoinPostIdRoom(postID)
+        const timeout = setTimeout(() => handleAddPostView(userID, postID), 2000)
+        timeoutRefs.current.set(postID, timeout)
       } else {
-        // Nếu item không còn hiển thị: gọi API_B
+        //item thoát khỏi view nhìn => exit room và check condition of postview
         handleExitPostIdRoom(item._id)
-
-        // Hủy timeout nếu item rời khỏi màn hình trước 2s
-        if (timeoutRefs.current.has(itemId)) {
-          clearTimeout(timeoutRefs.current.get(itemId))
-          timeoutRefs.current.delete(itemId)
+        if (timeoutRefs.current.has(postID)) {
+          clearTimeout(timeoutRefs.current.get(postID))
+          timeoutRefs.current.delete(postID)
         }
       }
     })
@@ -65,7 +67,6 @@ const FlatListPostNewFeed = ({navigation}) => {
   }
 
   return (
-    
     <FlatList
       // scrollEnabled={false}
       data={postsData}
@@ -73,10 +74,12 @@ const FlatListPostNewFeed = ({navigation}) => {
       ItemSeparatorComponent={
         <View style={{ height: 4, marginVertical: 16, backgroundColor: '#ccc' }} />
       }
-      ListHeaderComponent={(<View>
-        <Stories />
-        <NewPostBox navigation={navigation} />
-      </View>)}
+      ListHeaderComponent={
+        <View>
+          <Stories />
+          <NewPostBox navigation={navigation} />
+        </View>
+      }
       ListFooterComponent={<SpaceComponent height={64} />}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}

@@ -36,7 +36,7 @@ const SelectionItem = ({ title, onPress, iconName, iconSize }) => {
   )
 }
 
-const NormalOption = ({ selectOption, onEdit, ownerPostID, ownerID, onClose }) => {
+const NormalOption = ({ selectOption, onEdit, ownerPostID, ownerID, onClose, groupID }) => {
   const handle = {
     REMOVE: () => selectOption(REMOVE),
     EDIT: () => {
@@ -64,7 +64,7 @@ const NormalOption = ({ selectOption, onEdit, ownerPostID, ownerID, onClose }) =
             />
             <SelectionItem
               iconName={'trash'}
-              title={'Chuyển bài viết vào thùng rác'}
+              title={ groupID ? 'Xóa bài viết' : 'Chuyển bài viết vào thùng rác'}
               onPress={handle.REMOVE}
             />
           </View>
@@ -143,6 +143,7 @@ const PostModal = ({ modalVisible, onClose, ownerID, ownerPostID, postID, groupI
                 onClose={handleCloseModal}
                 onEdit={handleEdit}
                 selectOption={handleSelect}
+                groupID={groupID}
               />
             ) : (
               <RemoveOption

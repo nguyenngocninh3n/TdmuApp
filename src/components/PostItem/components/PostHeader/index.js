@@ -8,6 +8,21 @@ import { helper } from '../../../../utils/helpers'
 import { API } from '../../../../api'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PostModal from '../../../../modals/PostModal'
+import { SCOPE } from '../../../../utils/Constants'
+// {group.scope === SCOPE.PUBLIC ? (
+//   <Ionicons name="earth" size={22} />
+// ) : (
+//   <Entypo name="lock" size={22} />
+// )}
+
+const getScopePost = scope => {
+  switch (scope) {
+    case SCOPE.PUBLIC: return 'Công khai'
+    case SCOPE.FRIEND: return 'Bạn bè'
+    case SCOPE.PRIVATE: return 'Chỉ mình tôi'
+    default: 'công khai'
+  }
+}
 
 const PostHeader = ({ item, ownerID, groupID }) => {
   const [modalVisible, setModalVisible] = useState(false)
@@ -25,7 +40,7 @@ const PostHeader = ({ item, ownerID, groupID }) => {
           <RowComponent>
             <Text>{helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}</Text>
             <SpaceComponent width={8} />
-            {!groupID && <Text style={{ color: '#a1f' }}>{item.scope?.toLowerCase()}</Text>}
+            {!groupID && <Text style={{ color: '#a1f' }}>{getScopePost(item.scope)}</Text>}
           </RowComponent>
         </ColumnComponent>
       </RowComponent>

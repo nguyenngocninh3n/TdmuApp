@@ -42,11 +42,10 @@ const BodyGroup = ({ group, groupID }) => {
       <BarComponent group={group} state={state} groupUser={groupUser} />
       {viewState && (
         <>
-        <NavBarComponent groupID={group._id} groupName={group.name} userID={state._id} />
-        <SpaceComponent height={8} />
-        <NewPostBox groupID={group._id} />
-        <SpaceComponent height={16} />
-        <FlatListPostGroup ownerID={state._id} groupID={groupID} />
+          <NavBarComponent groupID={group._id} groupName={group.name} userID={state._id} />
+          <SpaceComponent height={8} />
+          <NewPostBox groupID={group._id} />
+          <SpaceComponent height={16} />
         </>
       )}
     </View>

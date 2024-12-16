@@ -118,7 +118,7 @@ const PostHandler = ({ postData, files, onSubmit, editable, groupID }) => {
     })
   }
   const handleCheckBeforeSubmit = () => {
-    if (onShowPollModal) {
+    if (pollModalVisible) {
       handleCreatePollAndPost()
     } else {
       handlePost()

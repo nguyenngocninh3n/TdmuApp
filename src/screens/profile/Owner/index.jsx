@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import { StyleSheet, ScrollView } from 'react-native'
+import { StyleSheet, ScrollView, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import Colors from '../../../utils/Colors'
@@ -7,16 +7,21 @@ import OwnerBar from '../Components/OwnerBar'
 
 import ProfileBody from '../Components/ProfileBody'
 import { useCustomContext } from '../../../store'
+import FlatListPost from '../../../components/FlatListPost'
 
 const OwnerProfile = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
   return (
-    <ScrollView>
-      <Header user={state} ownerID={state._id} navigation={navigation}>
-        <OwnerBar />
-      </Header>
-      <ProfileBody navigation={navigation} ownerID={state._id} userID={state._id} />
-    </ScrollView>
+    <View>
+      <FlatListPost ownerID={state._id} userID={state._id}>
+        <View>
+          <Header user={state} ownerID={state._id} navigation={navigation}>
+            <OwnerBar />
+          </Header>
+          <ProfileBody navigation={navigation} ownerID={state._id} userID={state._id} />
+        </View>
+      </FlatListPost>
+    </View>
   )
 }
 
