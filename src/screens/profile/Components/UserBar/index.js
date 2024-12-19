@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { OpacityButtton } from '../../../../components/ButtonComponent'
 import RowComponent from '../../../../components/RowComponent'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import { API } from '../../../../api'
 import { FRIEND_STATUS, RESPONSE_STATUS } from '../../../../utils/Constants'
 import PopUpModal from '../../../../modals/PopUpModal'
-
+import AntDesign from 'react-native-vector-icons/AntDesign'
 const CustomButton = ({ title, onPress }) => {
   return (
     <OpacityButtton
@@ -173,9 +173,15 @@ const UserBar = ({ navigation, ownerID, userID }) => {
       <OpacityButtton
         onPress={handleChat}
         title="Nhắn tin"
-        style={{ backgroundColor: '#af2', padding: 10 }}
+        style={{ backgroundColor: '#0866FF', padding: 10, borderRadius:10 }}
         textStyle={styles.userBtnTxt}
-      />
+      >
+        <RowComponent alignItems>
+          <Text style={{color:'#fff', fontWeight:'600'}}>Nhắn tin</Text>
+          <SpaceComponent width={4} />
+        <AntDesign name="message1" size={24} color={'#fff'} />
+        </RowComponent>
+      </OpacityButtton>
       <PopUpModal
         modalVisible={modalVisible}
         onCancle={closeModal}

@@ -20,14 +20,16 @@ const UserProfile = ({ navigation, ownerID, userID }) => {
   }, [userID])
 
   return (
-    <SafeAreaView style={GlobalStyle.container}>
-      <ScrollView>
-        <Header user={user} ownerID={ownerID} navigation={navigation}>
-          <UserBar navigation={navigation} ownerID={ownerID} userID={userID} />
-        </Header>
-        <ProfileBody navigation={navigation} ownerID={ownerID} userID={userID} />
-      </ScrollView>
-    </SafeAreaView>
+    <View>
+      <FlatListPost ownerID={ownerID} userID={userID}>
+        <View>
+          <Header user={user} ownerID={ownerID} navigation={navigation}>
+            <UserBar navigation={navigation} ownerID={ownerID} userID={userID} />
+          </Header>
+          <ProfileBody navigation={navigation} ownerID={ownerID} userID={userID} />
+        </View>
+      </FlatListPost>
+    </View>
   )
 }
 

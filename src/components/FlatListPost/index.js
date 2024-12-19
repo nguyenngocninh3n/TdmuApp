@@ -85,7 +85,7 @@ const FlatListPost = ({ ownerID, userID, children }) => {
         <View style={{ height: 4, marginVertical: 16, backgroundColor: '#ccc' }} />
       }
       ListFooterComponent={(<SpaceComponent height={64} />)}
-      ListHeaderComponent={children}
+      ListHeaderComponent={<View style={{borderBottomWidth:2, borderBottomColor:'#acc', marginBottom:16}}>{children}</View>}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
       renderItem={({ item, index }) => (

@@ -7,7 +7,7 @@ import SpaceComponent from '../../../SpaceComponent'
 const PostContent = ({ content, attachments }) => {
   return (
     <View>
-      <Text>{content}</Text>
+      <Text style={{color:'#000e', fontSize:16}}>{content}</Text>
       <SpaceComponent height={8} />
       <MixedViewing
         attachments={attachments.map(API.convertPostItemAPI)}

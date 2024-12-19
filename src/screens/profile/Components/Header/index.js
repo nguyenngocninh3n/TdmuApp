@@ -32,22 +32,34 @@ const Header = ({ navigation, children, user, ownerID }) => {
 
   return (
     <View>
-      <View style={styles.backgroundContainer} >
-        <Text>background</Text>
+      <View style={styles.backgroundContainer}>
+        {user._id === ownerID && (
+          <OpacityButtton style={styles.backgroundText} title={'Thêm ảnh bìa'} />
+        )}
       </View>
 
       {/* AVATAR AND NAME */}
       <View style={styles.container}>
-        <AvatarComponent onPress={onShowModal} source={API.getFileUrl(user.avatar)} style={styles.userImg} />
-        <Text style={styles.userName}>{user.userName}</Text>
-        <OpacityButtton
-          title={isOwner ? user.bio || 'Thêm tiểu sử...' : user.bio || ''}
-          onPress={isOwner ? handleUpdateBio : null}
+        <AvatarComponent
+          onPress={onShowModal}
+          source={API.getFileUrl(user.avatar)}
+          style={styles.userImg}
         />
+        <Text style={styles.userName}>{user.userName}</Text>
       </View>
       {/* BAR */}
+      <OpacityButtton
+        title={isOwner ? user.bio || 'Thêm tiểu sử...' : user.bio || ''}
+        onPress={isOwner ? handleUpdateBio : null}
+      />
       {children}
-      <AvatarProfileModal ownerID={ownerID} userID={user._id} avatar={user.avatar} onClose={onCloseModal} modalVisible={modelVisible} />
+      <AvatarProfileModal
+        ownerID={ownerID}
+        userID={user._id}
+        avatar={user.avatar}
+        onClose={onCloseModal}
+        modalVisible={modelVisible}
+      />
     </View>
   )
 }
@@ -56,19 +68,29 @@ export default Header
 
 const styles = StyleSheet.create({
   backgroundContainer: {
-    position:'relative',
-    height:320,
-    
+    position: 'relative',
+    height: 250,
+    backgroundColor: '#eee8'
+  },
+  backgroundText: {
+    position: 'absolute',
+    borderWidth:1,
+    borderColor:'#00ffff',
+    borderRadius:25,
+    right: 8,
+    top: 8,
+    paddingVertical:4,
+    paddingHorizontal:8
   },
   container: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0)',
-    position:'absolute',
+    position: 'absolute',
     // flexDirection:'column-reverse',
-    top:'10%',
+    top: '10%',
     left: '20%',
-    right:'20%',
+    right: '20%'
   },
   userImg: {
     marginTop: 48,

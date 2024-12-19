@@ -1,7 +1,10 @@
-import { Text, TouchableOpacity, View } from "react-native"
-import { navigationRef } from "../../../store"
-import { useMeeting } from "@videosdk.live/react-native-sdk"
-
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { navigationRef } from '../../../store'
+import { useMeeting } from '@videosdk.live/react-native-sdk'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Feather from 'react-native-vector-icons/Feather'
+import { OpacityButtton } from '../../../components/ButtonComponent'
+import RowComponent from '../../../components/RowComponent'
 const Button = ({ onPress, buttonText, backgroundColor }) => {
   return (
     <TouchableOpacity
@@ -20,38 +23,52 @@ const Button = ({ onPress, buttonText, backgroundColor }) => {
 }
 
 export default function ControlsContainer({ join, leave, toggleWebcam, toggleMic }) {
-  const {localMicOn, localWebcamOn} = useMeeting()
+  const { localMicOn, localWebcamOn } = useMeeting()
+
+  const handlestopMeeting = () => {
+    leave()
+    navigationRef.goBack()
+  }
+
+  const handleToggleMic = () => toggleMic()
+  const handleToggleWebcam = () => toggleWebcam()
+
   return (
-    <View
-      style={{
-        padding: 24,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}
-    >
-      
-      <Button
-        onPress={() => {
-          toggleWebcam()
-        }}
-        buttonText={localWebcamOn ? 'Tắt camera' : 'Bật camera'}
-        backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          toggleMic()
-        }}
-        buttonText={localMicOn ? 'Tắt mic' : 'Mở mic'}
-        backgroundColor={'#1178F8'}
-      />
-      <Button
-        onPress={() => {
-          leave()
-          navigationRef.goBack()
-        }}
-        buttonText={'Kết thúc'}
-        backgroundColor={'#1178F8'}
-      />
+    <View style={styles.controlContainer}>
+      <OpacityButtton onPress={handleToggleWebcam}>
+        <Feather name={localWebcamOn ? 'video' : 'video-off'} size={32} color={'#fff'} />
+      </OpacityButtton>
+      <RowComponent style={styles.middleContainer}>
+        <OpacityButtton onPress={handleToggleMic}>
+          <Feather name={localMicOn ? 'mic' : 'mic-off'} size={24} color={'#fff'} />
+        </OpacityButtton>
+      </RowComponent>
+      <OpacityButtton onPress={handlestopMeeting} style={styles.btnStop}>
+        <MaterialIcons name="call-end" size={36} color={'red'} />
+      </OpacityButtton>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  controlContainer: {
+    padding: 12,
+    paddingHorizontal: 32,
+    flexDirection: 'row',
+    backgroundColor: '#0009',
+    marginHorizontal: 32,
+    marginVertical: 16,
+    borderRadius:30
+  },
+
+  middleContainer: {
+    flex: 1,
+    justifyContent: 'space-around'
+  },
+
+  btnStop: {
+    padding: 4,
+    borderRadius: 20,
+    backgroundColor: '#fff'
+  }
+})

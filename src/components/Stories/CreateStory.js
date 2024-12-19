@@ -39,7 +39,7 @@ const CreateStory = () => {
       <View style={styles.iconContainer}>
         <AntDesign name="pluscircleo" type="Ionicons" size={35} color={Colors.primaryColor} />
       </View>
-      <Text style={styles.createStory}>Create story</Text>
+      <Text style={styles.createStory}>Thêm vào tin</Text>
     </View>
   )
 }

@@ -12,11 +12,12 @@ const OwnerBar = () => {
     dispatch(actions.onLogout())
   }
   return (
-    <RowComponent style={{ justifyContent: 'center' }}>
-      <OpacityButtton textStyle={styles.userBtnTxt} title="Edit" />
-      <SpaceComponent width={20} />
-      <OpacityButtton textStyle={styles.userBtnTxt} onPress={handleLogout} title="Logout" />
-    </RowComponent>
+      // <RowComponent style={{ justifyContent: 'center' }}>
+      //   <OpacityButtton textStyle={styles.userBtnTxt} title="Edit" />
+      //   <SpaceComponent width={20} />
+      //   <OpacityButtton textStyle={styles.userBtnTxt} onPress={handleLogout} title="Logout" />
+      // </RowComponent>
+    <></>
   )
 }
 

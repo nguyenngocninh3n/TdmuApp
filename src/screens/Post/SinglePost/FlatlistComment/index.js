@@ -112,7 +112,7 @@ const FlatListComment = ({ postID }) => {
   }
 
   const handleDeleteComment = () => {
-    API.deleteCommentAPI(editableItem._id).then((response) => {
+    API.deleteCommentAPI(postID, editableItem._id).then((response) => {
       if (response === RESPONSE_STATUS.SUCCESS) {
         ToastAndroid.show('Bình luận đã được gỡ bỏ', ToastAndroid.SHORT)
         setCommmentData((pre) => {

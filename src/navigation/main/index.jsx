@@ -39,9 +39,9 @@ const MainNavigation = ({ navigation }) => {
         />
       ))}
       {/* <Tab.Screen name="AcceptingFriendScreen" component={AcceptingFriendScreen} /> */}
-      <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} />
+      {/* <Tab.Screen name="ListGroupScreen" component={ListGroupScreen} /> */}
       {/* <Tab.Screen name="StoryScreen" component={StoryScreen} /> */}
-      <Tab.Screen name="ScheduleScreen" component={ScheduleScreen} />
+      {/* <Tab.Screen name="ScheduleScreen" component={ScheduleScreen} /> */}
 
     </Tab.Navigator>
   )

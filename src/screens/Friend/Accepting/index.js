@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { API } from '../../../api'
 import RowComponent from '../../../components/RowComponent'
@@ -44,7 +44,7 @@ const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
           />
           <SpaceComponent width={16} />
           <OpacityButtton
-            title={title ?? 'Kết bạn'}
+            title={title ?? 'Chấp nhận'}
             textColor={'#fff'}
             borderRadius={10}
             underlay={'#33d4'}
@@ -75,14 +75,16 @@ const handleRemoveSuggest = async (ownerID, userID) => {
   return response
 }
 
-const SuggestFriendScreen = ({ navigation, route }) => {
+const AcceptingFriendScreen = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
   const [suggests, setSuggests] = useState([])
 
   useEffect(() => {
-    API.getSuggestFriend(state._id).then((data) => {
-      console.log('data in get suggest friend: ', data)
-      setSuggests(data)
+    API.getAcceptingFriend(state._id).then((response) => {
+      console.log('data: ', response)
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        setSuggests(response.data.data)
+      }
     })
   }, [])
 
@@ -93,17 +95,19 @@ const SuggestFriendScreen = ({ navigation, route }) => {
       setSuggests(newArr)
     })
   }
+  const handleAccept = (userID) => {
+    console.log('handle accept friend: ', userID)
+  }
   return (
-    <View style={{ marginHorizontal: 12 }}>
+    <View style={{ paddingHorizontal: 12, backgroundColor: '#fff', flex: 1 }}>
       <GoBackComponent
         borderColor={'#ccc'}
         borderWidth={1}
         textColor={'#333a'}
-        title={'Những người bạn có thể biết'}
+        title={'Yêu cầu đang chờ chấp nhận'}
       />
-
-      <SpaceComponent height={32} />
-      {suggests.length === 0 && (
+      <SpaceComponent height={8} />
+      {suggests?.length === 0 && (
         <Text
           style={{
             fontWeight: '900',
@@ -111,7 +115,7 @@ const SuggestFriendScreen = ({ navigation, route }) => {
             textTransform: 'capitalize',
             textAlign: 'center',
             marginTop: 100,
-            color: '#333'
+            color: '#3336'
           }}
         >
           Danh sách rỗng
@@ -120,6 +124,7 @@ const SuggestFriendScreen = ({ navigation, route }) => {
 
       <FlatList
         data={suggests}
+        style={{ backgroundColor: '#fff' }}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={<SpaceComponent height={8} />}
         renderItem={({ item, index }) => (
@@ -135,4 +140,14 @@ const SuggestFriendScreen = ({ navigation, route }) => {
   )
 }
 
-export default SuggestFriendScreen
+const styles = StyleSheet.create({
+  buttonContainer: {
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 4,
+    paddingHorizontal: 8
+  }
+})
+
+export default AcceptingFriendScreen

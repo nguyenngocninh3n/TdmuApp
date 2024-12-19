@@ -12,8 +12,10 @@ import { navigationRef } from '../../../../../store'
 const ChatInput = ({ onPress }) => {
   const [message, setMessage] = useState('')
   const handleSendMessage = () => {
-    onPress(message, MESSAGE_TYPE.TEXT)
-    setMessage('')
+    if (message.trim() !== '') {
+      onPress(message, MESSAGE_TYPE.TEXT)
+      setMessage('')
+    }
   }
   const handleTextChange = (value) => {
     setMessage(value)
@@ -43,7 +45,12 @@ const ChatInput = ({ onPress }) => {
       <SpaceComponent width={8} />
       {/* <ImageLibrary type={MESSAGE_TYPE.IMAGE} callback={handleSendImage} /> */}
       {/* <ImageLibrary type={MESSAGE_TYPE.VIDEO} callback={handleSendvideo} /> */}
-      <EvilIcons name="chart" size={32} color={'blue'} onPress={()=> navigationRef.navigate('CreatePollScreen')} />
+      <EvilIcons
+        name="chart"
+        size={32}
+        color={'blue'}
+        onPress={() => navigationRef.navigate('CreatePollScreen')}
+      />
       <Text>new text</Text>
       <SpaceComponent width={8} />
       <TextInput

@@ -50,7 +50,7 @@ export default function MeetingProviderScreen({ navigation, route }) {
       <MeetingProvider
         config={{
           meetingId: meetingId,
-          participantId: ownerInfo._id,
+          
           micEnabled: true,
           webcamEnabled: true,
           name: ownerInfo.userName,

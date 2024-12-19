@@ -12,6 +12,7 @@ import { signInWithGoogle } from './signinMethod'
 
 import { actions, useCustomContext } from '../../store'
 import SpaceComponent from '../../components/SpaceComponent'
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 
 const LoginScreen = () => {
   const [state, dispatch] = useCustomContext()
@@ -19,10 +20,9 @@ const LoginScreen = () => {
   async function handleLogin() {
     const userLogin = await signInWithGoogle()
     console.log('user login in login screen: ', userLogin)
-    if(userLogin === 'cancel') {
+    if (userLogin === 'cancel') {
       console.log('Cancel')
-    }
-    else if (userLogin) {
+    } else if (userLogin) {
       ToastAndroid.show('Đăng nhập thành công!', ToastAndroid.LONG)
       dispatch(actions.onLogin(userLogin))
     } else {
@@ -34,11 +34,13 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <SpaceComponent height={64} />
       <Image style={styles.image} source={require('../../assets/images/logo_tdmu.png')} />
-      <Text style={{textAlign:'center', fontStyle:'italic'}}>Ứng dụng dành riêng cho sinh viên</Text>
-      <Text style={{textAlign:'center', fontStyle:'italic'}}>trường đại học Thủ Dầu Một</Text>
+      <Text style={{ textAlign: 'center', fontStyle: 'italic' }}>
+        Ứng dụng dành riêng cho sinh viên
+      </Text>
+      <Text style={{ textAlign: 'center', fontStyle: 'italic' }}>trường đại học Thủ Dầu Một</Text>
       <SpaceComponent height={200} />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.text}>Đăng nhập bằng email trường</Text>
+      <TouchableOpacity onPress={handleLogin} activeOpacity={0.7} style={styles.newbutton}>
+        <Text style={styles.buttonText}>Đăng nhập với google</Text>
       </TouchableOpacity>
     </View>
   )
@@ -56,12 +58,36 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   button: {
-    backgroundColor: 'blue',
-    paddingVertical: 8
+    paddingVertical: 8,
+    borderWidth: 4,
+    borderColor: '#aaa2'
   },
   text: {
     fontSize: 20,
     textAlign: 'center',
-    color: '#fff'
+    fontWeight: '400',
+    color: '#666d'
+  },
+
+  newbutton: {
+    marginHorizontal: '10%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#4285F4',
+    borderRadius: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center'
   }
 })

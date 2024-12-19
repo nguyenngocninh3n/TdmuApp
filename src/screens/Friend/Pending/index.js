@@ -50,32 +50,15 @@ const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
   )
 }
 
-const handleAddFriend = async (ownerID, userID) => {
-  const response = await API.updateStatusFriend({
-    ownerID,
-    userID,
-    status: FRIEND_STATUS.PENDING
-  })
-  return response
-}
-
-const handleRemoveSuggest = async (ownerID, userID) => {
-  const response = await API.removeSuggestFriend({
-    ownerID,
-    userID
-  })
-  return response
-}
-
 const PendingFriendScreen = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
-  const [suggests, setSuggests] = useState([])
+  const [pendings, setPendings] = useState([])
 
   useEffect(() => {
-    API.getPendingFriend(state._id).then((data) => {
-      console.log('data: ', data)
-      if (data.status === RESPONSE_STATUS.SUCCESS) {
-        setSuggests(data.data.data)
+    API.getPendingFriend(state._id).then((response) => {
+      console.log('data: ', response)
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        setPendings(response.data.data)
       }
     })
   }, [])
@@ -83,12 +66,18 @@ const PendingFriendScreen = ({ navigation, route }) => {
   const handlePressItem = (userID) => navigation.navigate('ProfileScreen', { userID })
 
   return (
-    <View style={{ marginHorizontal: 12 }}>
-      <GoBackComponent title={'Lời mời đã gửi'} />
+    <View style={{ paddingHorizontal: 12, flex: 1, backgroundColor: '#fff' }}>
+      <GoBackComponent
+        borderColor={'#ccc'}
+        borderWidth={1}
+        textColor={'#333a'}
+        title={'Yêu cầu đã gửi'}
+      />
       <SpaceComponent height={24} />
-      {suggests.length === 0 && <Text>Danh sách rỗng</Text>}
+      {pendings.length === 0 && <Text>Danh sách rỗng</Text>}
       <FlatList
-        data={suggests}
+        style={{ backgroundColor: '#fff' }}
+        data={pendings}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={<SpaceComponent height={8} />}
         renderItem={({ item, index }) => (

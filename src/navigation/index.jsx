@@ -49,6 +49,7 @@ import PendingFriendScreen from '../screens/Friend/Pending'
 import ChattingSearchScreen from '../screens/convenition/chatting-search'
 import CreatePollScreen from '../screens/convenition/Vote'
 import ScheduleScreen from '../screens/Schedule'
+import AcceptingFriendScreen from '../screens/Friend/Accepting'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -198,6 +199,7 @@ const Navigation = () => {
             {/* FRIEND */}
             <Stack.Screen name="SuggestFriendScreen" component={SuggestFriendScreen} />
             <Stack.Screen name="PendingFriendScreen" component={PendingFriendScreen} />
+            <Stack.Screen name="AcceptingFriendScreen" component={AcceptingFriendScreen} />
 
             {/* SEARCH */}
             <Stack.Screen name="SearchScreen" component={SearchResultScreen} />

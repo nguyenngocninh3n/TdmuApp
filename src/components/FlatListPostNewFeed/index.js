@@ -25,16 +25,32 @@ const FlatListPostNewFeed = ({ navigation }) => {
     const event_name = REACTION_TYPE.POST+'reaction'
     console.log('event_name on socket listion reaction: ', event_name)
     SocketClient.socket.on(event_name, (data) => {
-      console.info('reaction listen: ', data.postID)
       setPostsData((pre) => {
         const postList = [...pre]
         const filterIndex = postList.findIndex((item) => item._id === data.postID)
-        console.log('filter index: ', filterIndex)
         postList[filterIndex].reactionsCount += data.number
         return postList
       })
     })
   }, [])
+
+
+
+  // ON LISTEN COMMENT ACTION
+  useEffect(() => {
+    const event_name = 'comment_count'
+    console.log('event_name on socket listion reaction: ', event_name)
+    SocketClient.socket.on(event_name, (data) => {
+      setPostsData((pre) => {
+        const postList = [...pre]
+        const filterIndex = postList.findIndex((item) => item._id === data.postID)
+        console.log('filter index: ', filterIndex)
+        postList[filterIndex].commentsCount += data.number
+        return postList
+      })
+    })
+  }, [])
+
 
   // POSTVIEW ACTION
   const timeoutRefs = useRef(new Map()) // Lưu timeout cho từng item
@@ -71,13 +87,15 @@ const FlatListPostNewFeed = ({ navigation }) => {
       // scrollEnabled={false}
       data={postsData}
       initialNumToRender={2}
+      style={{backgroundColor:'#fff'}}
       ItemSeparatorComponent={
-        <View style={{ height: 4, marginVertical: 16, backgroundColor: '#ccc' }} />
+        <View style={{ height: 4, marginVertical: 16, backgroundColor: '#fff' }} />
       }
       ListHeaderComponent={
         <View>
           <Stories />
           <NewPostBox navigation={navigation} />
+          <SpaceComponent height={32} />
         </View>
       }
       ListFooterComponent={<SpaceComponent height={64} />}
