@@ -9,7 +9,8 @@ import postviewAPI from './postview'
 import reactionAPI from './reaction'
 import ResourseAPI from './resourse'
 import searchAPI from './search'
-
+import chatgptAPI from './chatgpt'
+import notificationAPI from './notification'
 export const API = {
   ...AuthenApi,
   ...ConventionAPI,
@@ -21,7 +22,9 @@ export const API = {
   ...groupAPI,
   ...searchAPI,
   ...pollAPI,
-  ...postviewAPI
+  ...postviewAPI,
+  ...chatgptAPI,
+  ...notificationAPI
 }
 
 

@@ -8,6 +8,7 @@ import ListGroupScreen from '../screens/Group/ListGroup'
 import ScheduleScreen from '../screens/Schedule'
 import AcceptingFriendScreen from '../screens/Friend'
 import ListFriendScreen from '../screens/Friend'
+import ExtensionScreen from '../screens/Extension'
 const TabData = [
   {
     name: 'HomeScreen',
@@ -22,8 +23,8 @@ const TabData = [
     icon: ({ focused, color, size }) => <Ionicons name="people-outline" focused={focused} color={color ?? '#ccc'} size={24} />
   },
   {
-    name: 'ScheduleScreen',
-    component: ScheduleScreen,
+    name: 'ExtensionScreen',
+    component: ExtensionScreen,
     icon: ({ focused, color, size }) => <Feather name="grid" focused={focused} color={color ?? '#ccc'} size={24} />
   },
   {

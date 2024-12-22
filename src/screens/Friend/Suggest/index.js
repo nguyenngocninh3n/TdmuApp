@@ -81,7 +81,6 @@ const SuggestFriendScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     API.getSuggestFriend(state._id).then((data) => {
-      console.log('data in get suggest friend: ', data)
       setSuggests(data)
     })
   }, [])
@@ -104,18 +103,18 @@ const SuggestFriendScreen = ({ navigation, route }) => {
 
       <SpaceComponent height={32} />
       {suggests.length === 0 && (
-        <Text
-          style={{
-            fontWeight: '900',
-            fontSize: 20,
-            textTransform: 'capitalize',
-            textAlign: 'center',
-            marginTop: 100,
-            color: '#333'
-          }}
-        >
-          Danh sách rỗng
-        </Text>
+         <Text
+         style={{
+           fontWeight: '900',
+           fontSize: 20,
+           textTransform: 'capitalize',
+           textAlign: 'center',
+           marginTop: '50%',
+           color: '#3336'
+         }}
+       >
+         Không có đề xuất
+       </Text>
       )}
 
       <FlatList

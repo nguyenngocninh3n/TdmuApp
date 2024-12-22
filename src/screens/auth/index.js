@@ -18,6 +18,7 @@ const LoginScreen = () => {
   const [state, dispatch] = useCustomContext()
 
   async function handleLogin() {
+    //Đăng nhập firebase google -> tạo tài khoản trên server và trả về tài khoản user
     const userLogin = await signInWithGoogle()
     console.log('user login in login screen: ', userLogin)
     if (userLogin === 'cancel') {

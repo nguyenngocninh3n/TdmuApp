@@ -74,7 +74,18 @@ const PendingFriendScreen = ({ navigation, route }) => {
         title={'Yêu cầu đã gửi'}
       />
       <SpaceComponent height={24} />
-      {pendings.length === 0 && <Text>Danh sách rỗng</Text>}
+      {pendings.length === 0 &&  <Text
+        style={{
+          fontWeight: '900',
+          fontSize: 20,
+          textTransform: 'capitalize',
+          textAlign: 'center',
+          marginTop: '50%',
+          color: '#3336'
+        }}
+      >
+        Không có yêu cầu được gửi đi
+      </Text>}
       <FlatList
         style={{ backgroundColor: '#fff' }}
         data={pendings}

@@ -1,8 +1,6 @@
 import { io } from 'socket.io-client'
-import { MESSAGE_TYPE, NOTIFICATION_TYPE, SERVER_POST } from '../utils/Constants'
+import { MESSAGE_TYPE,  SERVER_POST } from '../utils/Constants'
 import { API } from '../api'
-import { startLocalNotification } from '../notification'
-import user from '../store/reducer'
 const socket = io(SERVER_POST)
 function runSocketClient(userID, navigation) {
   // socket = io(SERVER_POST, { query: { userID } })
@@ -98,7 +96,7 @@ function emitConvention(data) {
 }
 
 function joinChatRoom(conventionID) {
-  socket.emit('joinChatRoom', conventionID)
+  socket.emit('joinChatRooms', [conventionID])
 }
 
 function joinChatRooms(roomIDs) {

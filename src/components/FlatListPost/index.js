@@ -67,7 +67,7 @@ const FlatListPost = ({ ownerID, userID, children }) => {
     SocketClient.socket.on(event_name, (data) => {
       console.info('reaction listen: ', data.postID)
       setPostsData((pre) => {
-        const postList = [...pre.data]
+        const postList = [...pre]
         const filterIndex = postList.findIndex((item) => item._id === data.postID)
         console.log('filter index: ', filterIndex)
         postList[filterIndex].reactionsCount += data.number

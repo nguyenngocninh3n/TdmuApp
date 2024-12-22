@@ -50,6 +50,8 @@ import ChattingSearchScreen from '../screens/convenition/chatting-search'
 import CreatePollScreen from '../screens/convenition/Vote'
 import ScheduleScreen from '../screens/Schedule'
 import AcceptingFriendScreen from '../screens/Friend/Accepting'
+import WebViewScreen from '../screens/WebViewScreen'
+import ChatGPTScreen from '../screens/ChatGPT'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -227,6 +229,11 @@ const Navigation = () => {
 
             {/* SCHEDULE */}
             <Stack.Screen name="ScheduleScreen" component={ScheduleScreen} />
+
+            {/* WEBVIEW */}
+            <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+            {/* ChatGPT Screen */}
+            <Stack.Screen name="ChatGPTScreen" component={ChatGPTScreen} />
 
             {/* CONVENTION */}
             <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />

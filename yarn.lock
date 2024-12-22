@@ -3792,6 +3792,7 @@ __metadata:
     react-native-tab-view: ^3.5.2
     react-native-vector-icons: ^10.2.0
     react-native-video: ^6.7.0
+    react-native-webview: ^13.12.5
     react-test-renderer: 18.3.1
     socket.io-client: ^4.8.1
     typescript: 5.0.4
@@ -6476,7 +6477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -9224,6 +9225,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: a6b8db987f163ecb7a32382f7b185660722c7bd71394de776009c10a180457f813d9c37b4083ab2ec20143ef1fc9d2186ed9f4fdd48eb2142ae85ef8ad4e1cf0
+  languageName: node
+  linkType: hard
+
+"react-native-webview@npm:^13.12.5":
+  version: 13.12.5
+  resolution: "react-native-webview@npm:13.12.5"
+  dependencies:
+    escape-string-regexp: ^4.0.0
+    invariant: 2.2.4
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: e8cd5c260e41cf3434e390fbfd55934a65d4a996d56868eb3c64f4219e06e934bb2012f3520eb9d3867f5d0821333c46c96e31904460b2ec5832aaaa14f4dd62
   languageName: node
   linkType: hard
 

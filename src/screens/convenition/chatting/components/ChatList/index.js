@@ -30,7 +30,9 @@ const ChatList = React.memo(({ conventionID, onLongPress }) => {
   }, [])
 
   useEffect(() => {
+    console.log('start socket on')
     SocketClient.socket.on('convention', (value) => {
+      console.log('convention on in chatlist: ', value)
       if (value.action === MESSAGE_ACTION.ADD) {
         setChatData((pre) => {
           const { _id, senderID, message, type, createdAt, updatedAt } = value

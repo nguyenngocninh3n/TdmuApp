@@ -1,56 +1,61 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { API } from '../../api'
-import { OpacityButtton } from '../../components/ButtonComponent'
-import { PermissionsAndroid } from 'react-native'
-import SocketClient from '../../socket'
 import { useCustomContext } from '../../store'
-import { configureBackgroundFetch } from '../../socket/backgroundfetch'
+import { API } from '../../api'
+import { RESPONSE_STATUS } from '../../utils/Constants'
+import RowComponent from '../../components/RowComponent'
+import AvatarComponent from '../../components/AvatarComponent'
+import SpaceComponent from '../../components/SpaceComponent'
 
+const NotificationItem = ({item}) => {
+  console.log('item receive: ', item)
+  return (
+    <RowComponent style={{padding:8,backgroundColor:'#00f3'}}>
+      <AvatarComponent size={48} source={API.getFileUrl(item.senderAvatar)} />
+      <SpaceComponent width={4} />
+      <Text style={{fontSize:17 }}>{item.message}</Text>
+    </RowComponent>
+  )
+}
 
-
-const NotificationScreen = ({ navigation }) => {
-  const [users, setUsers] = useState([])
+const NotificationScreen = () => {
   const [state, dispatch] = useCustomContext()
+  const [notificationData, setNotificationData] = useState([])
 
-  const doSomeThing = async () => {
-    const data = await API.getAllUserAPI()
-    if (data) {
-      setUsers(data)
-    }
-  }
-  const requestPermission = async () => {
-    await PermissionsAndroid.request('android.permission.USE_EXACT_ALARM')
-    await PermissionsAndroid.request('android.permission.BIND_JOB_SERVICE')
-    await PermissionsAndroid.request('android.permission.ACCESS_WIFI_STATE')
-    await PermissionsAndroid.request('android.permission.CAMERA')
-    await PermissionsAndroid.request('android.permission.ACTIVITY_RECOGNITION')
-    await PermissionsAndroid.request('android.permission.RECORD_AUDIO')
-
-
-  }
   useEffect(() => {
-    SocketClient.runSocketClient(state._id, navigation)
-    doSomeThing()
-    requestPermission()
-    const result = PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS')
+    API.getNotification(state._id).then((response) => {
+      console.log('notification data: ', response)
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        setNotificationData(response.data)
+      }
+    })
   }, [])
 
-  const handleUserProfile = (id) => {
-    navigation.navigate('ProfileScreen', { userID: id })
-  }
-
-
   return (
-    <View>
-      {users.map((item, index) => (
-        <OpacityButtton
-          style={{ backgroundColor: '#ccc', marginBottom: 20 }}
-          key={index}
-          title={item.userName}
-          onPress={() => handleUserProfile(item._id)}
-        />
-      ))}
+    <View style={{ flex: 1}}>
+      <Text style={{textAlign:'center', fontWeight:'bold', fontSize:20}}>Thông báo</Text>
+      <SpaceComponent height={16} />
+      {notificationData.length === 0 && (
+        <Text
+          style={{
+            fontWeight: '900',
+            fontSize: 20,
+            textTransform: 'capitalize',
+            textAlign: 'center',
+            marginTop: '50%',
+            color: '#3336'
+          }}
+        >
+          Bạn chưa có thông báo nào
+        </Text>
+      )}
+      <FlatList
+        style={{ flex: 1 }}
+        data={notificationData}
+        key={(item) => item._id}
+        ItemSeparatorComponent={<SpaceComponent height={4} />}
+        renderItem={({item}) => <NotificationItem item={item} />}
+      />
     </View>
   )
 }

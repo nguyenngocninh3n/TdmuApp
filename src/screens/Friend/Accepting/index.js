@@ -108,18 +108,18 @@ const AcceptingFriendScreen = ({ navigation, route }) => {
       />
       <SpaceComponent height={8} />
       {suggests?.length === 0 && (
-        <Text
-          style={{
-            fontWeight: '900',
-            fontSize: 20,
-            textTransform: 'capitalize',
-            textAlign: 'center',
-            marginTop: 100,
-            color: '#3336'
-          }}
-        >
-          Danh sách rỗng
-        </Text>
+         <Text
+         style={{
+           fontWeight: '900',
+           fontSize: 20,
+           textTransform: 'capitalize',
+           textAlign: 'center',
+           marginTop: '50%',
+           color: '#3336'
+         }}
+       >
+         Không có yêu cầu nào được gửi đến
+       </Text>
       )}
 
       <FlatList

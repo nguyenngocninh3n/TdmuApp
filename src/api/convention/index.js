@@ -22,42 +22,48 @@ const getConventionByIdAPI = async (conventionId) => {
 
 const sendMessageAPI = async ({ conventionID, data, senderName, senderAvatar }) => {
   const response = await axios.post(`${SERVER_POST}/convention/${conventionID}`, data)
-  const customData = { ...response.data, senderName, senderAvatar, notify: response.data.notify || data.notify, action: MESSAGE_ACTION.ADD }
+  const customData = {
+    ...response.data,
+    senderName,
+    senderAvatar,
+    notify: response.data.notify || data.notify,
+    action: MESSAGE_ACTION.ADD
+  }
   SocketClient.emitConvention({ conventionID, ...customData })
   return response.data
 }
 
 const createConventionAPI = async ({ data, senderName, senderAvatar }) => {
   const response = await axios.post(`${SERVER_POST}/convention/store`, data)
-  const conventionID = response.data._id
-  SocketClient.emitConventionJoinRoom(conventionID).then(() => {
-    const senderData = response.data.data.at(-1)
-    const customData = { ...senderData, senderName, senderAvatar }
-    SocketClient.emitConventionStored({
-      uids: response.data.uids,
-      conventionID: response.data._id,
-      data: customData
-    })
-    setTimeout(() => {
-      SocketClient.emitConvention({ conventionID: conventionID, data: customData })
-    }, 1000)
+  const conventionData = response.data
+  const senderData = conventionData.data.at(-1)
+  const customData = { ...senderData, senderName, senderAvatar, conventionID: conventionData._id }
+  SocketClient.emitConventionStored({
+    uids: conventionData.uids,
+    conventionID: conventionData._id,
+    data: customData
   })
-  return response.data
+  setTimeout(() => {
+    SocketClient.emitConvention({ ...customData, action: MESSAGE_ACTION.ADD})
+  }, 1000)
+  return conventionData
 }
 
-const createGroupConvention = async data => {
-  const response = await axios.post(`${SERVER_POST}/convention/group/store`, data )
+const createGroupConvention = async (data) => {
+  const response = await axios.post(`${SERVER_POST}/convention/group/store`, data)
   return response.data
 }
-
 
 const addMemberToGroup = async (groupID, data) => {
-  const response = await axios.post(`${SERVER_POST}/convention/group/${groupID}/add`, data )
+  const response = await axios.post(`${SERVER_POST}/convention/group/${groupID}/add`, data)
   return response.data
 }
 
 const logoutGroupAPI = async (conventionID, userID, member) => {
-  const response = await axios.post(`${SERVER_POST}/convention/group/${conventionID}/logout/${userID}`, member)
+  const response = await axios.post(
+    `${SERVER_POST}/convention/group/${conventionID}/logout/${userID}`,
+    member
+  )
   return response.data
 }
 
@@ -72,19 +78,20 @@ const updateMessage = async (conventionID, messageID, data) => {
     { data }
   )
   if (response.data === RESPONSE_STATUS.SUCCESS) {
-    const customData = { conventionID, messageID, action: data.type, message:data.message }
+    const customData = { conventionID, messageID, action: data.type, message: data.message }
     SocketClient.emitConvention(customData)
   }
 }
 
 const updateNotifyConventionStatus = async (conventionID, userID, status, upto) => {
-  const response = await axios.post(
-    `${SERVER_POST}/convention/${conventionID}/notify`,
-    { conventionID, userID, status, upto }
-  )
+  const response = await axios.post(`${SERVER_POST}/convention/${conventionID}/notify`, {
+    conventionID,
+    userID,
+    status,
+    upto
+  })
   return response.data
 }
-
 
 const ConventionAPI = {
   getConventionID,

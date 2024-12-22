@@ -1,10 +1,6 @@
-const URL = 'http://192.168.1.11'
+const URL = 'http://192.168.1.112'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
-
-const NOTIFICATION_TYPE = {
-  CONVENTION: 'CONVENTION'
-}
 
 const MESSAGE_TYPE = {
   TEXT: 'TEXT',
@@ -133,9 +129,32 @@ const POLL_TYPE = {
 }
 
 
-const REACTION_TYPE  = {
+const REACTION_TYPE = {
   POST: 'POST',
   COMMENT: 'COMMENT'
+}
+
+const WEBSITE = {
+  DKMH: 'https://dkmh.tdmu.edu.vn/',
+  ELEARNING: 'https://elearning.tdmu.edu.vn/',
+
+}
+
+const NOTIFICATION_TYPE = {
+  POST_REACTION: 'POST_REACTION',
+  POST_COMMENT: 'POST_COMMENT',
+  POST_TAG: 'POST_TAG',
+
+  COMMENT_REACTION: 'COMMENT_REACTION',
+  COMMENT_REPLY: 'COMMENT_REPLY',
+  COMMENT_TAG: 'COMMENT_TAG',
+
+  FRIEND_REQUEST: 'FRIEND_REQUEST',
+  FRIEND_ACCEPT: 'FRIEND_ACCEPT',
+
+  GROUP_REQUEST: 'GROUP_REQUEST',
+  GROUP_ACCEPT: 'GROUP_ACCEPT',
+
 }
 
 export {
@@ -160,5 +179,6 @@ export {
   NOTIFY_CONVENTION_STATUS,
   POLL_STATUS,
   POLL_TYPE,
-  REACTION_TYPE
+  REACTION_TYPE,
+  WEBSITE
 }
