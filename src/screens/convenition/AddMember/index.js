@@ -17,6 +17,7 @@ import AvatarComponent from '../../../components/AvatarComponent'
 import SpaceComponent from '../../../components/SpaceComponent'
 import GoBackIcon from '../../../components/GoBackComponent/GoBackIcon'
 import { OpacityButtton } from '../../../components/ButtonComponent'
+import GoBackComponent from '../../../components/GoBackComponent'
 
 const AddMemberScreen = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -110,10 +111,14 @@ const AddMemberScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <RowComponent alignItems style={styles.goBackContainer}>
-        <GoBackIcon size={24} />
+        <RowComponent alignItems>
+        <GoBackIcon size={32} />
+        <SpaceComponent width={64} />
+        <Text style={{fontSize:18, fontWeight:'800', color:'#62ae'}}>Thêm thành viên</Text>
+        </RowComponent>
         {selectedFriends.length >= 1 && (
           <OpacityButtton
-            disable={selectedFriends.length >0 ? false : true}
+            disable={selectedFriends.length > 0 ? false : true}
             onPress={handleAddMemberToGroup}
             title={'Thêm'}
             textColor={'blue'}
@@ -154,9 +159,9 @@ const styles = StyleSheet.create({
   goBackContainer: {
     justifyContent: 'space-between',
     borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
+    borderBottomWidth: 3,
     paddingHorizontal:8,
-    height:48
+    height:48,
   },
 
   searchBar: {

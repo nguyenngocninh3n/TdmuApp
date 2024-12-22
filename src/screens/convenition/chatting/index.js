@@ -13,11 +13,7 @@ import ChatItemModal from './components/ChatItemModal'
 import SocketClient from '../../../socket'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import {
-  MESSAGE_NOTIFY_STATUS,
-  MESSAGE_NOTIFY_TYPE,
-  MESSAGE_TYPE,
-} from '../../../utils/Constants'
+import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import SpaceComponent from '../../../components/SpaceComponent'
 
 const ChattingScreen = ({ navigation, route }) => {
@@ -102,6 +98,10 @@ const ChattingScreen = ({ navigation, route }) => {
         senderName: state.userName
       })
       // setDataForConvention(newData)
+      setConventionID(pre => {
+        console.log('setconventionid when stored convention: ', newData)
+        return newData._id
+      })
     } else {
       const fetchData = await API.sendMessageAPI({
         conventionID: conventionID,
@@ -113,13 +113,13 @@ const ChattingScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    console.log('getconventionID recall')
     getConventionByID(conventionID)
-  }, [])
+  }, [conventionID])
 
   useEffect(() => {
     SocketClient.socket.on('convention', (response) => {
       if (response.type === MESSAGE_TYPE.NOTIFY) {
-
         const notify = response.notify
         if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AKA && conventionInfo.type === 'private') {
           if (notify.changedID !== state._id) {
@@ -201,7 +201,11 @@ const ChattingScreen = ({ navigation, route }) => {
           />
         </RowComponent>
       </RowComponent>
-      <ChatList conventionID={conventionID} ownerID={state._id} onLongPress={handleOnShow} />
+      <ChatList
+        conventionID={conventionID}
+        ownerID={state._id}
+        onLongPress={handleOnShow}
+      />
       <ChatItemModal
         modalVisible={modalVisible}
         onClose={handleOnClose}

@@ -102,7 +102,7 @@ const ChattingSearchScreen = ({ navigation, route }) => {
         senderAvatar: state.avatar,
         senderName: state.userName
       })
-      // setDataForConvention(newData)
+      setConventionID(newData._id)
     } else {
       const fetchData = await API.sendMessageAPI({
         conventionID: conventionID,
@@ -114,50 +114,14 @@ const ChattingSearchScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-  
+    console.log('conventionID change')
       getConventionByID(conventionID)
-  }, [])
+  }, [conventionID])
 
-  // useEffect(() => {
-  //   if (search && !searchStatus) {
-  //     getConventionByID(conventionID)
-  //     setSearchStatus(true)
-  //   }
-  // }, [search])
 
-  useEffect(() => {
-    SocketClient.socket.on('convention', (response) => {
-      if (response.type === MESSAGE_TYPE.NOTIFY) {
-        const notify = response.notify
-        if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AKA && conventionInfo.type === 'private') {
-          if (notify.changedID !== state._id) {
-            if (notify.action === MESSAGE_NOTIFY_STATUS.UPDATE) {
-              setConventionInfo((pre) => ({ ...pre, name: notify.value }))
-            } else {
-              setConventionInfo((pre) => ({ ...pre, name: members.get(notify.changedID).userName }))
-            }
-          }
-        } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_CONVENTION_NAME) {
-          setConventionInfo((pre) => ({ ...pre, name: notify.value }))
-        } else if (notify.type === MESSAGE_NOTIFY_TYPE.CHANGE_AVATAR) {
-          setConventionInfo((pre) => ({ ...pre, avatar: notify.value }))
-        }
-      }
-    })
-  }, [])
 
   const handleClickDetail = () => {
-    navigation.navigate('DetailScreen', {
-      name: conventionInfo.name,
-      avatar: conventionInfo.avatar,
-      type: conventionInfo.type,
-      conventionID,
-      members: Object.fromEntries(members),
-      rawMembers: Object.fromEntries(members),
-      chatData,
-      ownerID: state._id,
-      conventionName: conventionInfo.name
-    })
+    navigation.navigate('DetailContainerScreen', {conventionID})
   }
 
   const handleOnClose = useCallback(() => {
@@ -187,21 +151,39 @@ const ChattingSearchScreen = ({ navigation, route }) => {
   useEffect(() => {
     setSearch(route?.params?.search)
   }, [route?.params?.search])
-  const onUptoSearch = () =>
-    setSearch((pre) => {
-      if (pre.data.indexOf(pre.currentIndex) < pre.data.length) {
-        return { ...pre, currentIndex: pre.currentIndex + 1 }
-      }
-      return pre
+  
+  useEffect(()=>{
+    SocketClient.socket.on('emitChangeConventionAvatar', recieveData => {
+      setConventionInfo(pre => ({...pre, avatar: recieveData.value} ))
     })
 
-  const onDowntoSearch = () =>
+    SocketClient.socket.on('emitChangeConventionName', recieveData => {
+      setConventionInfo(pre => ({...pre, name: recieveData.value} ))
+    })
+  }, [])
+
+  const onDowntoSearch = () => {
     setSearch((pre) => {
-      if (pre.currentIndex > 1) {
+      if (pre.currentIndex < pre.data.length-1) {
+        return { ...pre, currentIndex: pre.currentIndex + 1 }
+      }
+      else {
+        return pre
+      }
+    })
+  }
+
+  const onUptoSearch = () => {
+    setSearch((pre) => {
+      console.log('set search: ', pre)
+      if (pre.currentIndex > 0) {
         return { ...pre, currentIndex: pre.currentIndex - 1 }
       }
-      return pre
+      else {
+        return pre
+      }
     })
+  }
 
   return (
     <View style={styles.chatScreenContainer}>
@@ -212,18 +194,20 @@ const ChattingSearchScreen = ({ navigation, route }) => {
           { justifyContent: 'space-between', marginLeft: 8, marginRight: 16 }
         ]}
       >
-        <ChatHeader name={conventionInfo.name} avatar={conventionInfo.avatar} />
+        <ChatHeader type={conventionInfo.type} conventionInfo={conventionInfo} conventionID={conventionID} members={Object.fromEntries(members)} userIdReceive={userID} name={conventionInfo.name} avatar={conventionInfo.avatar} />
         <RowComponent>
           <Ionicons onPress={handleCall} name="call-outline" size={24} />
           <SpaceComponent width={24} />
           <Ionicons onPress={handleVideoCall} name="videocam-outline" size={24} />
           <SpaceComponent width={24} />
-          <SimpleLineIcons
-            color={'blue'}
-            name="exclamation"
-            size={24}
-            onPress={handleClickDetail}
-          />
+         {
+          conventionID && <SimpleLineIcons
+          color={'blue'}
+          name="exclamation"
+          size={24}
+          onPress={handleClickDetail}
+        />
+         }
         </RowComponent>
       </RowComponent>
       {search && (
@@ -242,16 +226,16 @@ const ChattingSearchScreen = ({ navigation, route }) => {
           <RowComponent>
             <SpaceComponent width={64} />
             <Text>
-              Từ khóa:
-              <Text>{`${search.text} ${search.data.length - search.currentIndex}/${
+              Tìm kiếm:
+              <Text>{` ${search.text} ${1 + search.currentIndex}/${
                 search.data.length
               }`}</Text>
             </Text>
           </RowComponent>
           <RowComponent>
-            <AntDesign name="up" onPress={onUptoSearch} size={20} />
+            <AntDesign name="up" onPress={onDowntoSearch} size={20} />
             <SpaceComponent width={8} />
-            <AntDesign name="down" onPress={onDowntoSearch} size={20} />
+            <AntDesign name="down" onPress={onUptoSearch} size={20} />
             <SpaceComponent width={32} />
           </RowComponent>
         </RowComponent>

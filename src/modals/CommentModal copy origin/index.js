@@ -68,16 +68,10 @@ const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
     return customData
   }
 
-  const handleRenderCommentData = data => {
-    const parentData = data.filter((item) => item.parentID === null)
-    setCommmentData(parentData)
-  }
-
   const handleSendComment = (value) => {
     const customData = {
       postID: postID,
       parentID: replyItem?._id ? replyItem._id : null,
-      rootParentID: replyItem?.parentID ? replyItem.rootID : null,
       userID: state._id,
       userName: state.userName,
       avatar: state.avatar,
@@ -89,7 +83,7 @@ const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
         setCommmentData((pre) => {
           const customArr = [...pre]
           const localArr = [].concat(pre)
-          // localArr.reverse()
+          localArr.reverse()
           const editableIndex = localArr.findIndex(
             (item) => item._id === data.parentID || item.parentID === data.parentID
           )

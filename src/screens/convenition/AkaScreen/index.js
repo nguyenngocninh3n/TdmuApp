@@ -8,6 +8,7 @@ import { useCustomContext } from '../../../store'
 import { MESSAGE_NOTIFY_STATUS, MESSAGE_NOTIFY_TYPE, MESSAGE_TYPE } from '../../../utils/Constants'
 import { OpacityButtton } from '../../../components/ButtonComponent'
 import GoBackComponent from '../../../components/GoBackComponent'
+import SocketClient from '../../../socket'
 
 const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
   const [inputValue, setInputValue] = useState('')
@@ -105,6 +106,8 @@ const AkaScreen = ({ navigation, route }) => {
       data: data,
       senderName: state.userName,
       senderAvatar: state.avatar
+    }).then(response => {
+      // SocketClient.emitChangeConventionAka(conventionID, chosenMember._id, value)
     })
     setMemberData((pre) => {
       return [
@@ -143,7 +146,9 @@ const AkaScreen = ({ navigation, route }) => {
         ...pre.map((item) => {
           if (item._id === chosenMember._id) {
             return { ...item, aka: '' }
-          } else return item
+          } else {
+            return item
+          }
         })
       ]
     })
@@ -151,7 +156,7 @@ const AkaScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <GoBackComponent title={'Biệt danh'} />
+      <GoBackComponent title={'Biệt danh'} hasBorder />
       <SpaceComponent height={24} />
       {memberData.map((item, index) => (
         <RowComponent

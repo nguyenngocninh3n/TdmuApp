@@ -52,6 +52,8 @@ import ScheduleScreen from '../screens/Schedule'
 import AcceptingFriendScreen from '../screens/Friend/Accepting'
 import WebViewScreen from '../screens/WebViewScreen'
 import ChatGPTScreen from '../screens/ChatGPT'
+import DetailContainerScreen from '../screens/convenition/DetailContainer'
+import HomeScreen from '../screens/home'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -232,13 +234,15 @@ const Navigation = () => {
 
             {/* WEBVIEW */}
             <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+
             {/* ChatGPT Screen */}
             <Stack.Screen name="ChatGPTScreen" component={ChatGPTScreen} />
 
             {/* CONVENTION */}
             <Stack.Screen name="ConventionScreen" component={ConvenitionScreen} />
             <Stack.Screen name="ChattingScreen" component={ChattingSearchScreen} />
-            <Stack.Screen name="DetailScreen" component={DetailScreen} />
+            {/* <Stack.Screen name="DetailScreen" component={DetailScreen} /> */}
+            <Stack.Screen name="DetailContainerScreen" component={DetailContainerScreen} />
             <Stack.Screen name="FileViewingScreen" component={FileViewing} />
             <Stack.Screen name="MemberScreen" component={MemberScreen} />
             <Stack.Screen name="AkaScreen" component={AkaScreen} />
@@ -252,6 +256,8 @@ const Navigation = () => {
               name="MiddleWareNavigationScreen"
               component={MiddleWareNavigationScreen}
             />
+
+          
           </>
         )}
       </Stack.Navigator>

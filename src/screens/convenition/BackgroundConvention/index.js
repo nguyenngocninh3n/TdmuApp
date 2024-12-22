@@ -40,14 +40,16 @@ const BackgroundConvention = ({ navigation, route }) => {
       senderName: state.userName,
       senderAvatar: state.avatar
     }).then(response => {
+      // SocketClient.emitChangeConventionAvatar(conventionID, response.avatar)
       console.log('response: ', response)
+      navigation.goBack()
     })
     setUpdated(false)
   }
 
   return (
     <View style={{ position: 'relative', height: '100%' }}>
-      <GoBackComponent marginLeft={8} title={'Avatar cuộc trò chuyện'} />
+      <GoBackComponent hasBorder marginLeft={8} title={'Avatar cuộc trò chuyện'} />
       <SpaceComponent height={80} />
       <View style={{ alignItems: 'center' }}>
         <AvatarComponent

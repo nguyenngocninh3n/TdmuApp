@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, Text, View } from 'react-native'
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import SpaceComponent from '../components/SpaceComponent'
 import { OpacityButtton } from '../components/ButtonComponent'
 import RowComponent from '../components/RowComponent'
@@ -13,32 +13,53 @@ const PopUpModal = ({ modalVisible, title, subtitle, onCancle, onSubmit }) => {
         onCancle
       }}
     >
-      <View style={styles.pressableContainer}>
-        <View style={{ borderWidth:1, borderColor:'#aaa', borderRadius:24}}>
+      <Pressable onPress={onCancle} style={styles.pressableContainer}>
+        <Pressable onPress={e => e.stopPropagation()} style={styles.pressableBody}>
           <View>
             <Text style={styles.modalTitle}>{title}</Text>
             <SpaceComponent height={12} />
-            <Text style={{fontSize:14, textAlign:'left', marginHorizontal:24}}>{subtitle}</Text>
+            <Text style={{ fontSize: 14, textAlign: 'left', marginHorizontal: 24 }}>
+              {subtitle}
+            </Text>
             <SpaceComponent height={24} />
             <RowComponent>
-              <OpacityButtton onPress={onCancle} style={{flex:1}} textStyle={styles.modalBtnTextCancel} title={'Hủy'} />
-              <OpacityButtton onPress={onSubmit} style={{flex:1}} textStyle={styles.modalBtnText} title={'Xác nhận'} />
+              <OpacityButtton
+                onPress={onCancle}
+                style={{ flex: 1 }}
+                textStyle={styles.modalBtnTextCancel}
+                title={'Hủy'}
+              />
+              <OpacityButtton
+                onPress={onSubmit}
+                style={{ flex: 1 }}
+                textStyle={styles.modalBtnText}
+                title={'Xác nhận'}
+              />
             </RowComponent>
             <SpaceComponent height={16} />
           </View>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   )
 }
 
 const styles = StyleSheet.create({
   pressableContainer: {
-    backgroundColor: '#fff',
-    marginTop: '50%',
-    marginHorizontal: 40,
-    borderRadius:20
+    flex:1
   },
+
+  pressableBody: {
+    marginTop: '50%',
+
+    backgroundColor: '#fff',
+    marginHorizontal: 40,
+    borderRadius: 20,
+    borderWidth:3,
+    borderCurve:'continuous',
+    borderColor:'#3332'
+  },
+
 
   modalContainer: {
     borderWidth: 1,
@@ -59,7 +80,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginHorizontal: 16,
     color: '#661',
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: '500'
   },
   modalBtnText: {

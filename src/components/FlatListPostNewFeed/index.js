@@ -55,7 +55,8 @@ const FlatListPostNewFeed = ({ navigation }) => {
   // POSTVIEW ACTION
   const timeoutRefs = useRef(new Map()) // Lưu timeout cho từng item
   const handleJoinPostIdRoom = (postID) => SocketClient.emitJoinRoomsByArray([postID])
-  const handleExitPostIdRoom = (postID) => SocketClient.exitRooms([postID])
+  // const handleExitPostIdRoom = (postID) => SocketClient.exitRooms([postID])
+  const handleExitPostIdRoom = (postID) => {}
   const handleAddPostView = (userID, postID) => API.addPostViewAPI(userID, postID)
 
   const onViewableItemsChanged = useRef(({ viewableItems, changed }) => {

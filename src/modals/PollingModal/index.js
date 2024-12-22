@@ -48,17 +48,19 @@ const PollingModal = ({
             senderAvatar: state.avatar,
             senderName: state.userName,
             data: {
-              customMessage: displayName + ' đã thêm bình chọn',
+              customMessage: displayName + ' đã thêm lựa chọn cho cuộc bình chọn: ' + poll.question,
               senderID: state._id,
               type: MESSAGE_TYPE.NOTIFY,
               notify: {
                 type: MESSAGE_NOTIFY_TYPE.POLL
               }
             }
+          }).then(response => {
+            onCancle()
+            console.log('emit updpate pollling: create')
+            SocketClient.socket.emit('updatePolling', { pollID, data: customResult, targetID })
           })
-        onCancle()
-        SocketClient.socket.emit('updatePolling', { pollID, data: customResult, targetID })
-      })
+          })
     } else if (ownerChosen.sort((a, b) => a > b) !== origin?.sort((a, b) => a > b)) {
       console.log('update polling')
       const targetID = conventionID ?? postID
@@ -69,7 +71,7 @@ const PollingModal = ({
           senderAvatar: state.avatar,
           senderName: state.userName,
           data: {
-            customMessage: displayName + ' đã cập nhật bình chọn',
+            customMessage: displayName + ' đã cập nhật lựa chọn cho cuộc bình chọn: ' + poll.question,
             senderID: state._id,
             type: MESSAGE_TYPE.NOTIFY,
             notify: {
@@ -78,7 +80,7 @@ const PollingModal = ({
           }
         })
         onCancle()
-
+        console.log('emit update polling')
         SocketClient.socket.emit('updatePolling', { pollID, data: customResult, targetID })
       })
     }

@@ -25,7 +25,7 @@ const MemberScreen = ({ navigation, route }) => {
     <View style={{ marginHorizontal: 16 }}>
       {/* <GoBackComponent title={'Thành viên'} /> */}
       <SpaceComponent height={8} />
-      <RowComponent>
+      <RowComponent style={{borderBottomWidth: 3, borderBottomColor:'#3996', paddingBottom:8}}>
         <GoBackIcon />
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Text style={{ fontSize: 18, fontWeight: '600' }}>Thành viên</Text>

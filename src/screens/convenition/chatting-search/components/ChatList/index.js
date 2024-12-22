@@ -30,10 +30,7 @@ const ChatList = React.memo(({ conventionID, onLongPress, search }) => {
   }, [])
 
   useEffect(() => {
-    console.log('start socket on')
     SocketClient.socket.on('convention', (value) => {
-      console.log('listion convention:, ', value)
-
       if (value.action === MESSAGE_ACTION.ADD) {
         setChatData((pre) => {
           console.log('into set chat data: ADD MESSAGE')

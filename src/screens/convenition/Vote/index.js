@@ -25,21 +25,21 @@ const CreatePollScreen = ({ onSendMessage, onCancel, submitState, onPollChange, 
   const [state, dispatch] = useCustomContext()
   const handleAddOption = () => {
     setOptions([...options, ''])
-    onPollChange({ options: [...options, ''] })
+    onPollChange && onPollChange({ options: [...options, ''] })
   }
 
   const handleOptionChange = (text, index) => {
     const updatedOptions = [...options]
     updatedOptions[index] = text
     setOptions(updatedOptions)
-    onPollChange({ options: updatedOptions })
+    onPollChange && onPollChange({ options: updatedOptions })
   }
 
   const handleRemoveOption = (deletedIndex) => {
     const currentOptions = [...options]
     const updatedOptions = currentOptions.filter((item, index) => index !== deletedIndex)
     setOptions(updatedOptions)
-    onPollChange({ options: updatedOptions })
+    onPollChange && onPollChange({ options: updatedOptions })
   }
 
   const handleSubmit = async () => {
@@ -64,7 +64,7 @@ const CreatePollScreen = ({ onSendMessage, onCancel, submitState, onPollChange, 
     }
     API.createPoll(customData).then((response) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
-        onSendMessage('đã tạo bình chọn', MESSAGE_TYPE.POLL, response.data._id)
+        onSendMessage(' đã tạo cuộc bình chọn: ' + question, MESSAGE_TYPE.POLL, response.data._id)
         onCancel()
       } else {
         Alert.alert('Lỗi', response.data)
@@ -74,7 +74,7 @@ const CreatePollScreen = ({ onSendMessage, onCancel, submitState, onPollChange, 
 
   const handleCancle = () => {
     if (submitState) {
-      onPollClear()
+      onPollClear && onPollClear()
       onCancel()
     } else {
       onCancel()
@@ -95,7 +95,7 @@ const CreatePollScreen = ({ onSendMessage, onCancel, submitState, onPollChange, 
         value={question}
         onChangeText={(value) => {
           setQuestion(value)
-          onPollChange({ question: value })
+          onPollChange && onPollChange({ question: value })
         }}
       />
 
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#eee'
+    backgroundColor: '#fff'
   },
   title: {
     fontSize: 24,

@@ -35,7 +35,7 @@ const sendMessageAPI = async ({ conventionID, data, senderName, senderAvatar }) 
 
 const createConventionAPI = async ({ data, senderName, senderAvatar }) => {
   const response = await axios.post(`${SERVER_POST}/convention/store`, data)
-  const conventionData = response.data
+  const conventionData = await response.data
   const senderData = conventionData.data.at(-1)
   const customData = { ...senderData, senderName, senderAvatar, conventionID: conventionData._id }
   SocketClient.emitConventionStored({
@@ -46,11 +46,25 @@ const createConventionAPI = async ({ data, senderName, senderAvatar }) => {
   setTimeout(() => {
     SocketClient.emitConvention({ ...customData, action: MESSAGE_ACTION.ADD})
   }, 1000)
-  return conventionData
+  return response.data
 }
 
 const createGroupConvention = async (data) => {
   const response = await axios.post(`${SERVER_POST}/convention/group/store`, data)
+  // data = { members, uids, type, message, name: groupName }
+
+  const conventionData = await response.data.data
+  const senderData = conventionData.data.at(-1)
+  const senderUser = data.members.find(item => item._id === senderData.senderID)
+  const customData = { ...senderData, senderName: senderUser.userName, senderAvtar: senderUser.avatar, conventionID: conventionData._id }
+  SocketClient.emitConventionStored({
+    uids: conventionData.uids,
+    conventionID: conventionData._id,
+    data: customData
+  })
+  setTimeout(() => {
+    SocketClient.emitConvention({ ...customData, action: MESSAGE_ACTION.ADD })
+  }, 1000)
   return response.data
 }
 

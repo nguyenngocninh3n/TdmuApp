@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import { MESSAGE_TYPE,  SERVER_POST } from '../utils/Constants'
+import { MESSAGE_TYPE, SERVER_POST } from '../utils/Constants'
 import { API } from '../api'
 const socket = io(SERVER_POST)
 function runSocketClient(userID, navigation) {
@@ -71,7 +71,7 @@ async function emitJoinRoomsByArray(array) {
   joinChatRooms(array)
 }
 
-async function exitRooms (array) {
+async function exitRooms(array) {
   socket.emit('exitRooms', array)
 }
 
@@ -92,6 +92,7 @@ function onConventions(callback) {
 }
 
 function emitConvention(data) {
+  console.log('emit convention inserver: ', data)
   socket.emit('convention', data)
 }
 
@@ -116,6 +117,19 @@ function emitUserJoinRoom(id) {
   joinChatRoom(id)
 }
 
+// CONVENTION:
+const emitChangeConventionName = (conventionID, name) => {
+  socket.emit('changeConventionName', { conventionID, value: name })
+}
+
+const emitChangeConventionAvatar = (conventionID, avatar) => {
+  socket.emit('changeConventionAvatar', { conventionID, value: avatar })
+}
+
+const emitChangeConventionAka = (conventionID, userID, aka) => {
+  socket.emit('changeConventionAka', { conventionID, userID, value: aka })
+}
+
 const SocketClient = {
   socket,
   runSocketClient,
@@ -128,7 +142,11 @@ const SocketClient = {
   emitConvention,
   onConventionStored,
   emitConventionStored,
-  onFriendActive
+  onFriendActive,
+
+  emitChangeConventionName,
+  emitChangeConventionAvatar,
+  emitChangeConventionAka
 }
 
 export default SocketClient

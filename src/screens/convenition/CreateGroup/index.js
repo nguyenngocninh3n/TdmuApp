@@ -81,7 +81,9 @@ const CreateGroup = ({ navigation, route }) => {
     API.createGroupConvention(newData).then((response) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
         ToastAndroid.show('Tạo nhóm thành công', ToastAndroid.SHORT)
-        navigation.navigate('ChattingScreen', { conventionID: response.data._id })
+        setTimeout(()=>{
+          navigation.navigate('ChattingScreen', { conventionID: response.data._id })
+        },1500)
       } else {
         ToastAndroid.show('Tạo nhóm thất bại', ToastAndroid.SHORT)
         navigation.navigate('ConventionScreen')

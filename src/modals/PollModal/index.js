@@ -12,13 +12,12 @@ const PollModal = ({ modalVisible, onCancle, onSubmit }) => {
         onCancle()
       }}
     >
-      <Pressable style={{ flex: 1 }} onPress={onCancle}>
-        <View style={styles.modalContainer}>
-          <CreatePollScreen
-            onSendMessage={onSubmit}
-            onCancel={onCancle}
-          />
-        </View>
+      <Pressable style={styles.pressableContainer} onPress={onCancle}>
+        <Pressable style={styles.pressableBody} onPress={(e) => e.stopPropagation()}>
+          <View style={styles.modalContainer}>
+            <CreatePollScreen onSendMessage={onSubmit} onCancel={onCancle} />
+          </View>
+        </Pressable>
       </Pressable>
     </Modal>
   )
@@ -32,9 +31,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     marginTop: 32,
-    marginHorizontal: 12,
-    paddingVertical: 8,
-    paddingLeft: 16
   },
   modalTitle: {
     textAlign: 'center',
@@ -43,6 +39,23 @@ const styles = StyleSheet.create({
     color: '#a2f',
     fontSize: 16,
     fontWeight: '500'
+  },
+  pressableContainer: {
+    flex: 1,
+    position: 'relative',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+
+  pressableBody: {
+    position: 'absolute',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+
+    top: 50,
+    bottom: 0,
+    left: 0,
+    right: 0
   }
 })
 

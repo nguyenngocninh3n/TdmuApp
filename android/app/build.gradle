@@ -121,6 +121,8 @@ dependencies {
     }
     implementation project(':rnfgservice')
     implementation project(':rnwebrtc')
+
+    implementation project(':react-native-restart')
 }
 
 

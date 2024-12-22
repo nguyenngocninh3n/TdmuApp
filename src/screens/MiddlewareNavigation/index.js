@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { TYPE_SCREEN } from '../../utils/Constants'
-import ChattingScreen from '../convenition/chatting'
 import { actions, useCustomContext } from '../../store'
 import { API } from '../../api'
+import ChattingSearchScreen from '../convenition/chatting-search'
 
 const MiddleWareNavigationScreen = ({ navigation, route }) => {
   const { screen, conventionID, ownerID } = route.params
@@ -17,7 +17,7 @@ const MiddleWareNavigationScreen = ({ navigation, route }) => {
   }, [])
 
   return ownerInfo ? (
-    <ChattingScreen
+    <ChattingSearchScreen
       navigation={navigation}
       route={{ params: { conventionID, ownerInfo } }}
     />

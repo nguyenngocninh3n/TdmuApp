@@ -3,7 +3,7 @@ import RowComponent from '../RowComponent'
 
 import SpaceComponent from '../SpaceComponent'
 import GoBackIcon from './GoBackIcon'
-import { Text } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 
 const GoBackComponent = ({
   height,
@@ -17,37 +17,46 @@ const GoBackComponent = ({
   borderWidth,
   borderColor,
   bgColor,
-  textColor
+  textColor,
+  hasBorder
 }) => {
+  const borderStyle = hasBorder ? styles.borderStyle : {}
   return (
     <RowComponent
       alignItems
-      
       style={[
-        { backgroundColor:bgColor, marginLeft, paddingLeft, borderBottomColor: borderColor, borderBottomWidth: borderWidth },
-        style
+        {
+          backgroundColor: bgColor,
+          marginLeft,
+          paddingLeft,
+          borderBottomColor: borderColor,
+          borderBottomWidth: borderWidth
+        },
+        {},
+        borderStyle
       ]}
     >
       <GoBackIcon size={size} color={color} />
       <SpaceComponent height={height ?? 48} />
 
-      {title && (
-        <Text
-          style={{
-            textAlign: 'center',
-            fontWeight: '500',
-            flex: 1,
-            color: textColor ?? '#000',
-            fontSize: 20,
-            marginRight: 24
-          }}
-        >
-          {title}
-        </Text>
-      )}
+      {title && <Text style={[styles.title, { color: textColor ?? '#000' }]}>{title}</Text>}
       {children}
     </RowComponent>
   )
 }
+
+const styles = StyleSheet.create({
+  borderStyle: {
+    borderBottomColor: '#3996',
+    borderBottomWidth: 3
+  },
+  title: {
+    textAlign: 'center',
+    fontWeight: '500',
+    flex: 1,
+    fontSize: 20,
+    marginRight: 24
+  }
+})
 
 export default GoBackComponent

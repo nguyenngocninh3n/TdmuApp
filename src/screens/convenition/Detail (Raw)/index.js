@@ -18,35 +18,24 @@ import {
   RESPONSE_STATUS
 } from '../../../utils/Constants'
 import PopUpModal from '../../../modals/PopUpModal'
-import SocketClient from '../../../socket'
 
-const DetailScreen = ({
-  conventionID,
-  name,
-  navigation,
-  avatar,
-  members,
-  onChange,
-  chatData,
-  type,
-  ownerID,
-  conventionName
-}) => {
-  console.log(
-    'prop in detail: ',
+const DetailScreen = ({ navigation, route }) => {
+  var {
     conventionID,
     name,
     avatar,
     members,
+    rawMembers,
+    chatData,
     type,
     ownerID,
     conventionName
-  )
+  } = route.params
+  console.log('members: ', members)
   const [modalVisible, setModalVisible] = useState(false)
-  const [chatName, setChatName] = useState(name)
+  const [chatName, setChatName] = useState(conventionName)
   const onCloseModal = () => setModalVisible(false)
   const onShowModal = () => setModalVisible(true)
-
   const onUpdate = (value) => {
     const data = {
       senderID: ownerID,
@@ -65,8 +54,6 @@ const DetailScreen = ({
       data: data,
       senderName: members[ownerID].userName,
       senderAvatar: members[ownerID].avatar
-    }).then(response => {
-      // SocketClient.emitChangeConventionName(conventionID, value)
     })
     setChatName(value)
   }
@@ -140,7 +127,7 @@ const DetailScreen = ({
       .map((value) => value)
       .filter((item) => item.status === 'ACTIVE')
 
-    const customUids = customMembers.map((item) => item._id)
+    const customUids = customMembers.map(item => item._id)
     navigation.navigate('AddMemberScreen', { conventionID, uids: customUids })
   }
 
@@ -158,11 +145,11 @@ const DetailScreen = ({
 
   return (
     <View style={{ marginHorizontal: 16 }}>
-      <GoBackComponent hasBorder  />
+      <GoBackComponent />
       <View style={{ alignItems: 'center' }}>
         <AvatarComponent source={API.getFileUrl(avatar)} size={140} />
         <SpaceComponent height={8} />
-        <Text style={{ fontSize: 24 }}>{chatName}</Text>
+        <Text style={{ fontSize: 24 }}>{name}</Text>
       </View>
       <SpaceComponent height={16} />
       <RowComponent justify>
@@ -251,11 +238,10 @@ const DetailScreen = ({
       {/* CUSTOM MODAL */}
       <CustomModal
         modalVisible={modalVisible}
-        name={name}
+        name={conventionName}
         onClose={onCloseModal}
         onUpdate={onUpdate}
       />
-      {/* <PopUpModal modalVisible={modalVisible} onCancle={onCloseModal} onSubmit={onUpdate} title={'Thay đổi tên nhóm'} /> */}
     </View>
   )
 }
@@ -286,6 +272,7 @@ const LogOutGroupComponent = ({ onLogoutGroup, member }) => {
   )
 }
 
+
 const CustomModal = ({ modalVisible, onClose, onUpdate, name }) => {
   const [inputValue, setInputValue] = useState(name)
 
@@ -314,22 +301,21 @@ const CustomModal = ({ modalVisible, onClose, onUpdate, name }) => {
       }}
     >
       <Pressable style={{ flex: 1 }} onPress={handleCloseModal}>
-        <Pressable style={styles.modalContainer} onPress={e  => e.stopPropagation()}>
-        <View >
+        <View style={styles.modalContainer}>
           <SpaceComponent height={8} />
           <Text style={styles.modalTitle}>Thay đổi tên nhóm</Text>
-          <SpaceComponent height={32} />
+          <SpaceComponent height={16} />
           <RowComponent alignItems>
             <SpaceComponent width={8} />
             <TextInput
               style={styles.modalTextInput}
-              placeholder="Nhập tên mới..."
+              placeholder="Thêm biệt danh..."
               value={inputValue}
               focusable={true}
               onChangeText={handleInputChange}
             />
           </RowComponent>
-          <SpaceComponent height={16} />
+          <SpaceComponent height={32} />
           <RowComponent
             alignItems
             style={{ marginVertical: 10, marginHorizontal: 32, justifyContent: 'space-between' }}
@@ -337,21 +323,18 @@ const CustomModal = ({ modalVisible, onClose, onUpdate, name }) => {
             <OpacityButtton
               title={'Hủy'}
               textStyle={styles.modalBtnText}
-              style={styles.modalBtn}
               onPress={handleCloseModal}
             />
             <RowComponent>
               <OpacityButtton
                 title={'Lưu'}
                 textStyle={styles.modalBtnText}
-                style={styles.modalBtn}
                 onPress={handleUpdate}
               />
             </RowComponent>
           </RowComponent>
           <SpaceComponent height={8} />
         </View>
-        </Pressable>
       </Pressable>
     </Modal>
   )
@@ -362,33 +345,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#fff',
     marginTop: '50%',
-    marginHorizontal: 40,
-    borderColor:'#3332',
-    borderWidth:3
-
+    marginHorizontal: 40
   },
   modalTitle: {
     marginTop: 10,
     marginLeft: 10,
     fontSize: 17,
     color: '#000',
-    fontWeight: '500',
-    textAlign:'center'
+    fontWeight: '500'
   },
-  modalTextInput: {
-    borderBottomColor: '#ccc',
-    flex: 1,
-    borderBottomWidth: 1,
-    paddingBottom: 2
-  },
+  modalTextInput: { borderBottomColor: '#ccc', flex: 1, borderBottomWidth: 1, paddingBottom: 2 },
   modalBtnText: {
     color: 'blue',
     fontWeight: '400',
-    fontSize: 16,
-  },
-  modalBtn: {
-    paddingVertical:4,
-    paddingHorizontal:6
+    fontSize: 16
   }
 })
 

@@ -67,20 +67,22 @@ const PollScreen = React.memo(({ pollID, members, conventionID, postID }) => {
     SocketClient.socket.on('client_updatePolling', (data) => {
       console.log('listen update Polling in client: ', data)
       setPoll((pre) => {
-        if (pre) {
-          if (pre.results.find((item) => JSON.stringify(item) !== JSON.stringify(data))) {
-            const currentPoll = { ...pre }
-            console.log('currrent poll: ', currentPoll)
+        if (pre._id === data.pollID) {
+          const currentPoll = { ...pre }
+          console.log('currrent poll: ', currentPoll)
 
-            const filterIndex = currentPoll.results.findIndex(
-              (item) => item.userID === data.data.userID
-            )
+          const filterIndex = currentPoll.results.findIndex(
+            (item) => item.userID === data.data.userID
+          )
+          if (filterIndex !== -1) {
             currentPoll.results[filterIndex] = data.data
-            return currentPoll
+          } else {
+            currentPoll.results.push(data.data)
           }
+          return currentPoll
+        } else {
           return pre
         }
-        return pre
       })
     })
   }, [])
