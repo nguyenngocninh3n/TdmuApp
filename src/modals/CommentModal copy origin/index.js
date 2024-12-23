@@ -20,7 +20,7 @@ import { RESPONSE_STATUS } from '../../utils/Constants'
 import { useCustomContext } from '../../store'
 import { stat } from 'react-native-fs'
 
-const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
+const CommentModelOrigin = React.memo(({ modalVisible, onClose, postID }) => {
   const [commentData, setCommmentData] = useState([])
   console.log('comment modal re-render')
   const [state, dispatch] = useCustomContext()
@@ -244,7 +244,7 @@ const CommentModal = React.memo(({ modalVisible, onClose, postID }) => {
   )
 })
 
-export default CommentModal
+export default CommentModelOrigin
 
 const styles = StyleSheet.create({
   pressableContainer: {

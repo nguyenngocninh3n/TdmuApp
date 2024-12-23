@@ -10,6 +10,7 @@ import { API } from '../../../../api'
 import SpaceComponent from '../../../../components/SpaceComponent'
 import { OpacityButtton } from '../../../../components/ButtonComponent'
 import AvatarProfileModal from '../../../../modals/AvatarProfileModal'
+import GoBackComponent from '../../../../components/GoBackComponent'
 
 const BoxInfor = ({ title, value }) => {
   return (
@@ -32,6 +33,7 @@ const Header = ({ navigation, children, user, ownerID }) => {
 
   return (
     <View>
+      <GoBackComponent marginLeft={4} />
       <View style={styles.backgroundContainer}>
         {user._id === ownerID && (
           <OpacityButtton style={styles.backgroundText} title={'Thêm ảnh bìa'} />

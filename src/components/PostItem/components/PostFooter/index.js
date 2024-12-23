@@ -8,6 +8,7 @@ import { API } from '../../../../api'
 import { useCustomContext } from '../../../../store'
 import { Text, View } from 'react-native'
 import { REACTION_TYPE } from '../../../../utils/Constants'
+import PostReactionModal from '../../../../modals/PostReactionModal'
 
 const icon = {
   none: 'heart',
@@ -21,10 +22,14 @@ const PostFooter = ({ postID, ownerID, item }) => {
   const handleShowModal = useCallback(() => setModalVisible(true), [])
   const handleCloseModal = useCallback(() => setModalVisible(false), [])
 
+
+  const [postReactionModal, setPostReactionModal] = useState(false)
+  const handleShowPostReactionModel = useCallback(() => setPostReactionModal(true), [])
+  const handleHidePostReactionModel = useCallback(() => setPostReactionModal(false), [])
+
   useEffect(() => {
     API.getReactionOfUserByTargetAPI(postID, ownerID)
       .then((data) => {
-        console.log('get reaction: ', )
         setReaction(data)
       })
       .catch((error) => {
@@ -70,8 +75,9 @@ const PostFooter = ({ postID, ownerID, item }) => {
         <SpaceComponent width={24} />
         <OpacityButtton children={<Octicons name="share-android" size={22} />} />
         <CommentModal modalVisible={modalVisible} onClose={handleCloseModal} postID={postID} />
+        <PostReactionModal modalVisible={postReactionModal} onClose={handleHidePostReactionModel} ownerID={state._id} postID={postID} />
       </RowComponent>
-      {item.reactionsCount > 0 && <Text>Có {item.reactionsCount} lượt thích bài viết này</Text>}
+      {item.reactionsCount > 0 && <OpacityButtton fontWeight={'400'} textColor={'#333c'} left onPress={handleShowPostReactionModel} title={`Có ${item.reactionsCount} lượt thích bài viết này`} />}
     </View>
   )
 }

@@ -11,7 +11,7 @@ const FlatListPost = ({ ownerID, userID, children }) => {
   const [userData, setUserData] = useState({})
   useEffect(() => {
     API.getUserPostsAPI(userID, ownerID).then((data) => {
-      setPostsData(data)
+      setPostsData(data.data)
     })
 
     API.getUserByIdAPI({ uid: userID }).then((data) => {
@@ -20,20 +20,12 @@ const FlatListPost = ({ ownerID, userID, children }) => {
   }, [])
 
 
-  const handleRemovePost = (postID) => {
-    setPostsData(pre => {
-      const postIndex = [].findIndex(item => item._id === postID)
-      const preArr = [].slice(0, postIndex)
-      const nextArr = [].slice(postIndex)
-      return [...preArr, ...nextArr]
-    })
-  }
-
 
   // POSTVIEW ACTION
   const timeoutRefs = useRef(new Map()) // Lưu timeout cho từng item
   const handleJoinPostIdRoom = (postID) => SocketClient.emitJoinRoomsByArray([postID])
-  const handleExitPostIdRoom = (postID) => SocketClient.exitRooms([postID])
+  // const handleExitPostIdRoom = (postID) => SocketClient.exitRooms([postID])
+  const handleExitPostIdRoom = (postID) => {}
   const handleAddPostView = (pUserID, postID) => API.addPostViewAPI(pUserID, postID)
 
   const viewabilityConfig = { itemVisiblePercentThreshold: 50 }// 50% => item visible
@@ -61,24 +53,74 @@ const FlatListPost = ({ ownerID, userID, children }) => {
 
 
   // ON LISTEN REACTION ACTION
+  // useEffect(() => {
+  //   const event_name = REACTION_TYPE.POST + 'reaction'
+  //   console.log('event_name on socket listion reaction: ', event_name)
+  //   SocketClient.socket.on(event_name, (data) => {
+  //     console.info('reaction listen: ', data.postID)
+  //     setPostsData((pre) => {
+  //       const postList = pre ? [...pre] : []
+  //       const filterIndex = postList.findIndex((item) => item._id === data.postID)
+  //       console.log('filter index: ', filterIndex)
+  //       postList[filterIndex].reactionsCount += data.number
+  //       return {...pre, data: postList}
+  //     })
+  //   })
+  // }, [])
+
   useEffect(() => {
-    const event_name = REACTION_TYPE.POST + 'reaction'
-    console.log('event_name on socket listion reaction: ', event_name)
-    SocketClient.socket.on(event_name, (data) => {
-      console.info('reaction listen: ', data.postID)
-      setPostsData((pre) => {
-        const postList = pre ? [...pre] : []
-        const filterIndex = postList.findIndex((item) => item._id === data.postID)
-        console.log('filter index: ', filterIndex)
-        postList[filterIndex].reactionsCount += data.number
-        return {...pre, data: postList}
+    SocketClient.socket.on('emitAddPost', data => {
+      setPostsData(pre => {
+        const customArr = [data.post, ...pre]
+        return customArr
       })
     })
+
+    SocketClient.socket.on('emitEditPost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+
+    })
+    SocketClient.socket.on('emitRemovePost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterArr = customArr.filter(item => item._id !== data.postID)
+        return filterArr
+      })
+    })
+
+    SocketClient.socket.on('emitReactionPostChange', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+    })
+
+    SocketClient.socket.on('emitCommentPostChange', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+      })
+    })
+   
   }, [])
 
   return (
     <FlatList
-      data={postsData.data}
+      data={postsData}
       initialNumToRender={2}
       style={{backgroundColor:'#fff'}}
       ItemSeparatorComponent={

@@ -16,7 +16,9 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
   const handleInputChange = (value) => setInputValue(value)
   const handleCloseModal = () => onClose(false)
   const handelClear = () => {
-    onClear()
+    if(aka) {
+      onClear()
+    }
     handleCloseModal()
   }
   const handleUpdate = () => {
@@ -40,7 +42,7 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
       <Pressable style={{ flex: 1 }} onPress={handleCloseModal}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Chỉnh sửa biệt danh</Text>
-          <SpaceComponent height={16} />
+          <SpaceComponent height={24} />
           <TextInput
             style={styles.modalTextInput}
             placeholder="Thêm biệt danh..."
@@ -48,7 +50,7 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
             focusable={true}
             onChangeText={handleInputChange}
           />
-          <SpaceComponent height={32} />
+          <SpaceComponent height={16} />
           <RowComponent
             alignItems
             style={{ marginVertical: 10, marginHorizontal: 32, justifyContent: 'space-between' }}
@@ -56,14 +58,21 @@ const CustomModal = ({ modalVisible, onClose, onClear, onUpdate, aka }) => {
             <OpacityButtton
               title={'Hủy'}
               textStyle={styles.modalBtnText}
+              style={styles.modelBtn}
               onPress={handleCloseModal}
             />
             <RowComponent>
-              <OpacityButtton title={'Gỡ'} textStyle={styles.modalBtnText} onPress={handelClear} />
+              <OpacityButtton
+                title={'Gỡ'}
+                textStyle={styles.modalBtnText}
+                style={styles.modelBtn}
+                onPress={handelClear}
+              />
               <SpaceComponent width={24} />
               <OpacityButtton
                 title={'Lưu'}
                 textStyle={styles.modalBtnText}
+                style={styles.modelBtn}
                 onPress={handleUpdate}
               />
             </RowComponent>
@@ -106,7 +115,7 @@ const AkaScreen = ({ navigation, route }) => {
       data: data,
       senderName: state.userName,
       senderAvatar: state.avatar
-    }).then(response => {
+    }).then((response) => {
       // SocketClient.emitChangeConventionAka(conventionID, chosenMember._id, value)
     })
     setMemberData((pre) => {
@@ -193,7 +202,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#fff',
     marginTop: '50%',
-    marginHorizontal: 40
+    marginHorizontal: 40,
+    borderColor: '#ccc',
+    borderWidth: 1
   },
   modalTitle: {
     textAlign: 'center',
@@ -207,5 +218,8 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontWeight: '400',
     fontSize: 16
+  },
+  modelBtn: {
+    padding: 4
   }
 })

@@ -22,13 +22,14 @@ const OpacityButtton = ({
   style,
   textColor,
   textStyle,
+  fontWeight,
   children
 }) => {
   const initValue = {
     onPress: () => {},
     textStyle: {
       color: (disable && 'gray') || (submit && 'red') || textColor || '#000',
-      fontWeight: (disable && '300') || '500',
+      fontWeight: (disable && '300') || fontWeight || '500',
       fontSize: (disable && 16) || textSize,
       paddingVertical: 4,
       paddingHorizontal: paddingHorizontal ?? 4,

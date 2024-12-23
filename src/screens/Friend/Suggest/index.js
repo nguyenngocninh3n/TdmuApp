@@ -8,16 +8,41 @@ import { useCustomContext } from '../../../store'
 import { OpacityButtton } from '../../../components/ButtonComponent'
 import { FRIEND_STATUS, RESPONSE_STATUS } from '../../../utils/Constants'
 import GoBackComponent from '../../../components/GoBackComponent'
+import axios from 'axios'
 
 const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
   const [title, setTitle] = useState()
   const handleClickItem = () => onPress(item._id)
-  const handleAdd = () =>
+
+  const handleAdd = () => {
+    if (title === 'Hủy yêu cầu') {
+      handleCancleRequest()
+    } else {
+      handleRequest()
+    }
+  }
+
+  const handleRequest = () => {
     handleAddFriend(ownerID, item._id).then((response) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
         setTitle('Hủy yêu cầu')
       }
     })
+  }
+
+  const handleCancleRequest = () => {
+    const params = {
+      ownerID,
+      userID: item._id,
+      status: FRIEND_STATUS.CANCELING
+    }
+
+    API.updateStatusFriend({ ...params }).then((response) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        setTitle('Thêm bạn bè')
+      }
+    })
+  }
 
   const handleRemove = () =>
     handleRemoveSuggest(ownerID, item._id).then((response) => {
@@ -44,7 +69,7 @@ const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
           />
           <SpaceComponent width={16} />
           <OpacityButtton
-            title={title ?? 'Kết bạn'}
+            title={title ?? 'Thêm bạn bè'}
             textColor={'#fff'}
             borderRadius={10}
             underlay={'#33d4'}
@@ -74,7 +99,6 @@ const handleRemoveSuggest = async (ownerID, userID) => {
   })
   return response
 }
-
 const SuggestFriendScreen = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
   const [suggests, setSuggests] = useState([])
@@ -103,18 +127,18 @@ const SuggestFriendScreen = ({ navigation, route }) => {
 
       <SpaceComponent height={32} />
       {suggests.length === 0 && (
-         <Text
-         style={{
-           fontWeight: '900',
-           fontSize: 20,
-           textTransform: 'capitalize',
-           textAlign: 'center',
-           marginTop: '50%',
-           color: '#3336'
-         }}
-       >
-         Không có đề xuất
-       </Text>
+        <Text
+          style={{
+            fontWeight: '900',
+            fontSize: 20,
+            textTransform: 'capitalize',
+            textAlign: 'center',
+            marginTop: '50%',
+            color: '#3336'
+          }}
+        >
+          Không có đề xuất
+        </Text>
       )}
 
       <FlatList

@@ -4,25 +4,25 @@ import { API } from '../../api'
 import RowComponent from '../../components/RowComponent'
 import AvatarComponent from '../../components/AvatarComponent'
 import SpaceComponent from '../../components/SpaceComponent'
-import { useCustomContext } from '../../store'
+import { navigate, useCustomContext } from '../../store'
 import { OpacityButtton } from '../../components/ButtonComponent'
 import { FRIEND_STATUS, RESPONSE_STATUS } from '../../utils/Constants'
 import SearchComponent from '../../components/SearchComponent'
-
-const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
-  const [title, setTitle] = useState()
+import AntDesign from 'react-native-vector-icons/AntDesign'
+const FriendItem = ({ item, onPress, ownerID }) => {
   const handleClickItem = () => onPress(item._id)
-
+  const handleSendMessage = () => navigate('ChattingScreen', {userID: item._id, ownerID})
   return (
-    <RowComponent alignItems style={{ marginBottom: 16 }}>
-      <AvatarComponent size={48} source={API.getFileUrl(item.avatar)} onPress={handleClickItem} />
-      <SpaceComponent width={16} />
-      <View style={{ flex: 1 }}>
+    <RowComponent alignItems style={{ flex: 1, justifyContent: 'space-between' }}>
+      <RowComponent alignItems >
+        <AvatarComponent size={48} source={API.getFileUrl(item.avatar)} onPress={handleClickItem} />
+        <SpaceComponent width={16} />
+
         <Text onPress={handleClickItem} style={{ fontWeight: '500', fontSize: 17 }}>
           {item.userName}
         </Text>
-        <SpaceComponent height={4} />
-      </View>
+      </RowComponent>
+      <AntDesign name="message1" size={24} onPress={handleSendMessage} />
     </RowComponent>
   )
 }
@@ -86,7 +86,7 @@ const ListFriendScreen = ({ navigation, route }) => {
         data={filteredFriends}
         style={{ backgroundColor: '#fff' }}
         keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={<SpaceComponent height={8} />}
+        ItemSeparatorComponent={<SpaceComponent height={16} />}
         renderItem={({ item, index }) => (
           <FriendItem ownerID={state._id} item={item} onPress={handlePressItem} />
         )}
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     color: '#3336'
   },
   fullyDataText: {
-    marginTop:32,
+    marginTop: 32,
     fontWeight: '600',
     fontSize: 20,
     textTransform: 'capitalize',

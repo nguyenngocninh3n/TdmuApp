@@ -20,9 +20,9 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import { navigationRef } from '../../store'
 
 const CommentItem = React.memo(
-  ({ item, parentName, ownerID, onEdit, onDelete, onReact, onReply, onClose }) => {
+  ({ item, ownerID, onEdit, onDelete, onReact, onReply, onClose, onViewChildItem }) => {
     console.log('re-render comment item: ', item.content)
-
+    const [expand, setExpand] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const handleShowModal = () => setModalVisible(true)
     const handleCloseModal = () => setModalVisible(false)
@@ -36,21 +36,26 @@ const CommentItem = React.memo(
       navigationRef.navigate('ProfileScreen', { userID: item.parentUserID })
     }
 
+    const openProfile = () => {
+      onClose()
+      navigationRef.navigate('ProfileScreen', {ownerID, userID: item.userID})
+    }
+
     return (
       <View>
         <SpaceComponent height={item.parentID ? 0 : 12} />
         <RowComponent
           style={{ alignItems: 'flex-start', marginLeft: item.parentID !== null ? 32 : 0 }}
         >
-          <AvatarComponent source={API.getFileUrl(item.avatar)} size={28} />
+          <AvatarComponent source={API.getFileUrl(item.avatar)} size={32} onPress={openProfile} />
           <SpaceComponent width={8} />
           <View style={{ flex: 1 }}>
             <ColumnComponent style={styles.wrapperComment} onLongPress={handleShowModal}>
               <View>
                 <RowComponent>
-                  <Text style={{ fontSize: 13 }}>{item.userName}</Text>
+                  <OpacityButtton onPress={openProfile} textSize={16} title={item.userName} />
                   <SpaceComponent width={8} />
-                  <Text style={{ fontSize: 12 }}>
+                  <Text style={{ fontSize: 14 }}>
                     {helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}
                   </Text>
                 </RowComponent>
@@ -67,7 +72,7 @@ const CommentItem = React.memo(
             </ColumnComponent>
             <RowComponent>
               <SpaceComponent width={14} />
-              {item.reactions.findIndex((item) => item === ownerID) === -1 ? (
+              {item.reactions.findIndex((child) => child === ownerID) === -1 ? (
                 <OpacityButtton title={'Thích'} onPress={handleReact} />
               ) : (
                 <OpacityButtton
@@ -84,6 +89,15 @@ const CommentItem = React.memo(
                 onPress={handleReply}
               />
             </RowComponent>
+            {!expand && item.commentChildCount > 0 && item.parentID === null && (
+              <OpacityButtton
+                title={`Xem thêm ${item.commentChildCount} câu trả lời`}
+                onPress={() => {
+                  onViewChildItem(item._id)
+                  setExpand(true)
+                }}
+              />
+            )}
           </View>
           <SpaceComponent width={16} />
           {item.reactions.length > 0 && (

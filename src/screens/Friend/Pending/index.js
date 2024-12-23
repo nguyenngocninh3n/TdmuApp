@@ -18,11 +18,19 @@ const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
       userID: item._id,
       status: FRIEND_STATUS.CANCELING
     }
-    API.updateStatusFriend({ ...params }).then((response) => {
-      if (response.status === RESPONSE_STATUS.SUCCESS) {
-        setTitle('Đã hủy yêu cầu')
-      }
-    })
+    if(title === 'Thêm bạn bè') {
+      API.updateStatusFriend({ownerID, userID: item._id, status:FRIEND_STATUS.PENDING}).then(response => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          setTitle('Hủy yêu cầu')
+        }
+      })
+    } else {
+      API.updateStatusFriend({ ...params }).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          setTitle('Thêm bạn bè')
+        }
+      })
+    }
   }
 
   return (
@@ -37,10 +45,12 @@ const FriendItem = ({ item, onPress, onRemove, ownerID }) => {
         <RowComponent style={{ flex: 1 }}>
           <OpacityButtton
             title={title ?? 'Hủy yêu cầu'}
-            textColor={'#333'}
+            textColor={!title || title === 'Hủy yêu cầu' ? '#111c' : '#fff'}
             borderRadius={10}
+            textSize={16}
+            fontWeight={'600'}
             underlay={'#ccc'}
-            bgColor={'#ccc6'}
+            bgColor={!title || title === 'Hủy yêu cầu' ? '#ccc' : '#33d'}
             style={{ flex: 1 }}
             onPress={handleCancleRequest}
           />

@@ -21,35 +21,40 @@ const FlatListPostNewFeed = ({ navigation }) => {
   }, [])
 
   // ON LISTEN REACTION ACTION
-  useEffect(() => {
-    const event_name = REACTION_TYPE.POST+'reaction'
-    console.log('event_name on socket listion reaction: ', event_name)
-    SocketClient.socket.on(event_name, (data) => {
-      setPostsData((pre) => {
-        const postList = [...pre]
-        const filterIndex = postList.findIndex((item) => item._id === data.postID)
-        postList[filterIndex].reactionsCount += data.number
-        return postList
-      })
-    })
-  }, [])
+  // useEffect(() => {
+  //   const event_name = REACTION_TYPE.POST+'reaction'
+  //   console.log('event_name on socket listion reaction: ', event_name)
+  //   SocketClient.socket.on(event_name, (data) => {
+  //     setPostsData((pre) => {
+  //       const postList = [...pre]
+  //       const filterIndex = postList.findIndex((item) => item._id === data.postID)
+  //       console.info('filterIndex: ', filterIndex)
+  //       if(filterIndex !== -1) {
+  //         postList[filterIndex].reactionsCount += data.number
+  //       }
+  //       return postList
+  //     })
+  //   })
+
+   
+  // }, [])
 
 
 
   // ON LISTEN COMMENT ACTION
-  useEffect(() => {
-    const event_name = 'comment_count'
-    console.log('event_name on socket listion reaction: ', event_name)
-    SocketClient.socket.on(event_name, (data) => {
-      setPostsData((pre) => {
-        const postList = [...pre]
-        const filterIndex = postList.findIndex((item) => item._id === data.postID)
-        console.log('filter index: ', filterIndex)
-        postList[filterIndex].commentsCount += data.number
-        return postList
-      })
-    })
-  }, [])
+  // useEffect(() => {
+  //   const event_name = 'comment_count'
+  //   console.log('event_name on socket listion reaction: ', event_name)
+  //   SocketClient.socket.on(event_name, (data) => {
+  //     setPostsData((pre) => {
+  //       const postList = [...pre]
+  //       const filterIndex = postList.findIndex((item) => item._id === data.postID)
+  //       console.log('filter index: ', filterIndex)
+  //       postList[filterIndex].commentsCount += data.number
+  //       return postList
+  //     })
+  //   })
+  // }, [])
 
 
   // POSTVIEW ACTION
@@ -82,6 +87,58 @@ const FlatListPostNewFeed = ({ navigation }) => {
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50 // Chỉ định >= 50% là "hiển thị"
   }
+
+  useEffect(() => {
+    SocketClient.socket.on('emitAddPost', data => {
+      setPostsData(pre => {
+        const customArr = [data.post, ...pre]
+        return customArr
+      })
+    })
+
+    SocketClient.socket.on('emitEditPost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+
+    })
+    SocketClient.socket.on('emitRemovePost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterArr = customArr.filter(item => item._id !== data.postID)
+        return filterArr
+      })
+    })
+
+    SocketClient.socket.on('emitReactionPostChange', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+    })
+
+    SocketClient.socket.on('emitCommentPostChange', data => {
+      setPostsData(pre => {
+        console.info('emitCommentPostChange listen: ', pre)
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+    })
+   
+  }, [])
 
   return (
     <FlatList
