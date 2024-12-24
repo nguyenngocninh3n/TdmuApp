@@ -8,7 +8,7 @@ import { navigationRef, useCustomContext } from '../../store'
 import { API } from '../../api'
 import RowComponent from '../RowComponent'
 
-const NewPostBox = ({ navigation, title, groupID }) => {
+const NewPostBox = ({ navigation, title, groupID, avatar }) => {
   const handleCreateNewPost = () => {
     navigationRef.navigate('NewPostScreen', {groupID})
   }
@@ -16,7 +16,7 @@ const NewPostBox = ({ navigation, title, groupID }) => {
 
   return (
     <RowComponent style={styles.container} onPress={handleCreateNewPost}>
-      <AvatarComponent source={API.getFileUrl(state?.avatar)} size={36} />
+      <AvatarComponent source={API.getFileUrl(avatar ?? state?.avatar)} size={36} />
       <SpaceComponent width={8} />
       <TextInput
         style={styles.textInput}

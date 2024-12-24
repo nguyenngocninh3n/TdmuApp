@@ -11,6 +11,7 @@ import SpaceComponent from '../../../components/SpaceComponent'
 const SearchUserScreen = ({ navigation, route }) => {
   const { search } = route.params
   const [state, dispatch] = useCustomContext()
+  const [isLoading, setIsLoading] = useState(true)
   const [userData, setUserData] = useState([])
 
   console.log('search user screen re-render: ', search)
@@ -20,9 +21,13 @@ const SearchUserScreen = ({ navigation, route }) => {
       API.searchUserAPI(state._id, search).then((response) => {
         if (response.status === RESPONSE_STATUS.SUCCESS) {
           response.data && setUserData(response.data)
+          setIsLoading(false)
         }
       })
-      return () => setUserData([])
+      return () => {
+        setUserData([])
+        setIsLoading(true)
+      }
     }, [])
   )
 
@@ -30,6 +35,26 @@ const SearchUserScreen = ({ navigation, route }) => {
 
   return (
     <View style={groupStype.container}>
+      <SpaceComponent height={16} />
+      {(userData.length === 0) && (
+        <Text
+          style={{
+            fontWeight: '900',
+            fontSize: 20,
+            textTransform: 'capitalize',
+            textAlign: 'center',
+            marginTop: '50%',
+            color: '#3336'
+          }}
+        >
+         {isLoading ? 'Đang tìm kiếm...' : 'Không người dùng được tìm thấy'}
+        </Text>
+      )}
+      {
+        userData.length > 0 && <Text style={{fontSize:18, color:'#f33', fontWeight:'500', marginLeft:16}}>Có {userData.length} người dùng được tìm thấy</Text>
+      }
+      <SpaceComponent height={16} />
+
       <FlatList
         data={userData}
         ItemSeparatorComponent={<SpaceComponent height={16} />}

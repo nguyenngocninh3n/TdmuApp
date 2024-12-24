@@ -8,6 +8,8 @@ import BodyGroup from './components/BodyGroup'
 import HeaderGroup from './components/HeaderGroup'
 import FlatListPostGroup from '../../components/FlatListPostGroup'
 import { useCustomContext } from '../../store'
+import GoBackComponent from '../../components/GoBackComponent'
+import SearchComponent from '../../components/SearchComponent'
 
 const GroupScreen = ({ navigation, route }) => {
   const [group, setGroup] = useState({})
@@ -31,6 +33,7 @@ const GroupScreen = ({ navigation, route }) => {
   return (
     <FlatListPostGroup groupID={groupID} ownerID={state._id}>
       <View style={{ backgroundColor: '#fff' }}>
+        <GoBackComponent  />
         <HeaderGroup group={group} onShowModal={handleOpenDrawerModal} />
         <BodyGroup group={group} groupID={groupID} />
         <DrawerModal

@@ -8,19 +8,67 @@ import OwnerBar from '../Components/OwnerBar'
 import ProfileBody from '../Components/ProfileBody'
 import { useCustomContext } from '../../../store'
 import FlatListPost from '../../../components/FlatListPost'
+import { API } from '../../../api'
+import SocketClient from '../../../socket'
 
 const OwnerProfile = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
+  const [user, setUser] = useState()
+  useEffect(() => {
+    if (state?.avatar) {
+      console.log('avatar: ', state.avatar)
+    }
+    API.getUserByIdAPI({ uid: state._id }).then((response) => {
+      setUser(response)
+    })
+  }, [])
+
+
+
+  useEffect(() => {
+    SocketClient.socket.on('emitBioProfileChange', (data) => {
+      console.log('emitBio: ', data)
+      setUser((pre) => {
+        const customUser = { ...pre, bio: data.bio }
+        return customUser
+      })
+    })
+
+    SocketClient.socket.on('emitAvatarProfileChange', (data) => {
+      console.log('avatar: ', data)
+
+      setUser((pre) => {
+        const customUser = { ...pre }
+        console.log('avatar before: ', pre)
+        customUser.avatar = data.avatar
+        console.log('avatar after: ', customUser.avatar)
+        
+        return customUser
+      })
+    })
+
+    SocketClient.socket.on('emitBackgroundProfileChange', (data) => {
+      console.log('emit background: ', data)
+
+      setUser((pre) => {
+        const customUser = { ...pre, background: data.background }
+        return customUser
+      })
+    })
+  }, [])
+
   return (
     <View>
-      <FlatListPost ownerID={state._id} userID={state._id}>
-        <View>
-          <Header user={state} ownerID={state._id} navigation={navigation}>
-            <OwnerBar />
-          </Header>
-          <ProfileBody navigation={navigation} ownerID={state._id} userID={state._id} />
-        </View>
-      </FlatListPost>
+      {user && (
+        <FlatListPost ownerID={user._id} userID={user._id}>
+          <View>
+            <Header user={user} ownerID={user._id} navigation={navigation}>
+              {/* <OwnerBar /> */}
+            </Header>
+            <ProfileBody navigation={navigation} ownerID={user._id} userID={user._id} avatar={user.avatar} />
+          </View>
+        </FlatListPost>
+      )}
     </View>
   )
 }

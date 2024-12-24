@@ -8,10 +8,10 @@ import FriendScreen from '../../../Friend'
 import NewPostBox from '../../../../components/NewPostBox'
 
 
-const ProfileBody = ({ navigation, userID, ownerID }) => {
-  const handleClickFriend = () => navigation.navigate('FriendScreen', { userID: userID })
-  const handleClickImage = () => {}
-  const handleClickVideo = () => {}
+const ProfileBody = ({ navigation, userID, ownerID, avatar }) => {
+  const handleClickFriend = () => navigation.navigate('ListFriendScreen', { userID: userID })
+  const handleClickImage = () => {navigation.navigate('ProfileImageScreen', {userID, ownerID})}
+  const handleClickVideo = () => {navigation.navigate('ProfileVideoScreen', {ownerID, userID})}
 
   return (
     <View style={{ backgroundColor: '#fff' }}>
@@ -20,7 +20,7 @@ const ProfileBody = ({ navigation, userID, ownerID }) => {
         <OpacityButtton title={'Ảnh'} onPress={handleClickImage} />
         <OpacityButtton title={'Video'} onPress={handleClickVideo} />
       </RowComponent>
-      {ownerID === userID && <NewPostBox navigation={navigation} />}
+      {ownerID === userID && <NewPostBox navigation={navigation} avatar={avatar} />}
       <SpaceComponent height={8} />
 
     </View>

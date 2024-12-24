@@ -1,3 +1,4 @@
+import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AuthNavigation from './auth'
@@ -54,6 +55,9 @@ import WebViewScreen from '../screens/WebViewScreen'
 import ChatGPTScreen from '../screens/ChatGPT'
 import DetailContainerScreen from '../screens/convenition/DetailContainer'
 import HomeScreen from '../screens/home'
+import ProfileImageScreen from '../screens/Profile/ImageScreen'
+import ProfileVideoScreen from '../screens/Profile/VideoScreen'
+import ListGroupScreen from '../screens/Group/ListGroup'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -199,7 +203,8 @@ const Navigation = () => {
             <Stack.Screen name="UserProfileScreen" component={UserProfile} />
             {/* <Stack.Screen name="FriendScreen" component={FriendScreen} /> */}
             <Stack.Screen name="BioScreen" component={BioScreen} />
-
+            <Stack.Screen name="ProfileImageScreen" component={ProfileImageScreen} />
+            <Stack.Screen name="ProfileVideoScreen" component={ProfileVideoScreen} />
             {/* FRIEND */}
             <Stack.Screen name="SuggestFriendScreen" component={SuggestFriendScreen} />
             <Stack.Screen name="PendingFriendScreen" component={PendingFriendScreen} />
@@ -211,6 +216,7 @@ const Navigation = () => {
 
             {/* GROUP */}
             <Stack.Screen name="GroupScreen" component={GroupScreen} />
+            <Stack.Screen name="ListGroupScreen" component={ListGroupScreen} />
             <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
             <Stack.Screen name="EditGroupScreen" component={EditGroupScreen} />
             <Stack.Screen name="GroupIntroduceScreen" component={GroupIntroduceScreen} />
@@ -256,8 +262,6 @@ const Navigation = () => {
               name="MiddleWareNavigationScreen"
               component={MiddleWareNavigationScreen}
             />
-
-          
           </>
         )}
       </Stack.Navigator>

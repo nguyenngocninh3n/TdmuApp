@@ -6,6 +6,7 @@ import SearchPostScreen from '../SearchPostScreen'
 import SearchUserScreen from '../SearchUserScreen'
 import SearchGroupScreen from '../SearchGroupScreen'
 import { navigationRef } from '../../../store'
+import SearchFileScreen from '../SearchFileScreen'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -60,6 +61,14 @@ const SearchResultScreen = ({ navigation, route }) => {
             }}
             name="SearchGroupScreen"
             component={SearchGroupScreen}
+            initialParams={{ search }}
+          />
+           <Tab.Screen
+            options={{
+              tabBarLabel: 'File phương tiện '
+            }}
+            name="SearchFileScreen"
+            component={SearchFileScreen}
             initialParams={{ search }}
           />
         </Tab.Navigator>

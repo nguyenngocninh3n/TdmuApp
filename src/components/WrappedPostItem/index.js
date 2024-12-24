@@ -8,6 +8,7 @@ import { POST_TYPE } from '../../utils/Constants'
 import RowComponent from '../RowComponent'
 import { API } from '../../api'
 import AvatarComponent from '../AvatarComponent'
+import PostItem from '../PostItem'
 
 const getGroupName = async (groupID) => {
   console.log('groupID: ', groupID)
@@ -28,7 +29,8 @@ const WrappedPostItem = ({ item, ownerID, groupID, onRemove }) => {
 
   return (
     <View style={{ flex: 1, marginHorizontal: 8 }}>
-      {item.type === POST_TYPE.PERSONAL ? (
+      <PostItem groupID={groupID} item={item} onRemove={onRemove} ownerID={ownerID} />
+      {/* {item.type === POST_TYPE.PERSONAL ? (
         <>
           <PostHeader onRemove={onRemove} item={item} ownerID={ownerID} groupID={groupID} />
           <SpaceComponent height={8} />
@@ -38,12 +40,22 @@ const WrappedPostItem = ({ item, ownerID, groupID, onRemove }) => {
         </>
       ) : (
         <View>
-          <RowComponent style={{alignItems: 'flex-start'}}>
+          <RowComponent style={{ alignItems: 'flex-start' }}>
             <AvatarComponent source={API.getFileUrl(groupInfo.avatar)} size={36} />
             <SpaceComponent width={8} />
-            <View style={{flex:1}}>
-            <Text style={{color:'#333', fontSize:17, fontWeight:'700'}}>{groupInfo.name}</Text>
-            <PostHeader avatarSize={24} textSize={14} showGroup onRemove={onRemove} item={item} ownerID={ownerID} groupID={groupID} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: '#333', fontSize: 17, fontWeight: '700' }}>
+                {groupInfo.name}
+              </Text>
+              <PostHeader
+                avatarSize={24}
+                textSize={14}
+                showGroup
+                onRemove={onRemove}
+                item={item}
+                ownerID={ownerID}
+                groupID={groupID}
+              />
             </View>
           </RowComponent>
           <SpaceComponent height={4} />
@@ -54,7 +66,7 @@ const WrappedPostItem = ({ item, ownerID, groupID, onRemove }) => {
             <PostFooter postID={item._id} item={item} ownerID={ownerID} />
           </View>
         </View>
-      )}
+      )} */}
     </View>
   )
 }

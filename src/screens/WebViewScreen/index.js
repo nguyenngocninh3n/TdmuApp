@@ -7,7 +7,7 @@ const WebViewScreen = ({ navigation, route }) => {
   const [uri, setUri] = useState('')
   return (
     <View style={{ flex: 1 }}>
-        <GoBackComponent title={'Trang Đăng ký môn học'} />
+        <GoBackComponent title={route.params?.title} />
       <WebView source={{ uri: route.params.uri }} style={{ flex: 1 }}
       onShouldStartLoadWithRequest={(request) => {
         // Luôn cho phép tải các URL trong WebView

@@ -8,21 +8,23 @@ import { helper } from '../../../../utils/helpers'
 import { API } from '../../../../api'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PostModal from '../../../../modals/PostModal'
+import { navigationRef } from '../../../../store'
+import { OpacityButtton } from '../../../ButtonComponent'
 
 const PostHeader = ({ item, ownerID, groupID, avatarSize, textSize, showGroup }) => {
   const [modalVisible, setModalVisible] = useState(false)
   console.log('groupID in post header: ', groupID)
   const handleCloseModal = () => setModalVisible(false)
   const handleShowModal = () => setModalVisible(true)
-
+  const handleToProfile = () => navigationRef.navigate('ProfileScreen', {userID: item.userID, ownerID})
   return (
     <RowComponent style={{ justifyContent: 'space-between', alignItems: 'center' }}>
       <RowComponent style={{ alignItems: 'center' }}>
-        <AvatarComponent source={API.getFileUrl(item.avatar)} size={avatarSize ?? 36} />
+        <AvatarComponent onPress={handleToProfile} source={API.getFileUrl(item.avatar)} size={avatarSize ?? 36} />
         <SpaceComponent width={8} />
         <ColumnComponent>
           <RowComponent>
-            <Text style={[styles.userName, { fontSize: textSize ?? 17 }]}>{item.userName}</Text>
+            <OpacityButtton title={item.userName} textStyle={[styles.userName, { fontSize: textSize ?? 17 }]} />
             {showGroup && (
               <>
                 <SpaceComponent width={8} />

@@ -3,23 +3,28 @@ import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-nativ
 import { API } from '../../api'
 import { useCustomContext } from '../../store'
 import GoBackComponent from '../../components/GoBackComponent'
+import Octicons from 'react-native-vector-icons/Octicons'
 const ChatGPTScreen = () => {
   const [state, dispatch] = useCustomContext()
   const [chatData, setChatData] = useState([])
   const [inputText, setInputText] = useState('')
   const [typing, setTyping] = useState('')
 
-    useEffect(()=>{
-        API.getChatGPT(state._id).then(response => {
-            setChatData(response.data.reverse())
-        })
-    }, [])
+  useEffect(() => {
+    API.getChatGPT(state._id).then((response) => {
+      setChatData(response.data.reverse())
+    })
+  }, [])
 
   const handleSend = async () => {
     if (!inputText.trim()) {
       return
     }
-    const userMessage = { question: inputText, answer: 'Đang phân tích...', _id: Math.random.toString() }
+    const userMessage = {
+      question: inputText,
+      answer: 'Đang phân tích...',
+      _id: Math.random.toString()
+    }
     // setChatData((prev) => [...prev, userMessage])
     setChatData((prev) => [userMessage, ...prev])
     // try {
@@ -46,20 +51,25 @@ const ChatGPTScreen = () => {
     // } catch (error) {
     //   console.error('Error communicating with server:', error.message)
     // }
-      const response = await API.postNewChat(state._id, inputText)
-      setChatData((prev) => [{...prev.at(0), answer: response.data.answer}, ...prev.slice(1,prev.length)])
-      setInputText('')
-      setTyping('')
+    const response = await API.postNewChat(state._id, inputText)
+    setChatData((prev) => [
+      { ...prev.at(0), answer: response.data.answer },
+      ...prev.slice(1, prev.length)
+    ])
+    setInputText('')
+    setTyping('')
   }
 
   return (
     <View style={styles.container}>
-    <GoBackComponent title={'Chat bot'} />
+      <GoBackComponent title={'Chat bot'} hasBorder>
+        <Octicons name="dependabot" size={28} />
+      </GoBackComponent>
       <View style={styles.flatlistContainer}>
         <FlatList
-        inverted
+          inverted
           data={chatData}
-          keyExtractor={item => item._id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <View>
               <Text style={styles.userMessage}>{item.question}</Text>

@@ -1,9 +1,10 @@
+import React from 'react'
 import { FlatList, Text, View } from 'react-native'
 import WrappedPostItem from '../WrappedPostItem'
 import SpaceComponent from '../SpaceComponent'
 
 const WrappedFlatListPost = ({ data, ownerID }) => {
-
+  console.log('data: ', data)
   return (
     <FlatList
       scrollEnabled={true}

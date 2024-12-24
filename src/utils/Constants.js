@@ -1,4 +1,5 @@
-const URL = 'http://192.168.1.112'
+const URL = 'http://192.168.7.15'
+// const URL = 'http://10.0.4.117'
 const PORT = '8080'
 const SERVER_POST = `${URL}:${PORT}`
 
@@ -137,7 +138,8 @@ const REACTION_TYPE = {
 const WEBSITE = {
   DKMH: 'https://dkmh.tdmu.edu.vn/',
   ELEARNING: 'https://elearning.tdmu.edu.vn/',
-
+  CTSS: 'https://ctss.tdmu.edu.vn/',
+  FLC: 'https://flc.tdmu.edu.vn/'
 }
 
 const NOTIFICATION_TYPE = {

@@ -1,38 +1,37 @@
-import { View, Text, FlatList } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Text, View } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import SpaceComponent from '../../../components/SpaceComponent'
 import { API } from '../../../api'
 import { navigationRef, useCustomContext } from '../../../store'
 import { RESPONSE_STATUS } from '../../../utils/Constants'
-import SearchComponent from '../../../components/SearchComponent'
 import WrappedFlatListPost from '../../../components/WrappedFlatlistPost'
 import { useFocusEffect } from '@react-navigation/native'
 
-const SearchPostScreen = ({ navigation, route }) => {
+const SearchFileScreen = ({ navigation, route }) => {
   const [state, dispatch] = useCustomContext()
   const [postData, setPostData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const { search } = route.params
   console.log('search post screen re-render: ', search)
 
-
-  useFocusEffect(useCallback(() => {
-    API.searchPostAPI(state._id, search).then((response) => {
-      if (response.status === RESPONSE_STATUS.SUCCESS) {
-        response.data && setPostData(response.data)
-        setIsLoading(false)
+  useFocusEffect(
+    useCallback(() => {
+      API.searchImageAPI(state._id, search).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          response.data && setPostData(response.data)
+        }
+      })
+      return () => {
+        setPostData([])
+        setIsLoading(true)
       }
-    })
-    return () => {
-      setPostData([])
-      setIsLoading(true)
-    }
-  },[search]))
+    }, [search])
+  )
 
   return (
-    <View style={{flex:1}}>
+    <View>
       <SpaceComponent height={16} />
-      {( postData.length === 0) && (
+      {postData.length === 0 && (
         <Text
           style={{
             fontWeight: '900',
@@ -43,12 +42,11 @@ const SearchPostScreen = ({ navigation, route }) => {
             color: '#3336'
           }}
         >
-          {isLoading ? 'Đang tìm kiếm...' : 'Không có bài viết được tìm thấy'}
+          {isLoading ? 'Đang tìm kiếm...' : 'Không có file phương tiện được tìm thấy'}
         </Text>
       )}
-
-{
-        postData.length > 0 && <Text style={{fontSize:18, color:'#f33', fontWeight:'500', marginLeft:16}}>Có {postData.length} bài viết được tìm thấy</Text>
+       {
+        postData.length > 0 && <Text style={{fontSize:18, color:'#f33', fontWeight:'500', margin:16}}>Có {postData.length} bài viết chứa file cần tìm</Text>
       }
       <SpaceComponent height={16} />
 
@@ -57,4 +55,4 @@ const SearchPostScreen = ({ navigation, route }) => {
   )
 }
 
-export default SearchPostScreen
+export default SearchFileScreen

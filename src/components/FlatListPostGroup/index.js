@@ -47,20 +47,70 @@ const FlatListPostGroup = ({ groupID, ownerID, children }) => {
   }).current
 
 
-  // ON LISTEN REACTION ACTION
+  // // ON LISTEN REACTION ACTION
+  // useEffect(() => {
+  //   const event_name = REACTION_TYPE.POST + 'reaction'
+  //   console.log('event_name on socket listion reaction: ', event_name)
+  //   SocketClient.socket.on(event_name, (data) => {
+  //     console.info('reaction listen: ', data.postID)
+  //     setPostsData((pre) => {
+  //       const postList = [...pre]
+  //       const filterIndex = postList.findIndex((item) => item._id === data.postID)
+  //       console.log('filter index: ', filterIndex)
+  //       postList[filterIndex].reactionsCount += data.number
+  //       return postList
+  //     })
+  //   })
+  // }, [])
+
   useEffect(() => {
-    const event_name = REACTION_TYPE.POST + 'reaction'
-    console.log('event_name on socket listion reaction: ', event_name)
-    SocketClient.socket.on(event_name, (data) => {
-      console.info('reaction listen: ', data.postID)
-      setPostsData((pre) => {
-        const postList = [...pre]
-        const filterIndex = postList.findIndex((item) => item._id === data.postID)
-        console.log('filter index: ', filterIndex)
-        postList[filterIndex].reactionsCount += data.number
-        return postList
+    SocketClient.socket.on('emitAddPost', data => {
+      setPostsData(pre => {
+        const customArr = [data.post, ...pre]
+        return customArr
       })
     })
+
+    SocketClient.socket.on('emitEditPost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+
+    })
+    SocketClient.socket.on('emitRemovePost', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterArr = customArr.filter(item => item._id !== data.postID)
+        return filterArr
+      })
+    })
+
+    SocketClient.socket.on('emitReactionPostChange', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+        return customArr
+      })
+    })
+
+    SocketClient.socket.on('emitCommentPostChange', data => {
+      setPostsData(pre => {
+        const customArr = [...pre]
+        const filterIndex = customArr.findIndex(item => item._id === data.post._id)
+        if (filterIndex !== -1) {
+          customArr[filterIndex] = data.post
+        }
+      })
+    })
+   
   }, [])
 
   return (

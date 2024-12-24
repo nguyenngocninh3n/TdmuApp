@@ -8,10 +8,11 @@ import { useCustomContext } from '../../../store'
 import { useFocusEffect } from '@react-navigation/native'
 import { RESPONSE_STATUS } from '../../../utils/Constants'
 
-const SearchGroupScreen = ({navigation, route}) => {
+const SearchGroupScreen = ({ navigation, route }) => {
   const { search } = route.params
   const [state, dispatch] = useCustomContext()
   const [userData, setUserData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   console.log('search groupscreen re-render: ', search)
 
@@ -19,10 +20,15 @@ const SearchGroupScreen = ({navigation, route}) => {
     useCallback(() => {
       API.searchGroupAPI(state._id, search).then((response) => {
         if (response.status === RESPONSE_STATUS.SUCCESS) {
-          response.data && setUserData(response.data)
+          response.data ? setUserData(response.data) : setUserData([])
+          setIsLoading(false)
         }
       })
-      return () => setUserData([])
+      return () => {
+        setUserData([])
+        setIsLoading(true)
+      
+      }
     }, [search])
   )
 
@@ -30,8 +36,28 @@ const SearchGroupScreen = ({navigation, route}) => {
 
   return (
     <View style={groupStype.container}>
+      <SpaceComponent height={16} />
+      {(userData.length === 0) && (
+        <Text
+          style={{
+            fontWeight: '900',
+            fontSize: 20,
+            textTransform: 'capitalize',
+            textAlign: 'center',
+            marginTop: '50%',
+            color: '#3336'
+          }}
+        >
+         {isLoading ? 'Đang tìm kiếm...' : 'Không có nhóm được tìm thấy'}
+        </Text>
+      )}
+       {
+        userData.length > 0 && <Text style={{fontSize:18, color:'#f33', fontWeight:'500', margin:16}}>Có {userData.length} nhóm được tìm thấy</Text>
+      }
+      <SpaceComponent height={16} />
+
       <FlatList
-        data={userData}
+        data={ userData}
         ItemSeparatorComponent={<SpaceComponent height={16} />}
         renderItem={({ item, index }) => (
           <UserRowComponent

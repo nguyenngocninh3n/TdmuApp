@@ -35,7 +35,9 @@ const AvatarProfileModal = ({ modalVisible, onClose, userID, ownerID, avatar }) 
     console.log('file chosen: ', value)
     const { customPath } = value[0]
     const base64 = await RNFS.readFile(customPath, 'base64')
-    API.updateUserAvatarAPI(ownerID, avatar, base64)
+    API.updateUserAvatarAPI(ownerID, avatar, base64).then(data => {
+      onClose()
+    })
   }
 
   return ownerID === userID ? (
