@@ -1,3 +1,4 @@
+import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import SpaceComponent from '../../../components/SpaceComponent'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -6,7 +7,8 @@ import RowComponent from '../../../components/RowComponent'
 
 const SearchComponent = ({ navigation }) => {
   const handleClickSearch = () => {
-    navigation.navigate('SearchConventionScreen')
+    // navigation.navigate('SearchConventionScreen')
+    
   }
 
   const handleClickCreateGroup = () => navigation.navigate('CreateGroupScreen')
@@ -29,6 +31,7 @@ const ConvenitionScreen = ({ navigation }) => {
       <SpaceComponent height={16} />
       <View>
         <SearchComponent navigation={navigation} />
+        {/* <SpaceComponent height={24} /> */}
         <SpaceComponent height={24} />
       </View>
       <ConventionNavigator />

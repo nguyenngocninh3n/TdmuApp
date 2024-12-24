@@ -9,6 +9,8 @@ import { API } from '../../../../api'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PostModal from '../../../../modals/PostModal'
 import { SCOPE } from '../../../../utils/Constants'
+import { OpacityButtton } from '../../../ButtonComponent'
+import { navigate } from '../../../../store'
 // {group.scope === SCOPE.PUBLIC ? (
 //   <Ionicons name="earth" size={22} />
 // ) : (
@@ -29,14 +31,15 @@ const PostHeader = ({ item, ownerID, groupID }) => {
   console.log('groupID in post header: ', groupID)
   const handleCloseModal = () => setModalVisible(false)
   const handleShowModal = () => setModalVisible(true)
+  const handleToProfile = () => navigate('ProfileScreen', {userID: item.userID, ownerID})
 
   return (
     <RowComponent style={{ justifyContent: 'space-between', alignItems: 'center' }}>
       <RowComponent alignItems>
-        <AvatarComponent source={API.getFileUrl(item.avatar)} size={32} />
+        <AvatarComponent onPress={handleToProfile} source={API.getFileUrl(item.avatar)} size={32} />
         <SpaceComponent width={12} />
         <ColumnComponent>
-          <Text style={styles.userName}>{item.userName}</Text>
+          <OpacityButtton onPress={handleToProfile} padding={0} title={item.userName} textStyle={styles.userName}  />
           <RowComponent>
             <Text>{helper.DateTimeHelper.displayTimeDescendingFromDate(item.createdAt)}</Text>
             <SpaceComponent width={8} />
@@ -63,7 +66,7 @@ export default PostHeader
 
 const styles = StyleSheet.create({
   userName: {
-    fontSize: 16,
-    fontWeight: '700'
+    fontSize: 17,
+    fontWeight: '400'
   }
 })

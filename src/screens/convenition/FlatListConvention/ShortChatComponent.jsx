@@ -1,3 +1,4 @@
+import React from 'react'
 import { Text, View } from 'react-native'
 import RowComponent from '../../../components/RowComponent'
 import { helper } from '../../../utils/helpers'
@@ -41,7 +42,7 @@ const handleCheckNotifyCustomStatus = (status, upto) => {
       const newDate = Date.now()
       const customDate = Date.parse(upto)
       const customTime = 'Thông báo này sẽ được tắt cho đến: ' + new Date(upto).getHours() + ' : ' + new Date(upto).getMinutes()
-      return newDate > customDate ? '' : customTime 
+      return newDate > customDate ? '' : customTime
     }
     default: return ''
   }
@@ -78,7 +79,7 @@ const ShortChatingComponent = ({ convention, navigation, ownerID, onLongPress })
         <Text>{notifyMessage}</Text>
         <Text style={{ fontWeight: '500', fontSize: 17 }}>{chatName}</Text>
         <RowComponent>
-          <Text style={{ fontWeight: '400', fontSize: 15 }}>{lastMessage.trim()}</Text>
+          <Text style={{ fontWeight: '400', fontSize: 15 }}>{lastMessage.trim().length > 30 ? lastMessage.trim().slice(0, 30) +'....': lastMessage.trim()}</Text>
           <SpaceComponent width={16} />
           <Text style={{ fontSize: 15, fontWeight: '400' }}>{lastTime} </Text>
         </RowComponent>

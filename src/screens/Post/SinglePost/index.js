@@ -53,10 +53,9 @@ const SinglePostScreen = ({ navigation, route }) => {
           <SpaceComponent width={32} />
           <OpacityButtton children={<Octicons name="share-android" size={22} />} />
         </RowComponent>
-        <SpaceComponent height={8} />
+        <SpaceComponent height={24} />
         <FlatListComment postID={postID} />
       </ScrollView>
-      <Text style={{position:'absolute', left:0, right:0, top:10, width:'100%', backgroundColor:'blue'}}>XIN CHÀO</Text>
 
     </View>
   ) : (

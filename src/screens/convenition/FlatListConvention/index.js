@@ -64,6 +64,17 @@ const FlatListConvention = ({ navigation }) => {
     })
   }
 
+  const handleExitGroup = async (conventionID, ownerID) => {
+    await API.logoutGroupAPI(conventionID, ownerID).then(data => {
+      console.log('data: ', data)
+      handleCloseModal()
+      setConventions(pre => {
+        const custom = pre.filter(item => item._id !== conventionID)
+        return custom
+      })
+    })
+  }
+
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, backgroundColor: '#fff' }}>
       <FlatList
@@ -85,6 +96,7 @@ const FlatListConvention = ({ navigation }) => {
         ownerID={state._id}
         onClose={handleCloseModal}
         onPause={openPauseNotifyModal}
+        onExitGroup={handleExitGroup}
       />
 
       <PauseNotifyModal onSubmit={handleSubmitPauseNotify} onClose={closePauseNotifyModal} modalVisible={pauseNotifyVisible} />

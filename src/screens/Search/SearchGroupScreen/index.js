@@ -19,6 +19,7 @@ const SearchGroupScreen = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       API.searchGroupAPI(state._id, search).then((response) => {
+        console.log('response in search group: ', response)
         if (response.status === RESPONSE_STATUS.SUCCESS) {
           response.data ? setUserData(response.data) : setUserData([])
           setIsLoading(false)
@@ -32,11 +33,11 @@ const SearchGroupScreen = ({ navigation, route }) => {
     }, [search])
   )
 
-  const handlePressItem = (item) => navigation.navigate('ProfileScreen', { userID: item._id })
+  const handlePressItem = (item) => navigation.navigate('GroupScreen', { groupID: item._id ,userID: item._id })
 
   return (
     <View style={groupStype.container}>
-      <SpaceComponent height={16} />
+      <SpaceComponent height={8} />
       {(userData.length === 0) && (
         <Text
           style={{

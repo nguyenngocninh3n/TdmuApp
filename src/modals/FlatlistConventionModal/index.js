@@ -3,11 +3,16 @@ import React from 'react'
 import SpaceComponent from '../../components/SpaceComponent'
 import RowComponent from '../../components/RowComponent'
 import { OpacityButtton } from '../../components/ButtonComponent'
+import { navigate } from '../../store'
+import { API } from '../../api'
 
-const FlatlistConventionModal = ({convention, ownerID, onPause, modalVisible, onClose}) => {
+const FlatlistConventionModal = ({ convention, ownerID, onPause, modalVisible, onClose, onExitGroup }) => {
+  const handleCloseModal = () => onClose()
+  const handlOpenConvention = () => navigate('ChattingScreen', { conventionID: convention._id })
 
-    const handleCloseModal = () => onClose()
-
+  const handleExitGroupConvention = async () => {
+    onExitGroup(convention._id, ownerID)
+  }
   return (
     <Modal
       animationType="slide"
@@ -18,15 +23,15 @@ const FlatlistConventionModal = ({convention, ownerID, onPause, modalVisible, on
       <Pressable style={{ flex: 1 }} onPress={handleCloseModal}>
         <View style={styles.modalContainer}>
           <SpaceComponent height={16} />
-          <OpacityButtton left title={'Truy cập cuộc trò chuyện'} />
+          <OpacityButtton onPress={handlOpenConvention} left title={'Truy cập cuộc trò chuyện'} />
           <SpaceComponent height={32} />
-          <OpacityButtton left title={'Đặt biệt danh'} />
-          <SpaceComponent height={32} />
+          {/* <OpacityButtton left title={'Đặt biệt danh'} />
+          <SpaceComponent height={32} /> */}
           <OpacityButtton onPress={onPause} left title={'Tắt thông báo'} />
           <SpaceComponent height={32} />
-          {convention?.type === 'group' && <OpacityButtton left title={'Thêm thành viên'} />}
-          <SpaceComponent height={32} />
-          {convention?.type === 'group' && <OpacityButtton left title={'Rời khỏi nhóm'} />}
+          {/* {convention?.type === 'group' && <OpacityButtton left title={'Thêm thành viên'} />}
+          <SpaceComponent height={32} /> */}
+          {convention?.type === 'group' && <OpacityButtton onPress={handleExitGroupConvention} left title={'Rời khỏi nhóm'} />}
           <SpaceComponent height={32} />
           <SpaceComponent height={8} />
         </View>

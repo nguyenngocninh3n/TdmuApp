@@ -13,15 +13,17 @@ import { navigationRef } from '../../../../../store'
 const ChatInput = ({ onPress, conventionID, onPoll }) => {
   const [message, setMessage] = useState('')
   const handleSendMessage = () => {
-    onPress(message, MESSAGE_TYPE.TEXT)
-    setMessage('')
+    if (message.trim() !== '') {
+      onPress(message, MESSAGE_TYPE.TEXT)
+      setMessage('')
+    }
   }
   const handleTextChange = (value) => {
     setMessage(value)
   }
 
   const handleSendImage = async (data) => {
-    const pathArr = data.map(item => item.customPath)
+    const pathArr = data.map((item) => item.customPath)
     const newData = []
     for (const item of pathArr) {
       const base64 = await RNFS.readFile(item, 'base64')
@@ -30,7 +32,7 @@ const ChatInput = ({ onPress, conventionID, onPoll }) => {
     onPress(newData, MESSAGE_TYPE.IMAGE)
   }
   const handleSendvideo = async (data) => {
-    const pathArr = data.map(item => item.customPath)
+    const pathArr = data.map((item) => item.customPath)
     const newData = []
     for (const item of pathArr) {
       const base64 = await RNFS.readFile(item, 'base64')
@@ -44,9 +46,21 @@ const ChatInput = ({ onPress, conventionID, onPoll }) => {
       <SpaceComponent width={8} />
       <ImageLibrary type={MESSAGE_TYPE.IMAGE} callback={handleSendImage} />
       <ImageLibrary type={MESSAGE_TYPE.VIDEO} callback={handleSendvideo} />
-      <EvilIcons style={{paddingBottom:8}} name="chart" size={42} color={'blue'} onPress={onPoll} />
+      <EvilIcons
+        style={{ paddingBottom: 8 }}
+        name="chart"
+        size={42}
+        color={'blue'}
+        onPress={onPoll}
+      />
       <SpaceComponent width={8} />
-      <TextInput value={message} onChangeText={handleTextChange} style={styles.chatInput} multiline placeholder="Nhập tin nhắn..." />
+      <TextInput
+        value={message}
+        onChangeText={handleTextChange}
+        style={styles.chatInput}
+        multiline
+        placeholder="Nhập tin nhắn..."
+      />
       <TouchableOpacity onPress={handleSendMessage} style={styles.chatInputIcon}>
         <MaterialIcons name="send" color={'blue'} size={30} />
       </TouchableOpacity>

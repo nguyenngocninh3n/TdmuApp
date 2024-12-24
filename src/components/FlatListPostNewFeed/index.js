@@ -151,8 +151,10 @@ const FlatListPostNewFeed = ({ navigation }) => {
       }
       ListHeaderComponent={
         <View>
-          <Stories />
+          {/* <Stories /> */}
+          <SpaceComponent height={8} />
           <NewPostBox navigation={navigation} />
+          <SpaceComponent height={8} />
           <SpaceComponent height={32} />
         </View>
       }
