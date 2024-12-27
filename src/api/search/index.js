@@ -25,12 +25,44 @@ const searchVideoAPI = async (userID, queryString) => {
   return response.data
 }
 
+const getSearchHistoryListByUserID = async userID => {
+  console.log('getSearchHistoryListByUserID api: ', userID)
+  const response = await axios.get(`${SERVER_POST}/search/history/${userID}`)
+  return response.data
+}
+
+const addSearchTextHistory = async (userID, queryString) => {
+  const response = await addSearchTypeHistory(userID, queryString, 'text')
+  return response
+}
+
+const addSearchTypeHistory = async (userID, queryString, type) => {
+  console.log('addSearchTypeHistory api: ', userID, ' ', queryString, ' ', type)
+  const response = await axios.post(`${SERVER_POST}/search/history/add/${userID}/${type}/${queryString}`)
+  return response.data
+}
+
+const removeOneSearchHistoryByID = async searchID => {
+  const response = await axios.delete(`${SERVER_POST}/search/history/remove/${searchID}`)
+  return response.data
+}
+
+const removeAllSearchHistoryByUserID = async userID => {
+  const response = await axios.delete(`${SERVER_POST}/search/history/remove/all/${userID}`)
+  return response.data
+}
+
 const searchAPI = {
   searchPostAPI,
   searchUserAPI,
   searchGroupAPI,
   searchImageAPI,
-  searchVideoAPI
+  searchVideoAPI,
+  getSearchHistoryListByUserID,
+  addSearchTextHistory,
+  addSearchTypeHistory,
+  removeOneSearchHistoryByID,
+  removeAllSearchHistoryByUserID
 }
 
 export default searchAPI

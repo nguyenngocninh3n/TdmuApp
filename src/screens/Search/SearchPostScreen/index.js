@@ -15,24 +15,21 @@ const SearchPostScreen = ({ navigation, route }) => {
   const { search } = route.params
   console.log('search post screen re-render: ', search)
 
-
-  useFocusEffect(useCallback(() => {
-    API.searchPostAPI(state._id, search).then((response) => {
-      if (response.status === RESPONSE_STATUS.SUCCESS) {
-        response.data && setPostData(response.data)
-        setIsLoading(false)
-      }
-    })
-    return () => {
-      setPostData([])
-      setIsLoading(true)
-    }
-  },[search]))
+  useFocusEffect(
+    useCallback(() => {
+      API.searchPostAPI(state._id, search).then((response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          response.data && setPostData(response.data)
+          setIsLoading(false)
+        }
+      })
+    }, [search])
+  )
 
   return (
-    <View style={{flex:1}}>
+    <View style={{ flex: 1 }}>
       <SpaceComponent height={16} />
-      {( postData.length === 0) && (
+      {postData.length === 0 && (
         <Text
           style={{
             fontWeight: '900',
@@ -47,9 +44,11 @@ const SearchPostScreen = ({ navigation, route }) => {
         </Text>
       )}
 
-{
-        postData.length > 0 && <Text style={{fontSize:18, color:'#f33', fontWeight:'500', marginLeft:16}}>Có {postData.length} bài viết được tìm thấy</Text>
-      }
+      {postData.length > 0 && (
+        <Text style={{ fontSize: 18, color: '#f33', fontWeight: '500', marginLeft: 16 }}>
+          Có {postData.length} bài viết được tìm thấy
+        </Text>
+      )}
       <SpaceComponent height={16} />
 
       <WrappedFlatListPost data={postData} ownerID={state._id} />

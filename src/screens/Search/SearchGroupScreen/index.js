@@ -25,15 +25,16 @@ const SearchGroupScreen = ({ navigation, route }) => {
           setIsLoading(false)
         }
       })
-      return () => {
-        setUserData([])
-        setIsLoading(true)
-      
-      }
+     
     }, [search])
   )
 
-  const handlePressItem = (item) => navigation.navigate('GroupScreen', { groupID: item._id ,userID: item._id })
+  
+  const handlePressItem = (item) => {
+    navigation.navigate('GroupScreen', { groupID: item._id, userID: state._id })
+    API.addSearchTypeHistory(state._id, item._id, 'group')
+  }
+
 
   return (
     <View style={groupStype.container}>

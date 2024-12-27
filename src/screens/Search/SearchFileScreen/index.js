@@ -21,10 +21,7 @@ const SearchFileScreen = ({ navigation, route }) => {
           response.data && setPostData(response.data)
         }
       })
-      return () => {
-        setPostData([])
-        setIsLoading(true)
-      }
+      
     }, [search])
   )
 

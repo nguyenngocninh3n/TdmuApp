@@ -19,19 +19,20 @@ const SearchUserScreen = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       API.searchUserAPI(state._id, search).then((response) => {
+        console.log('response in search user: ', response)
         if (response.status === RESPONSE_STATUS.SUCCESS) {
           response.data && setUserData(response.data)
           setIsLoading(false)
         }
       })
-      return () => {
-        setUserData([])
-        setIsLoading(true)
-      }
-    }, [])
+   
+    }, [search])
   )
 
-  const handlePressItem = (item) => navigation.navigate('ProfileScreen', { userID: item._id })
+  const handlePressItem = (item) => {
+    navigation.navigate('ProfileScreen', { userID: item._id })
+    API.addSearchTypeHistory(state._id, item._id, 'user')
+  }
 
   return (
     <View style={groupStype.container}>

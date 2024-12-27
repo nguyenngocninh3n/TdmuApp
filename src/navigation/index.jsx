@@ -58,6 +58,7 @@ import HomeScreen from '../screens/home'
 import ProfileImageScreen from '../screens/Profile/ImageScreen'
 import ProfileVideoScreen from '../screens/Profile/VideoScreen'
 import ListGroupScreen from '../screens/Group/ListGroup'
+import SearchScreen from '../screens/Search'
 
 async function requestUserPermission() {
   await messaging().requestPermission()
@@ -211,8 +212,10 @@ const Navigation = () => {
             <Stack.Screen name="AcceptingFriendScreen" component={AcceptingFriendScreen} />
 
             {/* SEARCH */}
-            <Stack.Screen name="SearchScreen" component={SearchResultScreen} />
-            {/* <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} /> */}
+            {/* <Stack.Screen name="SearchScreen" component={SearchResultScreen} /> */}
+            
+            <Stack.Screen name="SearchScreen" component={SearchScreen} />
+            <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} />
 
             {/* GROUP */}
             <Stack.Screen name="GroupScreen" component={GroupScreen} />
