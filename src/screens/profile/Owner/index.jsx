@@ -35,21 +35,16 @@ const OwnerProfile = ({ navigation, route }) => {
     })
 
     SocketClient.socket.on('emitAvatarProfileChange', (data) => {
-      console.log('avatar: ', data)
-
+      console.log('emit avatar changed: ')
       setUser((pre) => {
         const customUser = { ...pre }
-        console.log('avatar before: ', pre)
         customUser.avatar = data.avatar
-        console.log('avatar after: ', customUser.avatar)
-        
         return customUser
       })
     })
 
     SocketClient.socket.on('emitBackgroundProfileChange', (data) => {
-      console.log('emit background: ', data)
-
+      console.log('emit background changed: ')
       setUser((pre) => {
         const customUser = { ...pre, background: data.background }
         return customUser

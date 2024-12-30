@@ -28,6 +28,7 @@
     "react-native": "0.75.3",
     "react-native-background-fetch": "^4.2.5",
     "react-native-device-info": "^14.0.1",
+    "react-native-draggable-flatlist": "^4.0.1",
     "react-native-element-dropdown": "^2.12.2",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.20.2",

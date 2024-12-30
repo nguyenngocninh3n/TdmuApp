@@ -1,14 +1,19 @@
 import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { API } from '../../api'
-import { RESPONSE_STATUS, SCOPE } from '../../utils/Constants'
+import { RESPONSE_STATUS } from '../../utils/Constants'
 import SpaceComponent from '../../components/SpaceComponent'
 import { navigationRef } from '../../store'
-import RowComponent from '../../components/RowComponent'
-import AvatarComponent from '../../components/AvatarComponent'
 import GoBackComponent from '../../components/GoBackComponent'
-import { OpacityButtton } from '../../components/ButtonComponent'
+import GroupItem from './components/GroupItem'
+import { NestableDraggableFlatList, NestableScrollContainer  } from 'react-native-draggable-flatlist'
 
+import ListGroupHeader from './components/ListGroupHeader'
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated'
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.error,
+  strict: true
+})
 const ListGroupScreen = ({ navigation, route }) => {
   const userID = route.params.userID
   console.log('Listgroupscreen re-render: ', userID)
@@ -23,42 +28,36 @@ const ListGroupScreen = ({ navigation, route }) => {
 
     API.getGroupsByUserIDAPI(userID).then((response) => {
       console.log('response getGroupsByUserIDApi: ', response)
+      console.log('resposne: ', response)
       if (response.status === RESPONSE_STATUS.SUCCESS) {
         setGroups(response.data)
       }
     })
   }, [])
 
-  const handleClickAddGroup = () => navigationRef.navigate('NewGroupScreen')
-  const handleNavigateGroup = (groupID) => navigationRef.navigate('GroupScreen', {groupID})
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <Text onPress={handleClickAddGroup}>Create New Group</Text> */}
-      <GoBackComponent title={'Nhóm đã tham gia'} hasBorder />
+      {/* <GoBackComponent title={'Nhóm đã tham gia'} hasBorder /> */}
+      <ListGroupHeader />
       <SpaceComponent height={24} />
       <FlatList
         data={groups}
-        keyExtractor={(item, index) => item._id}
+        keyExtractor={(item) => item._id}
+        
+        ItemSeparatorComponent={<SpaceComponent height={24} />}
         style={{ flex: 1, marginHorizontal: 16 }}
-        renderItem={({ item, index }) => (
-          <RowComponent style={{ backgroundColor: '#eee', alignItems:'flex-start' }}>
-            <AvatarComponent onPress={()=> handleNavigateGroup(item._id)} style={{ borderRadius: 10 }} source={API.getFileUrl(item.avatar)} />
-            <SpaceComponent width={16} />
-            <View>
-              <OpacityButtton title={item.name} onPress={()=> handleNavigateGroup(item._id)} textStyle={{ fontSize: 18, fontWeight: '600', color: '#111' }} />
-              <SpaceComponent height={8} />
-              <RowComponent>
-                <Text>{item.scope === SCOPE.PUBLIC ? 'Nhóm công khai' : 'Nhóm riêng tư'}</Text>
-                <SpaceComponent width={8} />
-                <Text>{item.memberLength} thành viên</Text>
-              </RowComponent>
-              <SpaceComponent height={6} />
-              <OpacityButtton textColor={'#21f'} title={'Đã tham gia'} bgColor={'#25e2'} />
-            </View>
-          </RowComponent>
-        )}
+        renderItem={({ item }) => <GroupItem item={item} />}
       />
+
+      {/* <NestableScrollContainer>
+        <NestableDraggableFlatList
+          data={groups}
+          renderItem={({ item, drag, isActive }) => <GroupItem item={item} drag={drag} isActive={isActive} />}
+          keyExtractor={(item) => item._id}
+          onDragEnd={({ data }) => setGroups(data)}
+        />
+      </NestableScrollContainer> */}
     </View>
   )
 }

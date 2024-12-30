@@ -34,7 +34,7 @@ const NewGroupScreen = ({ navigation }) => {
     API.createGroupAPI(data).then((response) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
         ToastAndroid.show('Tạo nhóm thành công!', ToastAndroid.SHORT)
-        navigation.goBack()
+        navigation.navigate('GroupScreen', {groupID: response.data._id, userID: state._id})
       } else {
         ToastAndroid.show('Tạo nhóm thất bại !!!', ToastAndroid.SHORT)
         navigation.goBack()

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useCustomContext } from '../../../../store'
 import AvatarComponent from '../../../../components/AvatarComponent'
@@ -11,6 +11,7 @@ import SpaceComponent from '../../../../components/SpaceComponent'
 import { OpacityButtton } from '../../../../components/ButtonComponent'
 import AvatarProfileModal from '../../../../modals/AvatarProfileModal'
 import GoBackComponent from '../../../../components/GoBackComponent'
+import SocketClient from '../../../../socket'
 
 const BoxInfor = ({ title, value }) => {
   return (
@@ -30,6 +31,7 @@ const Header = ({ navigation, children, user, ownerID }) => {
   const [modelVisible, setModalVisible] = useState(false)
   const onCloseModal = () => setModalVisible(false)
   const onShowModal = () => setModalVisible(true)
+
 
   return (
     <View>
